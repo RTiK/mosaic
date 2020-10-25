@@ -1,12 +1,18 @@
-cmake_minimum_required(VERSION 3.17)
-project(Mosaic)
+cmake_minimum_required(VERSION 3.10)
+project(Mosaic CXX C)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Mosaic main.cpp)
+enable_testing()
 
-include_directories("/usr/local/Cellar/opencv/4.4.0/include/opencv4")
+find_package(OpenCV REQUIRED CONFIG PATHS /usr/local/Cellar/opencv)
 
-find_package( OpenCV REQUIRED )
+include_directories(src)
+include_directories(${OpenCV_INCLUDE_LIBS})
 
-target_link_libraries(Mosaic LINK_PUBLIC ${OpenCV_LIBS})
+add_subdirectory(src)
+add_subdirectory(test)
+
+# we compile GTest from source downloaded manually
+# feel free to use find_package if you installed it somewhere outside of the project
+add_subdirectory(3rdparty/googletest)
