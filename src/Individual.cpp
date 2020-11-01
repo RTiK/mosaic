@@ -7,15 +7,13 @@
 using namespace std;
 
 double Individual::evaluate() {
-    Piece **current_first = &individual.front();
-    Piece **current_last = &individual.back();
-    Piece **current = &individual.front();
-
-    auto pbptr = &PAGE_BREAK;
+    std::shared_ptr<Piece>* current_first = &individual.front();
+    std::shared_ptr<Piece>* current_last = &individual.back();
+    std::shared_ptr<Piece>* current = &individual.front();
 
     while (current <= &individual.back()) {
         // find first non page break element
-        while (*current == pbptr) {
+        while (*current == PAGE_BREAK) {
             current++;
         }
         current_first = current;
@@ -23,7 +21,7 @@ double Individual::evaluate() {
         int elems_on_page = 0;
 
         // find first page break element and store the previous element
-        while (*current != pbptr && current_last <= &individual.back() && elems_on_page < ICONS_ON_PAGE) {
+        while (*current != PAGE_BREAK && current_last <= &individual.back() && elems_on_page < ICONS_ON_PAGE) {
             current++;
             elems_on_page++;
         }
@@ -40,43 +38,45 @@ double Individual::evaluate() {
 * @param last Last element of page array
 * @return Page fitness
 */
-double Individual::evaluate_page(Piece** first, Piece** last) {
+double Individual::evaluate_page(std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last) {
     double distance = 0.0;
     double diagonal_weight = 1/sqrt(2);
 
-    for (Piece** current = first; current <= last; current++) {
+    for (std::shared_ptr<Piece>* current = first; current <= last; current++) {
         unsigned int neighbours = Individual::calculateNeighbors(current, first, last);
 
+        Piece* current_piece = current->get();
+
         if ((neighbours & Neighbours::N) > 0) {
-            distance += (*current)->getDistanceDelta76(*current-4);
+            distance += current_piece->getDistanceDelta76((current-4)->get());
             //distance += deltaE76(*current, *(current-4));
         }
         if ((neighbours & Neighbours::NE) > 0) {
-            distance += (*current)->getDistanceDelta76(*current-3) * diagonal_weight;
+            distance += current_piece->getDistanceDelta76((current-3)->get()) * diagonal_weight;
             //distance += deltaE76(*current, *(current-3)) * diagonal_weight;
         }
         if ((neighbours & Neighbours::E) > 0) {
-            distance += (*current)->getDistanceDelta76(*current+1);
+            distance += current_piece->getDistanceDelta76((current+1)->get());
             //distance += deltaE76(*current, *(current+1));
         }
         if ((neighbours & Neighbours::SE) > 0) {
-            distance += (*current)->getDistanceDelta76(*current+5) * diagonal_weight;
+            distance += current_piece->getDistanceDelta76((current+5)->get()) * diagonal_weight;
             //distance += deltaE76(*current, *(current+5)) * diagonal_weight;
         }
         if ((neighbours & Neighbours::S) > 0) {
-            distance += (*current)->getDistanceDelta76(*current+4);
+            distance += current_piece->getDistanceDelta76((current+4)->get());
             //distance += deltaE76(*current, *(current+4));
         }
         if ((neighbours & Neighbours::SW) > 0) {
-            distance += (*current)->getDistanceDelta76(*current-3) * diagonal_weight;
+            distance += current_piece->getDistanceDelta76((current-3)->get()) * diagonal_weight;
             //distance += deltaE76(*current, *(current-3)) * diagonal_weight;
         }
         if ((neighbours & Neighbours::W) > 0) {
-            distance += (*current)->getDistanceDelta76(*current-1);
+            distance += current_piece->getDistanceDelta76((current-1)->get());
             //distance += deltaE76(*current, *(current-1));
         }
         if ((neighbours & Neighbours::NW) > 0) {
-            distance += (*current)->getDistanceDelta76(*current-5) * diagonal_weight;
+            distance += current_piece->getDistanceDelta76((current-5)->get()) * diagonal_weight;
             //distance += deltaE76(*current, *(current-5)) * diagonal_weight;
         }
     }
@@ -84,7 +84,7 @@ double Individual::evaluate_page(Piece** first, Piece** last) {
     return distance;
 }
 
-unsigned int Individual::calculateNeighbors(Piece** current, Piece** first, Piece** last) {
+unsigned int Individual::calculateNeighbors(std::shared_ptr<Piece>* current, std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last) {
     auto delta_a = current - first;
     auto delta_b = last - current;
 
@@ -120,6 +120,6 @@ unsigned int Individual::calculateNeighbors(Piece** current, Piece** first, Piec
     return neighbours;
 }
 
-Individual::Individual(std::vector<Piece *> gene) {
+Individual::Individual(std::vector<std::shared_ptr<Piece>> gene) {
     this->individual = gene;  // TODO copy?
 }

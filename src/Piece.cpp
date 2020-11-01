@@ -10,7 +10,7 @@ Piece::Piece(double L, double a, double b) {
     color = color_t(L, a, b);
 }
 
-double Piece::getDistanceDelta76(Piece *other) {
+double Piece::getDistanceDelta76(Piece* other) {
     auto otherColor = other->color;
     return sqrt(
             pow(color[0]-otherColor[0], 2) +

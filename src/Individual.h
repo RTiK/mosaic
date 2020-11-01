@@ -18,7 +18,7 @@ enum Neighbours: unsigned int {
     W   = 1<<1,
     NW  = 1<<0,
     ALL = N | NE | E | SE | S | SW | W | NW,
-    NONE=0
+    NONE= 0
 };
 
 class Individual {
@@ -26,20 +26,20 @@ class Individual {
     const int COLUMNS_PER_PAGE = 4;
     const int ICONS_ON_PAGE = ROWS_PER_PAGE * COLUMNS_PER_PAGE;
 
-    const Piece PAGE_BREAK = Piece(0, 0, 0);
+    const std::shared_ptr<Piece> PAGE_BREAK = std::make_shared<Piece>(0, 0, 0);
 
-    std::vector<Piece*> individual;
+    std::vector<std::shared_ptr<Piece>> individual;
 
 public:
-    explicit Individual(std::vector<Piece*> gene);
+    explicit Individual(std::vector<std::shared_ptr<Piece>> gene);
 
-    static unsigned int calculateNeighbors(Piece **current, Piece **first, Piece **last);
+    static unsigned int calculateNeighbors(std::shared_ptr<Piece>* current, std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last);
 
     // Evaluates the individual
     double evaluate();
 
 private:
-    double evaluate_page(Piece** first, Piece** last);
+    double evaluate_page(std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last);
 
 };
 
