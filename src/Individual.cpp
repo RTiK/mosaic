@@ -3,6 +3,7 @@
 //
 
 #include "Individual.h"
+#include "Piece.h"
 
 using namespace std;
 
@@ -39,7 +40,7 @@ double Individual::evaluate() {
 * @return Page fitness
 */
 double Individual::evaluate_page(std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last) {
-    double distance = 0.0;
+    double totalDistance = 0.0;
     double diagonal_weight = 1/sqrt(2);
 
     for (std::shared_ptr<Piece>* current = first; current <= last; current++) {
@@ -47,49 +48,48 @@ double Individual::evaluate_page(std::shared_ptr<Piece>* first, std::shared_ptr<
 
         Piece* current_piece = current->get();
 
-        if ((neighbours & Neighbours::N) > 0) {
-            distance += current_piece->getDistanceDelta76((current-4)->get());
-            //distance += deltaE76(*current, *(current-4));
+        current_piece->setNeighbors(neighbours);
+
+        double pieceDistance = 0.0;
+
+        if (neighbours & Neighbours::N) {
+            pieceDistance += current_piece->getDistanceDelta76((current-4)->get());
         }
-        if ((neighbours & Neighbours::NE) > 0) {
-            distance += current_piece->getDistanceDelta76((current-3)->get()) * diagonal_weight;
-            //distance += deltaE76(*current, *(current-3)) * diagonal_weight;
+        if (neighbours & Neighbours::NE) {
+            pieceDistance += current_piece->getDistanceDelta76((current-3)->get()) * diagonal_weight;
         }
-        if ((neighbours & Neighbours::E) > 0) {
-            distance += current_piece->getDistanceDelta76((current+1)->get());
-            //distance += deltaE76(*current, *(current+1));
+        if (neighbours & Neighbours::E) {
+            pieceDistance += current_piece->getDistanceDelta76((current+1)->get());
         }
-        if ((neighbours & Neighbours::SE) > 0) {
-            distance += current_piece->getDistanceDelta76((current+5)->get()) * diagonal_weight;
-            //distance += deltaE76(*current, *(current+5)) * diagonal_weight;
+        if (neighbours & Neighbours::SE) {
+            pieceDistance += current_piece->getDistanceDelta76((current+5)->get()) * diagonal_weight;
         }
-        if ((neighbours & Neighbours::S) > 0) {
-            distance += current_piece->getDistanceDelta76((current+4)->get());
-            //distance += deltaE76(*current, *(current+4));
+        if (neighbours & Neighbours::S) {
+            pieceDistance += current_piece->getDistanceDelta76((current+4)->get());
         }
-        if ((neighbours & Neighbours::SW) > 0) {
-            distance += current_piece->getDistanceDelta76((current-3)->get()) * diagonal_weight;
-            //distance += deltaE76(*current, *(current-3)) * diagonal_weight;
+        if (neighbours & Neighbours::SW) {
+            pieceDistance += current_piece->getDistanceDelta76((current+3)->get()) * diagonal_weight;
         }
-        if ((neighbours & Neighbours::W) > 0) {
-            distance += current_piece->getDistanceDelta76((current-1)->get());
-            //distance += deltaE76(*current, *(current-1));
+        if (neighbours & Neighbours::W) {
+            pieceDistance += current_piece->getDistanceDelta76((current-1)->get());
         }
-        if ((neighbours & Neighbours::NW) > 0) {
-            distance += current_piece->getDistanceDelta76((current-5)->get()) * diagonal_weight;
-            //distance += deltaE76(*current, *(current-5)) * diagonal_weight;
+        if (neighbours & Neighbours::NW) {
+            pieceDistance += current_piece->getDistanceDelta76((current-5)->get()) * diagonal_weight;
         }
+
+        current_piece->setCummultativeDistance(pieceDistance);
+
+        totalDistance += current_piece->getNormalizedDistance();
     }
 
-    return distance;
+    return totalDistance;
 }
 
 unsigned int Individual::calculateNeighbors(std::shared_ptr<Piece>* current, std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last) {
     auto delta_a = current - first;
     auto delta_b = last - current;
 
-    unsigned int neighbours = Neighbours::N | Neighbours::NE | Neighbours::E | Neighbours::SE
-                            | Neighbours::S | Neighbours::SW | Neighbours::W | Neighbours::NW;
+    unsigned int neighbours = Neighbours::ALL;
 
     if (delta_a % 4 == 0) {  // position on far left -> can't go west
         neighbours &= ~(Neighbours::NW | Neighbours::W | Neighbours::SW);

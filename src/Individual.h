@@ -8,19 +8,6 @@
 #include "Piece.h"
 
 
-enum Neighbours: unsigned int {
-    N   = 1<<7,
-    NE  = 1<<6,
-    E   = 1<<5,
-    SE  = 1<<4,
-    S   = 1<<3,
-    SW  = 1<<2,
-    W   = 1<<1,
-    NW  = 1<<0,
-    ALL = N | NE | E | SE | S | SW | W | NW,
-    NONE= 0
-};
-
 class Individual {
     const int ROWS_PER_PAGE = 6;
     const int COLUMNS_PER_PAGE = 4;
@@ -38,7 +25,6 @@ public:
     // Evaluates the individual
     double evaluate();
 
-private:
     double evaluate_page(std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last);
 
 };

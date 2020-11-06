@@ -9,14 +9,41 @@
 
 typedef cv::Vec<double, 3> color_t;
 
+enum Neighbours: unsigned int {
+    N   = 0x1 << 7,
+    NE  = 0x1 << 6,
+    E   = 0x1 << 5,
+    SE  = 0x1 << 4,
+    S   = 0x1 << 3,
+    SW  = 0x1 << 2,
+    W   = 0x1 << 1,
+    NW  = 0x1 << 0,
+    ALL = N | NE | E | SE | S | SW | W | NW,
+    NONE= 0x0
+};
+
 
 class Piece {
     color_t color;
+
+    double cummultativeDistance;
+
+    unsigned int neighbours;
 
 public:
     Piece(double L, double a, double b);
 
     double getDistanceDelta76(Piece* other);
+
+    void setNeighbors(unsigned int neighbours);
+
+    unsigned int getNeighbors();
+
+    void setCummultativeDistance(double cummultativeDistance);
+
+    double getCummultativeDistance();
+
+    double getNormalizedDistance();
 };
 
 #endif //MOSAIC_PIECE_H

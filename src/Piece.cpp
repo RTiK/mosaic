@@ -17,3 +17,23 @@ double Piece::getDistanceDelta76(Piece* other) {
             pow(color[1]-otherColor[1], 2) +
             pow(color[2]-otherColor[2], 2));
 }
+
+double Piece::getNormalizedDistance() {
+    return cummultativeDistance / std::bitset<8>(neighbours).count();
+}
+
+void Piece::setNeighbors(unsigned int neighbours) {
+    this->neighbours = neighbours;
+}
+
+unsigned int Piece::getNeighbors() {
+    return this->neighbours;
+}
+
+void Piece::setCummultativeDistance(double cummultativeDistance) {
+    this->cummultativeDistance = cummultativeDistance;
+}
+
+double Piece::getCummultativeDistance() {
+    return this->cummultativeDistance;
+}
