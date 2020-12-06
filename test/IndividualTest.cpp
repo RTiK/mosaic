@@ -129,8 +129,30 @@ TEST(EvaluationTests, TestEvaluateSimple) {
         std::make_shared<Piece>(6, 6, 6), std::make_shared<Piece>(7, 7, 7),
         std::make_shared<Piece>(8, 8, 8), std::make_shared<Piece>(9, 9, 9)
     };
-    auto i = Individual(ind);
-    double a = i.evaluate_page(&ind.front(), &ind.back());
+    double a = Individual::evaluate_page(PageEdge{&ind.front(), &ind.back()});
     EXPECT_NEAR(44.22329, a, 0.00001);
-    std::cout << a << std::endl;
+}
+
+// ------
+TEST(PageBreakTest, TestSimplePageBreak) {
+    std::vector<std::shared_ptr<Piece>> pieces{
+        std::make_shared<Piece>(0, 0, 0), std::make_shared<Piece>(0, 0, 0),
+        std::make_shared<Piece>(0, 0, 0), std::make_shared<Piece>(0, 0, 0)
+    };
+
+    std::vector<std::shared_ptr<PageEdge>> pages = Individual::splitGeneToPages(pieces);
+    EXPECT_EQ(pages.size(), 1);
+    EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.front())->get());
+    EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.back())->get());
+}
+
+
+TEST(PageBreakTest, TestTrailingPageBreak) {
+    std::vector<std::shared_ptr<Piece>> pieces{4, std::make_shared<Piece>(0, 0, 0)};
+    pieces.emplace_back(Individual::PAGE_BREAK);
+
+    std::vector<std::shared_ptr<PageEdge>> pages = Individual::splitGeneToPages(pieces);
+    EXPECT_EQ(pages.size(), 1);
+    EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.front())->get());
+    EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.at(2))->get());
 }

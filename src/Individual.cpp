@@ -2,35 +2,18 @@
 // Created by Artem Khatchatourov on 13.09.20.
 //
 
+#include <valarray>
 #include "Individual.h"
 #include "Piece.h"
 
 using namespace std;
 
-double Individual::evaluate() {
-    std::shared_ptr<Piece>* current_first = &individual.front();
-    std::shared_ptr<Piece>* current_last = &individual.back();
-    std::shared_ptr<Piece>* current = &individual.front();
+std::shared_ptr<Piece> Individual::PAGE_BREAK = std::make_shared<Piece>(0, 0, 0);
 
-    while (current <= &individual.back()) {
-        // find first non page break element
-        while (*current == PAGE_BREAK) {
-            current++;
-        }
-        current_first = current;
-
-        int elems_on_page = 0;
-
-        // find first page break element and store the previous element
-        while (*current != PAGE_BREAK && current_last <= &individual.back() && elems_on_page < ICONS_ON_PAGE) {
-            current++;
-            elems_on_page++;
-        }
-        current_last = current-1;
-
-        double page_fitness = evaluate_page(current_first, current_last);
-    }
-    return 0;
+double Individual::getFitness() {
+    std::valarray<double> fitnesses(pages.size());
+    std::transform(pages.begin()->get(), pages.end()->get(), std::begin(fitnesses), Individual::evaluate_page);
+    return fitnesses.sum();
 }
 
 /**
@@ -39,12 +22,12 @@ double Individual::evaluate() {
 * @param last Last element of page array
 * @return Page fitness
 */
-double Individual::evaluate_page(std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last) {
+double Individual::evaluate_page(PageEdge page) {
     double totalDistance = 0.0;
     double diagonal_weight = 1/sqrt(2);
 
-    for (std::shared_ptr<Piece>* current = first; current <= last; current++) {
-        unsigned int neighbours = Individual::calculateNeighbors(current, first, last);
+    for (std::shared_ptr<Piece>* current = page.first; current <= page.second; current++) {
+        unsigned int neighbours = Individual::calculateNeighbors(current, page.first, page.second);
 
         Piece* current_piece = current->get();
 
@@ -121,5 +104,30 @@ unsigned int Individual::calculateNeighbors(std::shared_ptr<Piece>* current, std
 }
 
 Individual::Individual(std::vector<std::shared_ptr<Piece>> gene) {
-    this->individual = gene;  // TODO copy?
+    //this->individual = gene;  // TODO copy?
+    this->pages = splitGeneToPages(gene);
+}
+
+std::vector<std::shared_ptr<PageEdge>> Individual::splitGeneToPages(const std::vector<std::shared_ptr<Piece>> gene) {
+    std::vector<std::shared_ptr<PageEdge>> gene_pages{};
+    std::shared_ptr<PageEdge> currentPagePtr;
+
+    for (auto* p = const_cast<std::shared_ptr<Piece>*>(&gene.front()); p <= const_cast<std::shared_ptr<Piece>*>(&gene.back()); p++) {
+        if (currentPagePtr) {
+            if (*p == Individual::PAGE_BREAK || p - currentPagePtr->first > MAX_PIECES_ON_PAGE) {
+                // overwrite page termination with the previous piece ptr
+                currentPagePtr.reset();
+            } else {
+                currentPagePtr->second = p;
+            }
+        } else {
+            if (*p != Individual::PAGE_BREAK) {
+                // terminate the page at the end of the gene in case it doesn't end with a page break
+                currentPagePtr = std::make_shared<PageEdge>(p, const_cast<shared_ptr<Piece> *>(&gene.back()));
+                gene_pages.emplace_back(currentPagePtr);
+            }
+        }
+    }
+
+    return gene_pages;
 }
