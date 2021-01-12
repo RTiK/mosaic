@@ -4,11 +4,19 @@
 
 #include "Piece.h"
 
+Piece::Piece() {
+    init(0.0, 0.0, 0.0);
+}
+
 Piece::Piece(double gray) {
-    Piece(gray, gray, gray);
+    init(gray, gray, gray);
 }
 
 Piece::Piece(double r, double g, double b) {
+    init(r, g, b);
+}
+
+void Piece::init(double r, double g, double b) {
     color = color_t(r, g, b);
 }
 

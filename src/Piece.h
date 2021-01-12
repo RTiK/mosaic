@@ -30,8 +30,12 @@ class Piece {
 
     unsigned int neighbours;
 
+    void init(double r, double g, double b);
+
 public:
-    Piece(double gray);
+    Piece();
+
+    explicit Piece(double gray);
 
     Piece(double r, double g, double b);
 
