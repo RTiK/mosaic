@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 enable_testing()
 
-find_package(OpenCV REQUIRED CONFIG PATHS /usr/local/Cellar/opencv)
+find_package(OpenCV REQUIRED CONFIG)
 
 include_directories(src)
 include_directories(${OpenCV_INCLUDE_LIBS})

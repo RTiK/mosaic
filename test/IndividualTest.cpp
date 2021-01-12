@@ -146,6 +146,15 @@ TEST(PageBreakTest, TestSimplePageBreak) {
     EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.back())->get());
 }
 
+TEST(PageBreakTest, TestLeadingPageBreak) {
+    std::vector<std::shared_ptr<Piece>> pieces{4, std::make_shared<Piece>(0, 0, 0)};
+    pieces.emplace(pieces.begin(), Individual::PAGE_BREAK);
+
+    std::vector<std::shared_ptr<PageEdge>> pages = Individual::splitGeneToPages(pieces);
+    EXPECT_EQ(pages.size(), 1);
+    EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[1])->get());
+    EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[2])->get());
+}
 
 TEST(PageBreakTest, TestTrailingPageBreak) {
     std::vector<std::shared_ptr<Piece>> pieces{4, std::make_shared<Piece>(0, 0, 0)};
@@ -155,4 +164,41 @@ TEST(PageBreakTest, TestTrailingPageBreak) {
     EXPECT_EQ(pages.size(), 1);
     EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.front())->get());
     EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.at(2))->get());
+}
+
+TEST(PageBreakTest, TestOnePiecePage) {
+    std::vector<std::shared_ptr<Piece>> pieces{std::make_shared<Piece>(0, 0, 0)};
+
+    std::vector<std::shared_ptr<PageEdge>> pages = Individual::splitGeneToPages(pieces);
+    EXPECT_EQ(pages.size(), 1);
+    EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[0])->get());
+    EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[0])->get());
+}
+
+TEST(PageBreakTest, TestTwoPage) {
+    std::vector<std::shared_ptr<Piece>> pieces {
+        std::make_shared<Piece>(0, 0, 0), std::make_shared<Piece>(0, 0, 0),
+        Individual::PAGE_BREAK,
+        std::make_shared<Piece>(0, 0, 0), std::make_shared<Piece>(0, 0, 0)
+    };
+    std::vector<std::shared_ptr<PageEdge>> pages = Individual::splitGeneToPages(pieces);
+    EXPECT_EQ(pages.size(), 2);
+    EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[0])->get());
+    EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[1])->get());
+    EXPECT_EQ(pages[1].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[3])->get());
+    EXPECT_EQ(pages[1].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[4])->get());
+}
+
+TEST(PageBreakTest, TestTripplePageBreak) {
+    std::vector<std::shared_ptr<Piece>> pieces {
+            std::make_shared<Piece>(0, 0, 0), std::make_shared<Piece>(0, 0, 0),
+            Individual::PAGE_BREAK, Individual::PAGE_BREAK, Individual::PAGE_BREAK,
+            std::make_shared<Piece>(0, 0, 0), std::make_shared<Piece>(0, 0, 0)
+    };
+    std::vector<std::shared_ptr<PageEdge>> pages = Individual::splitGeneToPages(pieces);
+    EXPECT_EQ(pages.size(), 2);
+    EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[0])->get());
+    EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[1])->get());
+    EXPECT_EQ(pages[1].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[5])->get());
+    EXPECT_EQ(pages[1].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[6])->get());
 }

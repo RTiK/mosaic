@@ -4,10 +4,12 @@
 
 #include "Piece.h"
 
-using namespace std;
+Piece::Piece(double gray) {
+    Piece(gray, gray, gray);
+}
 
-Piece::Piece(double L, double a, double b) {
-    color = color_t(L, a, b);
+Piece::Piece(double r, double g, double b) {
+    color = color_t(r, g, b);
 }
 
 double Piece::getDistanceDelta76(Piece* other) {

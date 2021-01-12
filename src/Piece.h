@@ -31,7 +31,9 @@ class Piece {
     unsigned int neighbours;
 
 public:
-    Piece(double L, double a, double b);
+    Piece(double gray);
+
+    Piece(double r, double g, double b);
 
     double getDistanceDelta76(Piece* other);
 
