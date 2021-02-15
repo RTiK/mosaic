@@ -17,4 +17,6 @@ static std::shared_ptr<Piece> PAGE_BREAK;
 
 std::vector<std::shared_ptr<PageEdge>> splitGeneToPages(std::vector<std::shared_ptr<Piece>>& gene);
 
+void show_page(PageEdge page_edge, std::string window_title);
+
 #endif //MOSAIC_PAGETOOLS_H

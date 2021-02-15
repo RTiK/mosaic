@@ -3,6 +3,7 @@
 //
 
 #include "PageTools.h"
+#include <opencv2/opencv.hpp>
 
 
 std::vector<std::shared_ptr<PageEdge>> splitGeneToPages(std::vector<std::shared_ptr<Piece>>& gene) {
@@ -31,4 +32,25 @@ std::vector<std::shared_ptr<PageEdge>> splitGeneToPages(std::vector<std::shared_
     }
 
     return pages;
+}
+
+void show_page(PageEdge page_edge, std::string window_title) {
+
+    cv::Mat temp_mat(MAX_PIECES_ON_PAGE, 1, CV_64FC3, color_t(0, 1, 0));
+
+    cv::MatIterator_<color_t> mat_iter = temp_mat.begin<color_t>();
+
+    int i = 0;
+    for (std::shared_ptr<Piece>* p = page_edge.first; p <= page_edge.second; p++) {
+        temp_mat.at<color_t>(i,0) = p->get()->getColor() / 100;
+        i++;
+    }
+
+    cv::Mat page_mat = temp_mat.reshape(3, ROWS_PER_PAGE);
+
+    cv::Mat out_mat;
+    cv::resize(page_mat, out_mat, cv::Size(), 50, 50, cv::INTER_NEAREST);
+    cv::imshow(window_title, out_mat);
+    cv::waitKey(0);
+
 }
