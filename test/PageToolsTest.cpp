@@ -93,6 +93,6 @@ TEST(PageBreakTest, TestPageOverflow) {
     };
     auto pages = splitGeneToPages(pieces);
     EXPECT_EQ(pages.size(), 2);
-    EXPECT_EQ(pages[0]->second - pages[0]->first, MAX_PIECES_ON_PAGE - 1);  // 23
-    EXPECT_EQ(pages[1]->second - pages[1]->first, pieces.size() - MAX_PIECES_ON_PAGE - 1);  // 3
+    EXPECT_EQ(pages[0]->second - pages[0]->first, MAX_PIECES_ON_PAGE - 1);
+    EXPECT_EQ(pages[1]->second - pages[1]->first, pieces.size() - MAX_PIECES_ON_PAGE - 1);
 }

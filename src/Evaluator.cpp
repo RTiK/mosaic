@@ -55,7 +55,6 @@ double evaluate_page(PageEdge page) {
     return totalDistance;
 }
 
-
 unsigned int calculateNeighbors(std::shared_ptr<Piece>* current, std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last) {
     auto delta_a = current - first;
     auto delta_b = last - current;
@@ -89,4 +88,13 @@ unsigned int calculateNeighbors(std::shared_ptr<Piece>* current, std::shared_ptr
     }
 
     return neighbours;
+}
+
+double evaluate_genome(std::vector<std::shared_ptr<Piece>>& genome) {
+    auto pages = splitGeneToPages(genome);
+    double total_fitness = 0.0;
+    for (std::shared_ptr<PageEdge>& page : pages) {
+        total_fitness += evaluate_page(*page);
+    }
+    return total_fitness;
 }

@@ -50,6 +50,8 @@ public:
     double getCummultativeDistance();
 
     double getNormalizedDistance();
+
+    color_t getColor();
 };
 
 #endif //MOSAIC_PIECE_H

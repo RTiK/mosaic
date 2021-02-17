@@ -29,7 +29,8 @@ double Piece::getDistanceDelta76(Piece* other) {
 }
 
 double Piece::getNormalizedDistance() {
-    return cummultativeDistance / std::bitset<8>(neighbours).count();
+    unsigned int num_of_neighbors = neighbours > 0 ? std::bitset<8>(neighbours).count() : 1;
+    return cummultativeDistance / num_of_neighbors;
 }
 
 void Piece::setNeighbors(unsigned int neighbours) {
@@ -47,3 +48,8 @@ void Piece::setCummultativeDistance(double cummultativeDistance) {
 double Piece::getCummultativeDistance() {
     return this->cummultativeDistance;
 }
+
+color_t Piece::getColor() {
+    return color_t(color);
+}
+

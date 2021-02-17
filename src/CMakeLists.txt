@@ -1,8 +1,8 @@
 set(Headers
-        Piece.h Evaluator.cpp Evaluator.h PageTools.cpp PageTools.h)
+        Piece.h Evaluator.h PageTools.h Individual.h)
 
 set(Sources
-        Piece.cpp Evaluator.cpp Evaluator.h PageTools.cpp PageTools.h Mosaic.cpp)
+        Piece.cpp Evaluator.cpp PageTools.cpp Mosaic.cpp Individual.cpp)
 
 add_library(Mosaic
         ${Sources}
