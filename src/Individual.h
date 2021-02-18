@@ -16,9 +16,9 @@ class Individual {
 public:
     Individual();
 
-    Individual(Individual &individual);
+    Individual(const Individual& individual);
 
-    Individual(Individual &individual, std::mt19937 g);
+    Individual(const Individual &individual, std::mt19937 g);
 
     std::vector<std::shared_ptr<Piece>> genome;
 

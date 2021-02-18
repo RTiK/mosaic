@@ -5,15 +5,15 @@
 #include "Individual.h"
 
 
-Individual::Individual() { }
+Individual::Individual() = default;
 
-Individual::Individual(Individual& individual) {
-    this->genome = std::vector<std::shared_ptr<Piece>>(individual.genome);
+Individual::Individual(const Individual& individual) {
+    this->genome = std::vector(individual.genome);
     this->fitness = individual.fitness;
 }
 
-Individual::Individual(Individual& individual, std::mt19937 g) {
-    this->genome = std::vector<std::shared_ptr<Piece>>(individual.genome);
+Individual::Individual(const Individual& individual, std::mt19937 g) {
+    this->genome = std::vector(individual.genome);
     std::shuffle(this->genome.begin(), this->genome.end(), g);
     this->fitness = evaluate_genome(this->genome);
 }

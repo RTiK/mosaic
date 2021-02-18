@@ -110,7 +110,7 @@ int main() {
 
     print_individual(best);
 
-    for (std::shared_ptr<PageEdge> page : splitGeneToPages(best.genome)) {
+    for (const std::shared_ptr<PageEdge>& page : splitGeneToPages(best.genome)) {
         show_page(*page, std::to_string(evaluate_page(*page)));
     }
 
