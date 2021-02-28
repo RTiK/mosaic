@@ -7,7 +7,7 @@
 
 #include <opencv2/opencv.hpp>
 
-typedef cv::Vec<double, 3> color_t;
+typedef cv::Vec<double, 3> ColorT;
 
 enum Neighbours: unsigned int {
     N   = 0x1 << 7,
@@ -24,13 +24,10 @@ enum Neighbours: unsigned int {
 
 
 class Piece {
-    color_t color;
-
-    double cummultativeDistance;
-
-    unsigned int neighbours;
-
-    void init(double r, double g, double b);
+    ColorT color_;
+    double total_distance_ = 0;
+    unsigned int neighbours_ = 0;
+    void Init(double r, double g, double b);
 
 public:
     Piece();
@@ -39,19 +36,19 @@ public:
 
     Piece(double r, double g, double b);
 
-    double getDistanceDelta76(Piece* other);
+    friend double GetDistance(Piece &piece_1, Piece &piece_2);
 
-    void setNeighbors(unsigned int neighbours);
+    void SetNeighbors(unsigned int neighbours);
 
-    unsigned int getNeighbors();
+    unsigned int GetNeighbors();
 
-    void setCummultativeDistance(double cummultativeDistance);
+    void SetTotalDistance(double total_distance);
 
-    double getCummultativeDistance();
+    double GetTotalDistance();
 
-    double getNormalizedDistance();
+    double GetNormalizedDistance() const;
 
-    color_t getColor();
+    ColorT GetColor();
 };
 
 #endif //MOSAIC_PIECE_H

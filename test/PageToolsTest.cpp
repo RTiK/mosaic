@@ -11,7 +11,7 @@ TEST(PageBreakTest, TestSimplePageBreak) {
             std::make_shared<Piece>(), std::make_shared<Piece>()
     };
 
-    std::vector<std::shared_ptr<PageEdge>> pages = splitGeneToPages(pieces);
+    std::vector<std::shared_ptr<PageEdge>> pages = SplitGeneToPages(pieces);
     EXPECT_EQ(pages.size(), 1);
     EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.front())->get());
     EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.back())->get());
@@ -21,7 +21,7 @@ TEST(PageBreakTest, TestLeadingPageBreak) {
     std::vector<std::shared_ptr<Piece>> pieces{4, std::make_shared<Piece>()};
     pieces.emplace(pieces.begin(), PAGE_BREAK);
 
-    std::vector<std::shared_ptr<PageEdge>> pages = splitGeneToPages(pieces);
+    std::vector<std::shared_ptr<PageEdge>> pages = SplitGeneToPages(pieces);
     EXPECT_EQ(pages.size(), 1);
     EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[1])->get());
     EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[2])->get());
@@ -31,7 +31,7 @@ TEST(PageBreakTest, TestTrailingPageBreak) {
     std::vector<std::shared_ptr<Piece>> pieces{4, std::make_shared<Piece>()};
     pieces.emplace_back(PAGE_BREAK);
 
-    std::vector<std::shared_ptr<PageEdge>> pages = splitGeneToPages(pieces);
+    std::vector<std::shared_ptr<PageEdge>> pages = SplitGeneToPages(pieces);
     EXPECT_EQ(pages.size(), 1);
     EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.front())->get());
     EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces.at(2))->get());
@@ -40,7 +40,7 @@ TEST(PageBreakTest, TestTrailingPageBreak) {
     TEST(PageBreakTest, TestOnePiecePage) {
     std::vector<std::shared_ptr<Piece>> pieces{std::make_shared<Piece>(0)};
 
-    std::vector<std::shared_ptr<PageEdge>> pages = splitGeneToPages(pieces);
+    std::vector<std::shared_ptr<PageEdge>> pages = SplitGeneToPages(pieces);
     EXPECT_EQ(pages.size(), 1);
     EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[0])->get());
     EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[0])->get());
@@ -52,7 +52,7 @@ TEST(PageBreakTest, TestTwoPage) {
             PAGE_BREAK,
             std::make_shared<Piece>(), std::make_shared<Piece>()
     };
-    std::vector<std::shared_ptr<PageEdge>> pages = splitGeneToPages(pieces);
+    std::vector<std::shared_ptr<PageEdge>> pages = SplitGeneToPages(pieces);
     EXPECT_EQ(pages.size(), 2);
     EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[0])->get());
     EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[1])->get());
@@ -66,7 +66,7 @@ TEST(PageBreakTest, TestTripplePageBreak) {
             PAGE_BREAK, PAGE_BREAK, PAGE_BREAK,
             std::make_shared<Piece>(), std::make_shared<Piece>()
     };
-    std::vector<std::shared_ptr<PageEdge>> pages = splitGeneToPages(pieces);
+    std::vector<std::shared_ptr<PageEdge>> pages = SplitGeneToPages(pieces);
     EXPECT_EQ(pages.size(), 2);
     EXPECT_EQ(pages[0].get()->first->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[0])->get());
     EXPECT_EQ(pages[0].get()->second->get(), const_cast<std::shared_ptr<Piece>*>(&pieces[1])->get());
@@ -91,8 +91,8 @@ TEST(PageBreakTest, TestPageOverflow) {
             std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // new page
             std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0)   // 2
     };
-    auto pages = splitGeneToPages(pieces);
+    auto pages = SplitGeneToPages(pieces);
     EXPECT_EQ(pages.size(), 2);
-    EXPECT_EQ(pages[0]->second - pages[0]->first, MAX_PIECES_ON_PAGE - 1);
-    EXPECT_EQ(pages[1]->second - pages[1]->first, pieces.size() - MAX_PIECES_ON_PAGE - 1);
+    EXPECT_EQ(pages[0]->second - pages[0]->first, kMaxPiecesOnPage - 1);
+    EXPECT_EQ(pages[1]->second - pages[1]->first, pieces.size() - kMaxPiecesOnPage - 1);
 }

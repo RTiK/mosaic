@@ -9,10 +9,10 @@
 
 static double DIAGONAL_WEIGHT = 1/sqrt(2);
 
-double evaluate_page(PageEdge page);
+double EvaluatePage(PageEdge page);
 
-double evaluate_genome(std::vector<std::shared_ptr<Piece>>& genome);
+double EvaluateGenome(std::vector<std::shared_ptr<Piece>>& genome);
 
-unsigned int calculateNeighbors(std::shared_ptr<Piece>* current, std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last);
+unsigned int CalculateNeighbors(std::shared_ptr<Piece>* current, std::shared_ptr<Piece>* first, std::shared_ptr<Piece>* last);
 
 #endif //MOSAIC_EVALUATOR_H

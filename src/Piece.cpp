@@ -5,51 +5,47 @@
 #include "Piece.h"
 
 Piece::Piece() {
-    init(0.0, 0.0, 0.0);
+  Init(0.0, 0.0, 0.0);
 }
 
 Piece::Piece(double gray) {
-    init(gray, gray, gray);
+  Init(gray, gray, gray);
 }
 
 Piece::Piece(double r, double g, double b) {
-    init(r, g, b);
+  Init(r, g, b);
 }
 
-void Piece::init(double r, double g, double b) {
-    color = color_t(r, g, b);
+void Piece::Init(double r, double g, double b) {
+  color_ = ColorT(r, g, b);
 }
 
-double Piece::getDistanceDelta76(Piece* other) {
-    auto otherColor = other->color;
-    return sqrt(
-            pow(color[0]-otherColor[0], 2) +
-            pow(color[1]-otherColor[1], 2) +
-            pow(color[2]-otherColor[2], 2));
+double GetDistance(Piece &piece_1, Piece &piece_2) {
+  return sqrt(pow(piece_1.color_[0] - piece_2.color_[0], 2) + pow(piece_1.color_[1] - piece_2.color_[1], 2)
+                  + pow(piece_1.color_[2] - piece_2.color_[2], 2));
 }
 
-double Piece::getNormalizedDistance() {
-    unsigned int num_of_neighbors = neighbours > 0 ? std::bitset<8>(neighbours).count() : 1;
-    return cummultativeDistance / num_of_neighbors;
+double Piece::GetNormalizedDistance() const {
+  unsigned int num_of_neighbors = neighbours_ > 0 ? std::bitset<8>(neighbours_).count() : 1;
+  return total_distance_ / num_of_neighbors;
 }
 
-void Piece::setNeighbors(unsigned int neighbours) {
-    this->neighbours = neighbours;
+void Piece::SetNeighbors(unsigned int neighbours) {
+  neighbours_ = neighbours;
 }
 
-unsigned int Piece::getNeighbors() {
-    return this->neighbours;
+unsigned int Piece::GetNeighbors() {
+  return neighbours_;
 }
 
-void Piece::setCummultativeDistance(double cummultativeDistance) {
-    this->cummultativeDistance = cummultativeDistance;
+void Piece::SetTotalDistance(double total_distance) {
+  total_distance_ = total_distance;
 }
 
-double Piece::getCummultativeDistance() {
-    return this->cummultativeDistance;
+double Piece::GetTotalDistance() {
+  return total_distance_;
 }
 
-color_t Piece::getColor() {
-    return color_t(color);
+ColorT Piece::GetColor() {
+  return ColorT(color_);
 }
-

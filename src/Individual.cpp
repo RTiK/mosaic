@@ -4,28 +4,40 @@
 
 #include "Individual.h"
 
-
 Individual::Individual() = default;
 
-Individual::Individual(const Individual& individual) {
-    this->genome = std::vector(individual.genome);
-    this->fitness = individual.fitness;
+Individual::Individual(const Individual &ind) {
+  genome_ = std::vector(ind.genome_);
+  fitness_ = ind.fitness_;
 }
 
-Individual::Individual(const Individual& individual, std::mt19937 g) {
-    this->genome = std::vector(individual.genome);
-    std::shuffle(this->genome.begin(), this->genome.end(), g);
-    this->fitness = evaluate_genome(this->genome);
+Individual::Individual(const Individual &ind, std::mt19937 g) {
+  genome_ = std::vector(ind.genome_);
+  std::shuffle(this->genome_.begin(), this->genome_.end(), g);
+  fitness_ = EvaluateGenome(this->genome_);
 }
 
-std::string Individual::to_string() {
-    auto pages = splitGeneToPages(this->genome);
-    return std::to_string(this->fitness) + "/" + std::to_string(pages.size());
+void Individual::Swap(unsigned int index_1, unsigned int index_2) {
+  auto temp_piece = this->genome_.at(index_1);
+  genome_.at(index_1) = this->genome_.at(index_2);
+  genome_.at(index_2) = temp_piece;
+  fitness_ = EvaluateGenome(this->genome_);
 }
 
-void Individual::swap(unsigned int index1, unsigned int index2) {
-    auto temp_piece = this->genome.at(index1);
-    this->genome.at(index1) = this->genome.at(index2);
-    this->genome.at(index2) = temp_piece;
-    this->fitness = evaluate_genome(this->genome);
+bool operator<(const Individual &ind_1, const Individual &ind_2) {
+  if (ind_1.fitness_ < ind_2.fitness_) {
+    return true;
+  } else if (ind_1.fitness_ > ind_2.fitness_) {
+    return false;
+  } else if (ind_1.genome_ < ind_2.genome_) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+std::ostream &operator<<(std::ostream &out, Individual &ind) {
+  auto pages = SplitGeneToPages(ind.genome_);
+  out << "Fitness: " << std::to_string(ind.fitness_) << " Pages: " << std::to_string(pages.size());
+  return out;
 }

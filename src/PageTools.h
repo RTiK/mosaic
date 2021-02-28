@@ -7,16 +7,16 @@
 
 #include "Piece.h"
 
-typedef std::pair<std::shared_ptr<Piece>*, std::shared_ptr<Piece>*> PageEdge;
+typedef std::pair<std::shared_ptr<Piece> *, std::shared_ptr<Piece> *> PageEdge;
 
-static const int ROWS_PER_PAGE = 6;
-static const int COLUMNS_PER_PAGE = 4;
-static const int MAX_PIECES_ON_PAGE = ROWS_PER_PAGE * COLUMNS_PER_PAGE;
+static const int kRowsPerPage = 6;
+static const int kColumnsPerPage = 4;
+static const int kMaxPiecesOnPage = kRowsPerPage * kColumnsPerPage;
 
 static std::shared_ptr<Piece> PAGE_BREAK;
 
-std::vector<std::shared_ptr<PageEdge>> splitGeneToPages(std::vector<std::shared_ptr<Piece>>& gene);
+std::vector<std::shared_ptr<PageEdge>> SplitGeneToPages(std::vector<std::shared_ptr<Piece>> &gene);
 
-void show_page(PageEdge page_edge, std::string window_title);
+void ShowPage(PageEdge page_edge, const std::string &window_title);
 
 #endif //MOSAIC_PAGETOOLS_H
