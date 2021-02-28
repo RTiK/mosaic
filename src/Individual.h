@@ -18,7 +18,7 @@ class Individual {
 
   Individual(const Individual &ind);
 
-  Individual(const Individual &ind, std::mt19937 g);
+  Individual(const Individual &ind, std::mt19937 &g);
 
   std::vector<std::shared_ptr<Piece>> genome_;
 

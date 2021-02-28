@@ -6,22 +6,21 @@
 #include "Piece.h"
 #include "PageTools.h"
 #include "Individual.h"
+#include "FileLogger.h"
+
+// TODO piece inheritance, RGBPiece
 
 int NUM_OF_PAGE_BREAKS = 2;
 int NUM_OF_PIECES = 40;
 int POPULATION = 100;
-int MAX_GENERATIONS = 1000;
+int MAX_GENERATIONS = 100;
+std::string LOGFILE = "/Users/rt/Desktop/mosaic.csv";
 
 std::random_device rd;
 std::mt19937 g(rd());
 std::uniform_int_distribution<> distribution(0, NUM_OF_PIECES - 1);
 
-bool CompareIndividuals(Individual &a, Individual &b) {
-  bool is_larger = a.fitness_ < b.fitness_;
-  return is_larger;
-}
-
-void PrintBest(std::list<Individual> &population, int best_n) {
+void PrintBest(std::set<Individual> &population, int best_n) {
   auto iter = population.begin();
   for (int i = 0; i < best_n; i++) {
     std::cout << iter->fitness_ << std::endl;
@@ -53,7 +52,7 @@ void PrintIndividual(Individual &individual) {
   std::cout << std::endl;
 }
 
-double MeanFitness(const std::list<Individual>& population) {
+double MeanFitness(const std::set<Individual>& population) {
   double total_fitness = 0.0;
   for (const auto &individual : population) {
     total_fitness += individual.fitness_;
@@ -64,51 +63,45 @@ double MeanFitness(const std::list<Individual>& population) {
 
 int main() {
   //g.seed(0);
-
+  FileLogger logger(LOGFILE);
   Individual template_individual = GenerateIndividual(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
-
   PrintIndividual(template_individual);
-
-  std::list<Individual> population{};
+  std::set<Individual> population{};
 
   for (int i = 0; i < POPULATION; i++) {
-    population.emplace_back(template_individual, g);
+    population.emplace(template_individual, g);  // call copy construct with shuffle arg
   }
-
-  population.sort(CompareIndividuals);
 
   for (int i = 0; i < MAX_GENERATIONS; i++) {
     std::cout << "generation " << i << std::endl;
 
-    std::list<Individual> temp_population{};
+    std::set<Individual> temp_population{};
 
     temp_population.swap(population);
 
-    // pass through elites
-    for (int j = 0; j < POPULATION / 10; j++) {
-      population.emplace_back(temp_population.front());
-      auto ind = temp_population.front();
+    auto temp_pop_iter = temp_population.begin();
+
+    // pass through elites (first 10%) and mutate each of them once (next 10%)
+    do {
+      Individual ind = *temp_pop_iter;
+      population.insert(ind);  // make a copy
       ind.Swap(distribution(g), distribution(g));
-      population.emplace_back(ind);
-      temp_population.pop_front();
-      // TODO allow some mutations
-    }
+      population.emplace(ind); // mutate original and insert it
+      temp_pop_iter++;
+    } while (population.size() < POPULATION / 5 && temp_pop_iter != temp_population.end());
 
-    // mutate
-    for (int j = 0; j < POPULATION / 2; j++) {
-      auto temp_i = temp_population.front();
-      temp_population.pop_front();
-      temp_i.Swap(distribution(g), distribution(g));
-      population.emplace_back(temp_i);
-    }
+    // mutate (another 50%)
+    do {
+      population.emplace(*temp_pop_iter);
+      temp_pop_iter++;
+    } while (population.size() < POPULATION / 2 && temp_pop_iter != temp_population.end());
 
-    // fill remaining
-
+    // fill remaining (~30%)
     for (int j = population.size(); j < POPULATION; j++) {
-      population.emplace_back(template_individual, g);
+      population.emplace(template_individual, g);
     }
 
-    population.sort(CompareIndividuals);
+    logger.Log(population);
 
     std::cout << "mean fitness: " << MeanFitness(population) << " top 10: ";
     auto current_ind = population.begin();
@@ -123,7 +116,7 @@ int main() {
 
   PrintBest(population, 10);
 
-  auto best = population.front();
+  auto best = *population.begin();
 
   std::cout << best << std::endl;
 
