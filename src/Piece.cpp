@@ -12,17 +12,12 @@ Piece::Piece(double gray) {
   Init(gray, gray, gray);
 }
 
-Piece::Piece(double r, double g, double b) {
-  Init(r, g, b);
+Piece::Piece(double b, double g, double r) {
+  Init(b, g, r);
 }
 
-void Piece::Init(double r, double g, double b) {
-  color_ = ColorT(r, g, b);
-}
-
-double GetDistance(Piece &piece_1, Piece &piece_2) {
-  return sqrt(pow(piece_1.color_[0] - piece_2.color_[0], 2) + pow(piece_1.color_[1] - piece_2.color_[1], 2)
-                  + pow(piece_1.color_[2] - piece_2.color_[2], 2));
+void Piece::Init(double b, double g, double r) {
+  color_ = ColorT(b, g, r);
 }
 
 double Piece::GetNormalizedDistance() const {
@@ -46,6 +41,11 @@ double Piece::GetTotalDistance() {
   return total_distance_;
 }
 
-ColorT Piece::GetColor() {
-  return ColorT(color_);
+double Piece::GetEuclideanDistance(Piece &other) {
+  assert(color_.channels == other.color_.channels);
+  double sq_diff = 0.0;
+  for (int i = 0; i < color_.channels; i++) {
+    sq_diff += pow(color_[i] - other.color_[i], 2);
+  }
+  return sqrt(sq_diff);
 }

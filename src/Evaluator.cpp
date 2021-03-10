@@ -23,28 +23,28 @@ double EvaluatePage(PageEdge page) {
     double piece_distance = 0.0;
 
     if (neighbours & Neighbours::N) {
-      piece_distance += GetDistance(**current, **(current-4));
+      piece_distance += current_piece->GetEuclideanDistance(**(current-4));
     }
     if (neighbours & Neighbours::NE) {
-      piece_distance += GetDistance(**current, **(current-3)) * DIAGONAL_WEIGHT;
+      piece_distance += current_piece->GetEuclideanDistance(**(current-3)) * DIAGONAL_WEIGHT;
     }
     if (neighbours & Neighbours::E) {
-      piece_distance += GetDistance(**current, **(current+1));
+      piece_distance += current_piece->GetEuclideanDistance(**(current+1));
     }
     if (neighbours & Neighbours::SE) {
-      piece_distance += GetDistance(**current, **(current+5)) * DIAGONAL_WEIGHT;
+      piece_distance += current_piece->GetEuclideanDistance(**(current+5)) * DIAGONAL_WEIGHT;
     }
     if (neighbours & Neighbours::S) {
-      piece_distance += GetDistance(**current, **(current+4));
+      piece_distance += current_piece->GetEuclideanDistance(**(current+4));
     }
     if (neighbours & Neighbours::SW) {
-      piece_distance += GetDistance(**current, **(current+3)) * DIAGONAL_WEIGHT;
+      piece_distance += current_piece->GetEuclideanDistance(**(current+3)) * DIAGONAL_WEIGHT;
     }
     if (neighbours & Neighbours::W) {
-      piece_distance += GetDistance(**current, **(current-1));
+      piece_distance += current_piece->GetEuclideanDistance(**(current-1));
     }
     if (neighbours & Neighbours::NW) {
-      piece_distance += GetDistance(**current, **(current-5)) * DIAGONAL_WEIGHT;
+      piece_distance += current_piece->GetEuclideanDistance(**(current-5)) * DIAGONAL_WEIGHT;
     }
 
     current_piece->SetTotalDistance(piece_distance);

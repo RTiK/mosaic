@@ -4,15 +4,15 @@
 
 #include <random>
 #include "Piece.h"
+#include "LabPiece.h"
 #include "PageTools.h"
 #include "Individual.h"
 #include "FileLogger.h"
 
-// TODO piece inheritance, RGBPiece
 
 int NUM_OF_PAGE_BREAKS = 2;
 int NUM_OF_PIECES = 40;
-int POPULATION = 100;
+int POPULATION = 1000;
 int MAX_GENERATIONS = 2000;
 std::string LOGFILE = "/Users/rt/Desktop/mosaic_gray.csv";
 
@@ -60,9 +60,23 @@ Individual GenerateIndividualRgbRandom(int length, int page_breaks) {
   Individual ind;
   ind.genome_.reserve(length + page_breaks);
   for (int i = 0; i < length; i++) {
-    ind.genome_.push_back(std::make_shared<Piece>(random_color_value(g),
-                                                  random_color_value(g),
-                                                  random_color_value(g)));
+    ind.genome_.push_back(std::make_shared<Piece>(random_color_value(g) / 100.0,
+                                                  random_color_value(g) / 100.0,
+                                                  random_color_value(g) / 100.0));
+  }
+
+  for (int i = 0; i < page_breaks; i++) {
+    ind.genome_.push_back(PAGE_BREAK);
+  }
+  return ind;
+}
+
+Individual GenerateIndividualLabRandom(int length, int page_breaks) {
+  Individual ind;
+  ind.genome_.reserve(length + page_breaks);
+  for (int i = 0; i < length; i++) {
+    ind.genome_.push_back(std::make_shared<LabPiece>(
+        random_color_value(g) / 100.0, random_color_value(g) / 100.0, random_color_value(g) / 100.0));
   }
 
   for (int i = 0; i < page_breaks; i++) {
@@ -118,7 +132,8 @@ void FillShuffle(std::set<Individual> &new_pop, const Individual &template_indiv
 int main() {
   //g.seed(0);
   FileLogger logger(LOGFILE);
-  Individual template_individual = GenerateIndividualGrayRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
+  Individual template_individual = GenerateIndividualLabRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
+      //GenerateIndividualRgbRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
       //GenerateIndividualRgbRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
       //GenerateIndividualGray(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
   PrintIndividual(template_individual);

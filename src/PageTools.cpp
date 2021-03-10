@@ -36,12 +36,13 @@ std::vector<std::shared_ptr<PageEdge>> SplitGeneToPages(std::vector<std::shared_
 }
 
 void ShowPage(PageEdge page_edge, const std::string &window_title) {
-  cv::Mat temp_mat(kMaxPiecesOnPage, 1, CV_64FC3, ColorT(0, 1, 0));
+  cv::Mat temp_mat(kMaxPiecesOnPage, 1, CV_32FC3, ColorT(0, 1, 0));
   cv::MatIterator_<ColorT> mat_iter = temp_mat.begin<ColorT>();
 
   int i = 0;
   for (std::shared_ptr<Piece> *p = page_edge.first; p <= page_edge.second; p++) {
-    temp_mat.at<ColorT>(i, 0) = p->get()->GetColor() / 100;
+    temp_mat.at<ColorT>(i, 0) = p->get()->GetColor();
+    std::cout << p->get()->GetColor() << std::endl;
     i++;
   }
 
