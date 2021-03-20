@@ -25,22 +25,6 @@ double Piece::GetNormalizedDistance() const {
   return total_distance_ / num_of_neighbors;
 }
 
-void Piece::SetNeighbors(unsigned int neighbours) {
-  neighbours_ = neighbours;
-}
-
-unsigned int Piece::GetNeighbors() {
-  return neighbours_;
-}
-
-void Piece::SetTotalDistance(double total_distance) {
-  total_distance_ = total_distance;
-}
-
-double Piece::GetTotalDistance() {
-  return total_distance_;
-}
-
 double Piece::GetEuclideanDistance(Piece &other) {
   assert(color_.channels == other.color_.channels);
   double sq_diff = 0.0;

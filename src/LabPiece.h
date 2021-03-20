@@ -8,12 +8,10 @@
 #include "Piece.h"
 
 
-typedef cv::Vec<float, 3> ColorT;
-
 class LabPiece : public Piece {
   ColorT color_bgr_;
 
-  // Constructs the piece from RGB values
+  // Constructs the piece from BGR values
   static ColorT LabToRgb(const ColorT &BGR);
  public:
   LabPiece(double b, double g, double r);

@@ -1,20 +1,20 @@
 //
-// Created by Artem Khatchatourov on 23.01.21.
+// Created by Artem Khatchatourov on 14.03.21.
 //
 
-#include "Evaluator.h"
+#include "Page.h"
 
-/**
-* Calculates the fitness of page between first (inclusive) and last (inclusive).
-* @param first First element of page array
-* @param last Last element of page array
-* @return Page fitness
-*/
-double EvaluatePage(PageEdge page) {
+
+Page::Page(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece)
+    : first_piece_{first_piece}, last_piece_{last_piece} {
+  fitness_ = Evaluate(first_piece_, last_piece_);
+}
+
+double Page::Evaluate(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece) {
   double total_distance = 0.0;
 
-  for (std::shared_ptr<Piece> *current = page.first; current <= page.second; current++) {
-    unsigned int neighbours = CalculateNeighbors(current, page.first, page.second);
+  for (std::shared_ptr<Piece> *current = first_piece; current <= last_piece; current++) {
+    unsigned int neighbours = CalculateNeighbors(current, first_piece, last_piece);
 
     Piece *current_piece = current->get();
 
@@ -26,25 +26,25 @@ double EvaluatePage(PageEdge page) {
       piece_distance += current_piece->GetEuclideanDistance(**(current-4));
     }
     if (neighbours & Neighbours::NE) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current-3)) * DIAGONAL_WEIGHT;
+      piece_distance += current_piece->GetEuclideanDistance(**(current-3)) * diagonal_weight_;
     }
     if (neighbours & Neighbours::E) {
       piece_distance += current_piece->GetEuclideanDistance(**(current+1));
     }
     if (neighbours & Neighbours::SE) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current+5)) * DIAGONAL_WEIGHT;
+      piece_distance += current_piece->GetEuclideanDistance(**(current+5)) * diagonal_weight_;
     }
     if (neighbours & Neighbours::S) {
       piece_distance += current_piece->GetEuclideanDistance(**(current+4));
     }
     if (neighbours & Neighbours::SW) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current+3)) * DIAGONAL_WEIGHT;
+      piece_distance += current_piece->GetEuclideanDistance(**(current+3)) * diagonal_weight_;
     }
     if (neighbours & Neighbours::W) {
       piece_distance += current_piece->GetEuclideanDistance(**(current-1));
     }
     if (neighbours & Neighbours::NW) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current-5)) * DIAGONAL_WEIGHT;
+      piece_distance += current_piece->GetEuclideanDistance(**(current-5)) * diagonal_weight_;
     }
 
     current_piece->SetTotalDistance(piece_distance);
@@ -55,9 +55,10 @@ double EvaluatePage(PageEdge page) {
   return total_distance;
 }
 
-unsigned int CalculateNeighbors(std::shared_ptr<Piece> *current,
-                                std::shared_ptr<Piece> *first,
-                                std::shared_ptr<Piece> *last) {
+
+unsigned int Page::CalculateNeighbors(std::shared_ptr<Piece> *current,
+                                      std::shared_ptr<Piece> *first,
+                                      std::shared_ptr<Piece> *last) {
   auto delta_a = current - first;
   auto delta_b = last - current;
 
@@ -90,13 +91,4 @@ unsigned int CalculateNeighbors(std::shared_ptr<Piece> *current,
   }
 
   return neighbours;
-}
-
-double EvaluateGenome(std::vector<std::shared_ptr<Piece>> &genome) {
-  auto pages = SplitGeneToPages(genome);
-  double total_fitness = 0.0;
-  for (std::shared_ptr<PageEdge> &page : pages) {
-    total_fitness += EvaluatePage(*page);
-  }
-  return total_fitness;
 }

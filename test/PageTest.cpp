@@ -3,41 +3,13 @@
 //
 
 #include <gtest/gtest.h>
-#include "Evaluator.h"
+#include "Page.h"
+#include "Individual.h"
 
-
-TEST(EvaluationTests, TestEvaluateSimple) {
-    std::vector<std::shared_ptr<Piece>> ind{
-            std::make_shared<Piece>(0.0), std::make_shared<Piece>(1.0),
-            std::make_shared<Piece>(2.0), std::make_shared<Piece>(3.0),
-            std::make_shared<Piece>(4.0), std::make_shared<Piece>(5.0),
-            std::make_shared<Piece>(6.0), std::make_shared<Piece>(7.0),
-            std::make_shared<Piece>(8.0), std::make_shared<Piece>(9.0)
-    };
-    double a = EvaluatePage(PageEdge{&ind.front(), &ind.back()});
-    EXPECT_NEAR(44.22329, a, 0.00001);
-}
-
-TEST(EvaluationTests, TestEvaluateTwoPages) {
-    std::vector<std::shared_ptr<Piece>> ind{
-            std::make_shared<Piece>(0.0), std::make_shared<Piece>(1.0),
-            std::make_shared<Piece>(2.0), std::make_shared<Piece>(3.0),
-            std::make_shared<Piece>(4.0), std::make_shared<Piece>(5.0),
-            PAGE_BREAK,
-            std::make_shared<Piece>(6.0), std::make_shared<Piece>(7.0),
-            std::make_shared<Piece>(8.0), std::make_shared<Piece>(9.0)
-    };
-    auto pages = SplitGeneToPages(ind);
-    EXPECT_EQ(pages.size(), 2);
-    double p1 = EvaluatePage(*pages[0]);
-    EXPECT_NEAR(21.28217, p1, 0.00001);
-    double p2 = EvaluatePage(*pages[1]);
-    EXPECT_NEAR(6.92820, p2, 0.00001);
-}
 
 TEST(CalculateNeighborsTests, TestUpperLeft) {
     std::vector<std::shared_ptr<Piece>> ind({std::make_shared<Piece>()});
-    auto neighbors = CalculateNeighbors(&ind.front(), &ind.front(), &ind.back());
+    auto neighbors = Page::CalculateNeighbors(&ind.front(), &ind.front(), &ind.back());
     EXPECT_EQ(neighbors & (Neighbours::SW | Neighbours::W | Neighbours::NW | Neighbours::N | Neighbours::NE),
               Neighbours::NONE);
 }
@@ -45,7 +17,7 @@ TEST(CalculateNeighborsTests, TestUpperLeft) {
 // o*oo
 TEST(CalculateNeighborsTests, TestUpperNextToLeft) {
     std::vector<std::shared_ptr<Piece>> ind(2, std::make_shared<Piece>());
-    auto neighbors = CalculateNeighbors(&ind.back(), &ind.front(), &ind.back());
+    auto neighbors = Page::CalculateNeighbors(&ind.back(), &ind.front(), &ind.back());
     EXPECT_EQ(neighbors & (Neighbours::NW | Neighbours::N | Neighbours::NE), Neighbours::NONE);
     EXPECT_EQ(neighbors & Neighbours::W, Neighbours::W);
     EXPECT_EQ(neighbors & Neighbours::E, Neighbours::NONE);
@@ -54,7 +26,7 @@ TEST(CalculateNeighborsTests, TestUpperNextToLeft) {
 // ooo*
 TEST(CalculateNeighborsTests, TestUpperRight) {
     std::vector<std::shared_ptr<Piece>> ind(4, std::make_shared<Piece>());
-    auto neighbors = CalculateNeighbors(&ind.back(), &ind.front(), &ind.back());
+    auto neighbors = Page::CalculateNeighbors(&ind.back(), &ind.front(), &ind.back());
     EXPECT_EQ(neighbors & (Neighbours::NW | Neighbours::N | Neighbours::NE | Neighbours::E | Neighbours::SE),
               Neighbours::NONE);
     EXPECT_EQ(neighbors & Neighbours::W, Neighbours::W);
@@ -64,7 +36,7 @@ TEST(CalculateNeighborsTests, TestUpperRight) {
 // *
 TEST(CalculateNeighborsTests, TestMiddleLeft) {
     std::vector<std::shared_ptr<Piece>> ind(5, std::make_shared<Piece>());
-    auto neighbors = CalculateNeighbors(&ind.back(), &ind.front(), &ind.back());
+    auto neighbors = Page::CalculateNeighbors(&ind.back(), &ind.front(), &ind.back());
     EXPECT_EQ(neighbors & (Neighbours::SW | Neighbours::W | Neighbours::NW), Neighbours::NONE);
     EXPECT_EQ(neighbors & (Neighbours::N | Neighbours::NE), Neighbours::N | Neighbours::NE);
 }
@@ -73,7 +45,7 @@ TEST(CalculateNeighborsTests, TestMiddleLeft) {
 // ooo*
 TEST(CalculateNeighborsTests, TestMiddleRight) {
     std::vector<std::shared_ptr<Piece>> ind(8, std::make_shared<Piece>());
-    auto neighbors = CalculateNeighbors(&ind.back(), &ind.front(), &ind.back());
+    auto neighbors = Page::CalculateNeighbors(&ind.back(), &ind.front(), &ind.back());
     EXPECT_EQ(neighbors & (Neighbours::NE | Neighbours::E | Neighbours::SE), Neighbours::NONE);
     EXPECT_EQ(neighbors & (Neighbours::W | Neighbours::NW | Neighbours::N),
               Neighbours::W | Neighbours::NW | Neighbours::N);
@@ -84,7 +56,7 @@ TEST(CalculateNeighborsTests, TestMiddleRight) {
 // ooo
 TEST(CalculateNeighborsTests, TestCenter) {
     std::vector<std::shared_ptr<Piece>> ind(13, std::make_shared<Piece>());
-    auto neighbors = CalculateNeighbors(&ind.at(5), &ind.front(), &ind.back());
+    auto neighbors = Page::CalculateNeighbors(&ind.at(5), &ind.front(), &ind.back());
     EXPECT_EQ(neighbors, Neighbours::ALL);
 }
 
@@ -93,7 +65,7 @@ TEST(CalculateNeighborsTests, TestCenter) {
 // ....
 TEST(CalculateNeighborsTests, TestLowerLast) {
     std::vector<std::shared_ptr<Piece>> ind(6, std::make_shared<Piece>());
-    auto neighbors = CalculateNeighbors(&ind.back(), &ind.front(), &ind.back());
+    auto neighbors = Page::CalculateNeighbors(&ind.back(), &ind.front(), &ind.back());
     EXPECT_EQ(neighbors & (Neighbours::E | Neighbours::SE | Neighbours::S | Neighbours::SW), Neighbours::NONE);
     EXPECT_EQ(neighbors & Neighbours::N, Neighbours::N);
 }
@@ -103,7 +75,7 @@ TEST(CalculateNeighborsTests, TestLowerLast) {
 // ....
 TEST(CalculateNeighborsTests, TestLowerNextToLast) {
     std::vector<std::shared_ptr<Piece>> ind(7, std::make_shared<Piece>());
-    auto neighbors = CalculateNeighbors(&ind.at(5), &ind.front(), &ind.back());
+    auto neighbors = Page::CalculateNeighbors(&ind.at(5), &ind.front(), &ind.back());
     EXPECT_EQ(neighbors & (Neighbours::SE | Neighbours::S | Neighbours::SW), Neighbours::NONE);
 }
 
@@ -112,7 +84,7 @@ TEST(CalculateNeighborsTests, TestLowerNextToLast) {
 // oo..
 TEST(CalculateNeighborsTests, TestLowerPartyObstructed) {
     std::vector<std::shared_ptr<Piece>> ind(10, std::make_shared<Piece>());
-    auto neighbor = CalculateNeighbors(&ind.at(6), &ind.front(), &ind.back());
+    auto neighbor = Page::CalculateNeighbors(&ind.at(6), &ind.front(), &ind.back());
     EXPECT_EQ(neighbor & Neighbours::SW, Neighbours::SW);
     EXPECT_EQ(neighbor & (Neighbours::SE | Neighbours::S), Neighbours::NONE);
 }
@@ -122,7 +94,7 @@ TEST(CalculateNeighborsTests, TestLowerPartyObstructed) {
 // oo..
 TEST(CalculateNeighborsTests, TestLowerObstructed) {
     std::vector<std::shared_ptr<Piece>> ind(10, std::make_shared<Piece>());
-    auto neighbor = CalculateNeighbors(&ind.at(5), &ind.front(), &ind.back());
+    auto neighbor = Page::CalculateNeighbors(&ind.at(5), &ind.front(), &ind.back());
     EXPECT_EQ(neighbor & (Neighbours::S | Neighbours::SW), Neighbours::S | Neighbours::SW);
     EXPECT_EQ(neighbor & Neighbours::SE, Neighbours::NONE);
 }
@@ -132,7 +104,7 @@ TEST(CalculateNeighborsTests, TestLowerObstructed) {
 // o...
 TEST(CalculateNeighborsTests, TestLowerUnobstructed) {
     std::vector<std::shared_ptr<Piece>> ind(9, std::make_shared<Piece>());
-    auto neighbor = CalculateNeighbors(&ind.at(6), &ind.front(), &ind.back());
+    auto neighbor = Page::CalculateNeighbors(&ind.at(6), &ind.front(), &ind.back());
     EXPECT_EQ(neighbor & (Neighbours::SE | Neighbours::S | Neighbours::SW), Neighbours::NONE);
 }
 
@@ -140,10 +112,38 @@ TEST(CalculateNeighborsTests, TestLowerUnobstructed) {
 // o1..
 TEST(CalculateNeighborsTest, TestPageBreak) {
     std::vector<std::shared_ptr<Piece>> ind(6, std::make_shared<Piece>());
-    ind.push_back(PAGE_BREAK);
+    ind.push_back(kPageBreak);
     ind.push_back(std::shared_ptr<Piece>());
-    auto neighbor1 = CalculateNeighbors(&ind.at(5), &ind.front(), &ind.at(5));
-    auto neighbor2 = CalculateNeighbors(&ind.at(6), &ind.at(6), &ind.at(6));
-    EXPECT_EQ(neighbor1 & (Neighbours::E | Neighbours::SE | Neighbours::S | Neighbours::SW),Neighbours::NONE);
-    EXPECT_EQ(neighbor2, Neighbours::NONE);
+    auto neighbor_1 = Page::CalculateNeighbors(&ind.at(5), &ind.front(), &ind.at(5));
+    auto neighbor_2 = Page::CalculateNeighbors(&ind.at(6), &ind.at(6), &ind.at(6));
+    EXPECT_EQ(neighbor_1 & (Neighbours::E | Neighbours::SE | Neighbours::S | Neighbours::SW),Neighbours::NONE);
+    EXPECT_EQ(neighbor_2, Neighbours::NONE);
+}
+
+TEST(EvaluationTests, TestEvaluateSimple) {
+  std::vector<std::shared_ptr<Piece>> ind{
+      std::make_shared<Piece>(0.0), std::make_shared<Piece>(1.0),
+      std::make_shared<Piece>(2.0), std::make_shared<Piece>(3.0),
+      std::make_shared<Piece>(4.0), std::make_shared<Piece>(5.0),
+      std::make_shared<Piece>(6.0), std::make_shared<Piece>(7.0),
+      std::make_shared<Piece>(8.0), std::make_shared<Piece>(9.0)
+  };
+  Page p(&ind.front(), &ind.back());
+  EXPECT_NEAR(44.22329, p.GetFitness(), 0.00001);
+}
+
+TEST(EvaluationTests, TestEvaluateTwoPages) {
+  std::vector<std::shared_ptr<Piece>> pieces {
+      std::make_shared<Piece>(0.0), std::make_shared<Piece>(1.0),
+      std::make_shared<Piece>(2.0), std::make_shared<Piece>(3.0),
+      std::make_shared<Piece>(4.0), std::make_shared<Piece>(5.0),
+      kPageBreak,
+      std::make_shared<Piece>(6.0), std::make_shared<Piece>(7.0),
+      std::make_shared<Piece>(8.0), std::make_shared<Piece>(9.0)
+  };
+  Individual individual(pieces);
+  std::vector<Page> pages = individual.GetPages();
+  EXPECT_EQ(pages.size(), 2);
+  EXPECT_NEAR(21.28217, pages[0].GetFitness(), 0.00001);
+  EXPECT_NEAR(6.92820, pages[1].GetFitness(), 0.00001);
 }

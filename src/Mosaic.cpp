@@ -5,89 +5,86 @@
 #include <random>
 #include "Piece.h"
 #include "LabPiece.h"
-#include "PageTools.h"
 #include "Individual.h"
 #include "FileLogger.h"
 
 
-int NUM_OF_PAGE_BREAKS = 2;
-int NUM_OF_PIECES = 40;
-int POPULATION = 1000;
-int MAX_GENERATIONS = 2000;
-std::string LOGFILE = "/Users/rt/Desktop/mosaic_gray.csv";
+const int kNumOfPageBreaks = 2;
+const int kNumOfPieces = 40;
+const int kPopulation = 100;
+const int kMaxGenerations = 200;
+const std::string LOGFILE = "/Users/rt/Desktop/mosaic_gray.csv";
 
 std::random_device rd;
 std::mt19937 g(rd());
-std::uniform_int_distribution<> random_ind_length(0, NUM_OF_PIECES - 1);
-std::uniform_int_distribution<> random_color_value(0, 100);
+std::uniform_int_distribution<> random_ind_length(0, kNumOfPieces - 1);
+std::uniform_int_distribution<> random_color_value(0, 256);
 
 
 void PrintBest(std::set<Individual> &population, int best_n) {
-  auto iter = population.begin();
-  for (int i = 0; i < best_n; i++) {
-    std::cout << iter->fitness_ << std::endl;
-    iter++;
+  auto current = population.begin();
+  while (current != population.end() && best_n >= 0) {
+    std::cout << current->GetFitness() << std::endl;
+    current++;
+    best_n--;
   }
 }
 
 Individual GenerateIndividualGray(int length, int page_breaks) {
-  Individual ind;
-  ind.genome_.reserve(length + page_breaks);
+  std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
   for (int i = 0; i < length; i++) {
-    ind.genome_.push_back(std::make_shared<Piece>(i));
+    genome[i] = std::make_shared<Piece>(i);
   }
 
-  for (int i = 0; i < page_breaks; i++) {
-    ind.genome_.push_back(PAGE_BREAK);
+  for (int i = length; i < length + page_breaks; i++) {
+    genome[i] = kPageBreak;
   }
-  return ind;
+  return Individual(genome);
 }
 
 Individual GenerateIndividualGrayRandom(int length, int page_breaks) {
-  Individual ind;
-  ind.genome_.reserve(length + page_breaks);
+  std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
   for (int i = 0; i < length; i++) {
-    ind.genome_.push_back(std::make_shared<Piece>(random_color_value(g)));
+    genome[i] = std::make_shared<Piece>(random_color_value(g) / 256.0);
   }
 
-  for (int i = 0; i < page_breaks; i++) {
-    ind.genome_.push_back(PAGE_BREAK);
+  for (int i = length; i < length + page_breaks; i++) {
+    genome[i] = kPageBreak;
   }
-  return ind;
+  return Individual(genome);
 }
 
 Individual GenerateIndividualRgbRandom(int length, int page_breaks) {
-  Individual ind;
-  ind.genome_.reserve(length + page_breaks);
+  std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
   for (int i = 0; i < length; i++) {
-    ind.genome_.push_back(std::make_shared<Piece>(random_color_value(g) / 100.0,
-                                                  random_color_value(g) / 100.0,
-                                                  random_color_value(g) / 100.0));
+    genome[i] = std::make_shared<Piece>(random_color_value(g) / 256.0,
+                                        random_color_value(g) / 256.0,
+                                        random_color_value(g) / 256.0);
   }
 
-  for (int i = 0; i < page_breaks; i++) {
-    ind.genome_.push_back(PAGE_BREAK);
+  for (int i = length; i < length + page_breaks; i++) {
+    genome[i] = kPageBreak;
   }
-  return ind;
+  return Individual(genome);
 }
 
 Individual GenerateIndividualLabRandom(int length, int page_breaks) {
-  Individual ind;
-  ind.genome_.reserve(length + page_breaks);
+  std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
   for (int i = 0; i < length; i++) {
-    ind.genome_.push_back(std::make_shared<LabPiece>(
-        random_color_value(g) / 100.0, random_color_value(g) / 100.0, random_color_value(g) / 100.0));
+    genome[i] = std::make_shared<LabPiece>(random_color_value(g) / 256.0,
+                                           random_color_value(g) / 256.0,
+                                           random_color_value(g) / 256.0);
   }
 
-  for (int i = 0; i < page_breaks; i++) {
-    ind.genome_.push_back(PAGE_BREAK);
+  for (int i = length; i < length + page_breaks; i++) {
+    genome[i] = kPageBreak;
   }
-  return ind;
+  return Individual(genome);
 }
 
 void PrintIndividual(Individual &individual) {
-  for (std::shared_ptr<Piece> &p : individual.genome_) {
-    if (p == PAGE_BREAK) {
+  for (std::shared_ptr<Piece> &p : individual.GetGenome()) {
+    if (p == kPageBreak) {
       std::cout << "page break ";
     } else {
       std::cout << p->GetColor();
@@ -96,52 +93,72 @@ void PrintIndividual(Individual &individual) {
   std::cout << std::endl;
 }
 
-double MeanFitness(const std::set<Individual>& population) {
+double MeanFitness(std::set<Individual>& population) {
   double total_fitness = 0.0;
-  for (const auto &individual : population) {
-    total_fitness += individual.fitness_;
+  for (const auto& individual : population) {
+    total_fitness += individual.GetFitness();
   }
   unsigned int num_of_elements = population.size();
   return total_fitness / num_of_elements;
 }
 
-void PassThroughElites(std::set<Individual> &new_pop, const std::set<Individual> &old_pop, double percent) {
+void PassThroughElites(std::set<Individual> &new_pop, const std::set<Individual> &old_pop, unsigned int num) {
   auto old_pop_iter = old_pop.begin();
-  do {
+  while (old_pop_iter != old_pop.end() && num > 0) {
     new_pop.insert(*old_pop_iter);
     old_pop_iter++;
-  } while (new_pop.size() < percent * (POPULATION / 100.0) && old_pop_iter != old_pop.end());
+    num--;
+  }
 }
 
-void MutateBest(std::set<Individual> &new_pop, const std::set<Individual> &old_pop, double percent) {
+void MutateBest(std::set<Individual> &new_pop, const std::set<Individual> &old_pop, unsigned int num) {
   auto old_pop_iter = old_pop.begin();
-  do {
+  while (old_pop_iter != old_pop.end() && num > 0) {
     Individual ind = *old_pop_iter;
     ind.Swap(random_ind_length(g), random_ind_length(g));
     new_pop.insert(ind);
     old_pop_iter++;
-  } while (new_pop.size() < percent * (POPULATION / 100.0) && old_pop_iter != old_pop.end());
+  }
 }
 
-void FillShuffle(std::set<Individual> &new_pop, const Individual &template_individual, double percent) {
-  for (int i = 0; i < percent; i++) {
+void FillShuffle(std::set<Individual> &new_pop, const Individual &template_individual, unsigned int num) {
+  for (int i = num; i > 0; i--) {
     new_pop.emplace(template_individual, g);  // call copy construct with shuffle arg
   }
+}
+
+void ShowPage(const Page& page, const std::string &window_title) {
+  cv::Mat temp_mat(Page::max_pieces_, 1, CV_32FC3, ColorT(0, 1, 0));
+  cv::MatIterator_<ColorT> mat_iter = temp_mat.begin<ColorT>();
+
+  int i = 0;
+  for (std::shared_ptr<Piece> *p = page.GetFirstPiece(); p <= page.GetLastPiece(); p++) {
+    temp_mat.at<ColorT>(i, 0) = p->get()->GetColor();
+    std::cout << p->get()->GetColor() << std::endl;
+    i++;
+  }
+
+  cv::Mat page_mat = temp_mat.reshape(3, 6);  // make rows page constant
+
+  cv::Mat out_mat;
+  cv::resize(page_mat, out_mat, cv::Size(), 50, 50, cv::INTER_NEAREST);
+  cv::imshow(window_title, out_mat);
+  cv::waitKey(0);
 }
 
 int main() {
   //g.seed(0);
   FileLogger logger(LOGFILE);
-  Individual template_individual = GenerateIndividualLabRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
-      //GenerateIndividualRgbRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
+  Individual template_individual = GenerateIndividualLabRandom(kNumOfPieces, kNumOfPageBreaks);
+      //GenerateIndividualLabRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
       //GenerateIndividualRgbRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
       //GenerateIndividualGray(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
   PrintIndividual(template_individual);
 
   std::set<Individual> population{};
-  FillShuffle(population, template_individual, POPULATION);
+  FillShuffle(population, template_individual, kPopulation);
 
-  for (int i = 0; i < MAX_GENERATIONS; i++) {
+  for (int i = 0; i < kMaxGenerations; i++) {
     std::cout << "generation " << i << std::endl;
 
     std::set<Individual> temp_population{};
@@ -154,7 +171,7 @@ int main() {
     MutateBest(population, temp_population, 60);
 
     // fill remaining (~30%)
-    FillShuffle(population, template_individual, population.size() / (POPULATION / 100));
+    FillShuffle(population, template_individual, 30);
 
     logger.Log(population);
 
@@ -162,7 +179,7 @@ int main() {
     auto current_ind = population.begin();
     unsigned int iter = 0;
     while (iter < 10) {
-      std::cout << current_ind->fitness_ << ", ";
+      std::cout << current_ind->GetFitness() << ", ";
       current_ind++;
       iter++;
     }
@@ -175,8 +192,8 @@ int main() {
 
   std::cout << best << std::endl;
 
-  for (const std::shared_ptr<PageEdge> &page : SplitGeneToPages(best.genome_)) {
-    ShowPage(*page, std::to_string(EvaluatePage(*page)));
+  for (const auto page : best.GetPages()) {
+    ShowPage(page, std::to_string(page.GetFitness()));
   }
 
   return 0;

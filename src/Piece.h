@@ -23,6 +23,7 @@ enum Neighbours : unsigned int {
 };
 
 class Piece {
+ private:
   double total_distance_ = 0;
   unsigned int neighbours_ = 0;
   void Init(double b, double g, double r);
@@ -38,17 +39,20 @@ class Piece {
 
   virtual double GetEuclideanDistance(Piece &other);
 
-  void SetNeighbors(unsigned int neighbours);
+  void SetNeighbors(unsigned int neighbours) { neighbours_ = neighbours; };
 
-  unsigned int GetNeighbors();
+  unsigned int GetNeighbors() const { return neighbours_; };
 
-  void SetTotalDistance(double total_distance);
+  void SetTotalDistance(double total_distance) { total_distance_ = total_distance; };
 
-  double GetTotalDistance();
+  double GetTotalDistance() const { return total_distance_; };
 
   double GetNormalizedDistance() const;
 
   virtual ColorT GetColor() const { return color_; };
 };
+
+static std::shared_ptr<Piece> kPageBreak;
+
 
 #endif //MOSAIC_PIECE_H

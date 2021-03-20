@@ -1,8 +1,17 @@
 set(Headers
-        Piece.h Evaluator.h PageTools.h Individual.h FileLogger.h LabPiece.h)
+        Piece.h
+        Individual.h
+        FileLogger.h
+        LabPiece.h
+        Page.h)
 
 set(Sources
-        Piece.cpp Evaluator.cpp PageTools.cpp Mosaic.cpp Individual.cpp FileLogger.cpp LabPiece.cpp)
+        Piece.cpp
+        Mosaic.cpp
+        Individual.cpp
+        FileLogger.cpp
+        LabPiece.cpp
+        Page.cpp)
 
 add_library(Mosaic
         ${Sources}

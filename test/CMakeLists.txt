@@ -1,6 +1,7 @@
 set(TestSources
         PieceTest.cpp
-        EvaluatorTest.cpp PageToolsTest.cpp IndividualTest.cpp)
+        PageTest.cpp
+        IndividualTest.cpp)
 
 add_executable(MosaicTest
         ${TestSources})

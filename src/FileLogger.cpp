@@ -22,7 +22,7 @@ FileLogger::~FileLogger() {
 
 void FileLogger::Log(const std::set<Individual> &pop) {
   for (const auto &iter : pop) {
-    logfile_ << iter.fitness_ << delimiter_;
+    logfile_ << iter.GetFitness() << delimiter_;
   }
   logfile_ << std::endl;
 }
