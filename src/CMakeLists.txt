@@ -7,7 +7,6 @@ set(Headers
 
 set(Sources
         Piece.cpp
-        Mosaic.cpp
         Individual.cpp
         FileLogger.cpp
         LabPiece.cpp
@@ -18,11 +17,4 @@ add_library(Mosaic
         ${Headers})
 
 target_link_libraries(Mosaic
-        ${OpenCV_LIBS})
-
-add_executable(Mosaic_main
-        ${Sources}
-        ${Headers})
-
-target_link_libraries(Mosaic_main
         ${OpenCV_LIBS})

@@ -12,7 +12,7 @@
 const int kNumOfPageBreaks = 2;
 const int kNumOfPieces = 40;
 const int kPopulation = 100;
-const int kMaxGenerations = 200;
+const int kMaxGenerations = 500;
 const std::string LOGFILE = "/Users/rt/Desktop/mosaic_gray.csv";
 
 std::random_device rd;

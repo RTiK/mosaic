@@ -12,6 +12,7 @@ include_directories(${OpenCV_INCLUDE_LIBS})
 
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(examples)
 
 # we compile GTest from source downloaded manually
 # feel free to use find_package if you installed it somewhere outside of the project
