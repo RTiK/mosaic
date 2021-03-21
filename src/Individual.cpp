@@ -39,40 +39,33 @@ std::ostream &operator<<(std::ostream &out, Individual &ind) {
 }
 
 std::vector<Page> Individual::SplitGenomeIntoPages(std::vector<std::shared_ptr<Piece>> &genome) {
-  std::vector<Page> pages{};
-  std::shared_ptr<Piece> *first_in_page = nullptr;
-  std::shared_ptr<Piece> *last_in_page = nullptr;
+  // we don't create pages right away because they are evaluated in the constructor
+  // instead we keep a reference to the first and the last elements on the page and construct the pages in the end
+  std::vector<std::array<std::shared_ptr<Piece> *, 2>> page_edges {};
+  std::array<std::shared_ptr<Piece> *, 2> *current_page_edge = nullptr;
 
   for (auto *p = &genome.front(); p <= &genome.back(); p++) {
-    if (*p == kPageBreak) {  // careful this is just a null-check
-      if (first_in_page != nullptr) {
-        pages.push_back(Page(first_in_page, last_in_page));
-        first_in_page = nullptr;
-        last_in_page = nullptr;
-      }
+    // careful, kPageBreak is currently not initialized, therefore, this is just a null-check
+    if (*p == kPageBreak) {
+      current_page_edge = nullptr;
     } else {
-      if (first_in_page != nullptr) {
-        last_in_page = p;
+      if (current_page_edge == nullptr) {
+        page_edges.emplace_back(std::array<std::shared_ptr<Piece> *, 2> {p, p});
+        current_page_edge = &page_edges.back();
       } else {
-        first_in_page = p;
-      }
-
-      if (last_in_page - first_in_page == Page::max_pieces_ - 1) {
-        pages.push_back(Page(first_in_page, last_in_page));
-        first_in_page = nullptr;
-        last_in_page = nullptr;
+        current_page_edge->back() = p;
+        if (current_page_edge->back() - current_page_edge->front() == Page::max_pieces_ - 1) {
+          current_page_edge = nullptr;
+        }
       }
     }
   }
 
-  if (first_in_page != nullptr) {
-    if (last_in_page != nullptr) {
-      pages.push_back(Page(first_in_page, last_in_page));
-    } else {
-      pages.push_back(Page(first_in_page, first_in_page));
-    }
-  }
-
+  std::vector<Page> pages{};
+  auto page_initializer = [](std::array<std::shared_ptr<Piece> *, 2> page_edge) -> Page {
+    return Page(page_edge.front(), page_edge.back());
+  };
+  std::transform(page_edges.begin(), page_edges.end(), std::back_inserter(pages), page_initializer);
   return pages;
 }
 
