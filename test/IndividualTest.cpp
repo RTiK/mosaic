@@ -104,6 +104,18 @@ TEST(PageBreakTest, TestOnePiecePage) {
   EXPECT_EQ(pages[0].GetLastPiece(), &pieces[0]);
 }
 
+TEST(PageBreakTest, TestTwoOnePiecePages) {
+  std::vector<std::shared_ptr<Piece>> pieces {
+      std::make_shared<Piece>(), kPageBreak, std::make_shared<Piece>()
+  };
+  std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
+  EXPECT_EQ(pages.size(), 2);
+  EXPECT_EQ(pages[0].GetFirstPiece(), &pieces[0]);
+  EXPECT_EQ(pages[0].GetLastPiece(), &pieces[0]);
+  EXPECT_EQ(pages[1].GetFirstPiece(), &pieces[2]);
+  EXPECT_EQ(pages[1].GetLastPiece(), &pieces[2]);
+}
+
 TEST(PageBreakTest, TestTwoPage) {
   std::vector<std::shared_ptr<Piece>> pieces {
       std::make_shared<Piece>(), std::make_shared<Piece>(),

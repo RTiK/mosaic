@@ -9,23 +9,8 @@
 
 typedef cv::Vec<float, 3> ColorT;
 
-enum Neighbours : unsigned int {
-  N = 0x1 << 7,
-  NE = 0x1 << 6,
-  E = 0x1 << 5,
-  SE = 0x1 << 4,
-  S = 0x1 << 3,
-  SW = 0x1 << 2,
-  W = 0x1 << 1,
-  NW = 0x1 << 0,
-  ALL = N | NE | E | SE | S | SW | W | NW,
-  NONE = 0x0
-};
-
 class Piece {
  private:
-  double total_distance_ = 0;
-  unsigned int neighbours_ = 0;
   void Init(double b, double g, double r);
 
  protected:
@@ -38,16 +23,6 @@ class Piece {
   Piece(double b, double g, double r);
 
   virtual double GetEuclideanDistance(Piece &other);
-
-  void SetNeighbors(unsigned int neighbours) { neighbours_ = neighbours; };
-
-  unsigned int GetNeighbors() const { return neighbours_; };
-
-  void SetTotalDistance(double total_distance) { total_distance_ = total_distance; };
-
-  double GetTotalDistance() const { return total_distance_; };
-
-  double GetNormalizedDistance() const;
 
   virtual ColorT GetColor() const { return color_; };
 };

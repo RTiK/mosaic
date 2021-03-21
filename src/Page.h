@@ -8,9 +8,22 @@
 #include "Piece.h"
 
 /**
- * This class represents a page on the iOS device. It holds the pointers to the first and the last icons of the page.
- * Iterating between these pointers traverses the genome on the individual.
+ * This class represents a page on the iOS device. It holds pointers to the first and the last icons of the page.
+ * Iterating between these pointers traverses the genome in the individual.
  */
+enum Neighbours : unsigned char {
+  N = 0x1 << 7,
+  NE = 0x1 << 6,
+  E = 0x1 << 5,
+  SE = 0x1 << 4,
+  S = 0x1 << 3,
+  SW = 0x1 << 2,
+  W = 0x1 << 1,
+  NW = 0x1 << 0,
+  ALL = N | NE | E | SE | S | SW | W | NW,
+  NONE = 0x0
+};
+
 class Page {
  private:
   std::shared_ptr<Piece> *first_piece_, *last_piece_;

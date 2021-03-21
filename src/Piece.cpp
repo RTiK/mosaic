@@ -20,11 +20,6 @@ void Piece::Init(double b, double g, double r) {
   color_ = ColorT(b, g, r);
 }
 
-double Piece::GetNormalizedDistance() const {
-  unsigned int num_of_neighbors = neighbours_ > 0 ? std::bitset<8>(neighbours_).count() : 1;
-  return total_distance_ / num_of_neighbors;
-}
-
 double Piece::GetEuclideanDistance(Piece &other) {
   assert(color_.channels == other.color_.channels);
   double sq_diff = 0.0;

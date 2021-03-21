@@ -14,11 +14,9 @@ double Page::Evaluate(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece
   double total_distance = 0.0;
 
   for (std::shared_ptr<Piece> *current = first_piece; current <= last_piece; current++) {
-    unsigned int neighbours = CalculateNeighbors(current, first_piece, last_piece);
+    unsigned char neighbours = CalculateNeighbors(current, first_piece, last_piece);
 
     Piece *current_piece = current->get();
-
-    current_piece->SetNeighbors(neighbours);
 
     double piece_distance = 0.0;
 
@@ -47,9 +45,8 @@ double Page::Evaluate(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece
       piece_distance += current_piece->GetEuclideanDistance(**(current-5)) * diagonal_weight_;
     }
 
-    current_piece->SetTotalDistance(piece_distance);
-
-    total_distance += current_piece->GetNormalizedDistance();
+    unsigned int num_of_neighbors = neighbours > 0 ? std::bitset<8>(neighbours).count() : 1;
+    total_distance += piece_distance / num_of_neighbors;
   }
 
   return total_distance;
