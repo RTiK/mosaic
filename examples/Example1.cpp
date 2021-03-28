@@ -12,8 +12,7 @@
 const int kNumOfPageBreaks = 2;
 const int kNumOfPieces = 40;
 const int kPopulation = 100;
-const int kMaxGenerations = 500;
-const std::string LOGFILE = "/Users/rt/Desktop/mosaic_gray.csv";
+const int kMaxGenerations = 100;
 
 std::random_device rd;
 std::mt19937 g(rd());
@@ -118,6 +117,7 @@ void MutateBest(std::set<Individual> &new_pop, const std::set<Individual> &old_p
     ind.Swap(random_ind_length(g), random_ind_length(g));
     new_pop.insert(ind);
     old_pop_iter++;
+    num--;
   }
 }
 
@@ -148,7 +148,7 @@ void ShowPage(const Page& page, const std::string &window_title) {
 
 int main() {
   //g.seed(0);
-  FileLogger logger(LOGFILE);
+  FileLogger logger;
   Individual template_individual = GenerateIndividualLabRandom(kNumOfPieces, kNumOfPageBreaks);
       //GenerateIndividualLabRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
       //GenerateIndividualRgbRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
@@ -165,13 +165,13 @@ int main() {
     temp_population.swap(population);
 
     // pass through elites (first 10%)
-    PassThroughElites(population, temp_population, 10);
+    PassThroughElites(population, temp_population, 10 * kPopulation / 100);
 
     // mutate (another 60%)
-    MutateBest(population, temp_population, 60);
+    MutateBest(population, temp_population, 60 * kPopulation / 100);
 
     // fill remaining (~30%)
-    FillShuffle(population, template_individual, 30);
+    FillShuffle(population, template_individual, kPopulation - population.size());
 
     logger.Log(population);
 

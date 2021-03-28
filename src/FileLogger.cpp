@@ -39,10 +39,10 @@ std::string FileLogger::GenerateLogFileName() {
 
 bool FileLogger::OpenLogFile(const std::string &file_name) {
   logfile_.open(file_name, std::ios::out | std::ios::trunc);
-  if (!logfile_.is_open()) {
-    std::cerr << "Logging to file not initialized" << std::endl;
-  } else {
+  if (logfile_.is_open()) {
     std::cout << "Log file " + file_name + " is open" << std::endl;
+  } else {
+    std::cerr << "Logging to file not initialized" << std::endl;
   }
   return logfile_.is_open();
 }
