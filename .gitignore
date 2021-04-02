@@ -1,4 +1,6 @@
 .idea/
+.vs/
+.vscode/
+build/
 cmake-build-*/
-3rdparty/googletest
-3rdparty/opencv
+3rdparty/

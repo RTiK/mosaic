@@ -9,20 +9,20 @@ enable_testing()
 
 # -- OpenCV
 # first, we will attempt to find a local installation in the 3rdparty directory
-find_package(OpenCV CONFIG
-        PATHS ${3RDPARTY}/opencv
+find_package(OpenCV CONFIG 
+        PATHS ${3RDPARTY_DIR}/opencv/build
         NO_DEFAULT_PATH)
 # if a local installation has not been found we will search for a system-wide installation
 find_package(OpenCV REQUIRED CONFIG)
 
 # -- GoogleTest
 # first, we try to find GTest sources and compile it since that is the preferred way
-add_subdirectory(3rdparty/googletest)
+add_subdirectory(${3RDPARTY_DIR}/googletest)
 if (GOOGLETEST_VERSION)
     # if no sources are available, we will search for a local installation
     # and if that doesn't work finally fall back to a system-wide installation
     find_package(GTest
-            PATHS ${3RDPARTY}/googletest
+            PATHS ${3RDPARTY_DIR}/googletest
             NO_DEFAULT_PATH)
     find_package(GTest REQUIRED)
 endif (GOOGLETEST_VERSION)
