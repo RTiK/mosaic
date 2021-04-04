@@ -1,9 +1,9 @@
+
 //
 // Created by Artem Khatchatourov on 30.01.21.
 //
 
 #include <random>
-#include "Piece.h"
 #include "LabPiece.h"
 #include "Individual.h"
 #include "FileLogger.h"
@@ -12,7 +12,7 @@
 const int kNumOfPageBreaks = 2;
 const int kNumOfPieces = 40;
 const int kPopulation = 100;
-const int kMaxGenerations = 100;
+const int kMaxGenerations = 500;
 
 std::random_device rd;
 std::mt19937 g(rd());
