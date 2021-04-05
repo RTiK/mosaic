@@ -18,6 +18,10 @@ message("OpenCV version found: " ${OpenCV_VERSION})
 
 # -- GoogleTest
 # first, we try to find GTest sources and compile it since that is the preferred way
+if (WIN32)
+    # MSVC default is to build shared libraries but GTest defaults to static unless we override this setting here
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+endif ()
 add_subdirectory(${3RDPARTY_DIR}/googletest)
 if (GOOGLETEST_VERSION)
     # if no sources are available, we will search for a local installation
@@ -29,12 +33,12 @@ if (GOOGLETEST_VERSION)
     message("GoogleTest version found: " ${GOOGLETEST_VERSION})
 else ()
     message("GoogleTest compiled from source: " ${3RDPARTY_DIR}/googletest)
-endif (GOOGLETEST_VERSION)
+endif ()
 
 
 
 include_directories(src)
 
 add_subdirectory(src)
-#add_subdirectory(test)
+add_subdirectory(test)
 add_subdirectory(examples)

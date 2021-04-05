@@ -17,4 +17,4 @@ add_library(Mosaic
         ${Headers})
 
 target_link_libraries(Mosaic
-        PRIVATE ${OpenCV_LIBS})
+        PUBLIC ${OpenCV_LIBS})
