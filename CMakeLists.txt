@@ -10,7 +10,7 @@ enable_testing()
 # -- OpenCV
 # first, we will attempt to find a local installation in the 3rdparty directory
 find_package(OpenCV CONFIG 
-        PATHS ${3RDPARTY_DIR}/opencv/build/install 
+        PATHS ${3RDPARTY_DIR}/opencv
         NO_DEFAULT_PATH)
 # if a local installation has not been found we will search for a system-wide installation
 find_package(OpenCV REQUIRED CONFIG)
