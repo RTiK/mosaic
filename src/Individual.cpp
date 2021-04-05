@@ -3,8 +3,10 @@
 //
 
 #include "Individual.h"
-
 #include <utility>
+#ifdef _WIN32
+  #include <numeric>
+#endif
 
 Individual::Individual() = default;
 
