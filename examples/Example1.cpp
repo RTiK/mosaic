@@ -147,7 +147,7 @@ void ShowPage(const Page& page, const std::string &window_title) {
 }
 
 int main() {
-  //g.seed(0);
+  g.seed(0);
   FileLogger logger;
   Individual template_individual = GenerateIndividualLabRandom(kNumOfPieces, kNumOfPageBreaks);
       //GenerateIndividualLabRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);

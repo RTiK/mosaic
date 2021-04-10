@@ -52,7 +52,10 @@ double Page::Evaluate(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece
     total_distance += piece_distance / num_of_neighbors;
   }
 
-  return total_distance;
+  unsigned int icons_on_page = 1 + last_piece - first_piece;
+  double missing_icons_penalty = missing_piece_penalty_ * double (max_pieces_ - icons_on_page);
+
+  return missing_icons_penalty + total_distance;
 }
 
 

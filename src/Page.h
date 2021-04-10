@@ -26,10 +26,11 @@ enum Neighbours : unsigned char {
 
 class Page {
  private:
-  std::shared_ptr<Piece> *first_piece_, *last_piece_;
-  const unsigned int page_width_ = 4, page_height_ = 6;
-  double fitness_;
+  const double missing_piece_penalty_ = 1;
   const double diagonal_weight_ = 1 / sqrt(2);
+
+  std::shared_ptr<Piece> *first_piece_, *last_piece_;
+  double fitness_;
 
   double Evaluate(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece);
  public:
