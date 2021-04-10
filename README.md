@@ -45,6 +45,6 @@ cd examples
 ./Example1
 ```
 
-Setting `seed=0` will yield the following pages (yes, there is no penalty for sparsely populated pages yet)
+Setting `seed=0` will yield the following pages
 
 ![example1 seed0](example1_seed0.png)
