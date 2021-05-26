@@ -166,3 +166,19 @@ TEST(PageBreakTest, TestPageOverflow) {
   EXPECT_EQ(pages[0].GetLastPiece() - pages[0].GetFirstPiece(), Page::max_pieces_ - 1);
   EXPECT_EQ(pages[1].GetLastPiece() - pages[1].GetFirstPiece(), pieces.size() - Page::max_pieces_ - 1);
 }
+
+TEST(EvaluationTests, TestEvaluateTwoPages) {
+  std::vector<std::shared_ptr<Piece>> pieces {
+      std::make_shared<Piece>(0.0), std::make_shared<Piece>(1.0),
+      std::make_shared<Piece>(2.0), std::make_shared<Piece>(3.0),
+      std::make_shared<Piece>(4.0), std::make_shared<Piece>(5.0),
+      kPageBreak,
+      std::make_shared<Piece>(6.0), std::make_shared<Piece>(7.0),
+      std::make_shared<Piece>(8.0), std::make_shared<Piece>(9.0)
+  };
+  Individual individual(pieces);
+  std::vector<Page> pages = individual.GetPages();
+  EXPECT_EQ(pages.size(), 2);
+  EXPECT_NEAR(21.28217, pages[0].GetFitness(), 0.00001);
+  EXPECT_NEAR(6.92820, pages[1].GetFitness(), 0.00001);
+}

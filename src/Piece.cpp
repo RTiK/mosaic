@@ -21,10 +21,10 @@ void Piece::Init(double b, double g, double r) {
 }
 
 double Piece::GetEuclideanDistance(Piece &other) {
-  assert(color_.channels == other.color_.channels);
-  double sq_diff = 0.0;
-  for (int i = 0; i < color_.channels; i++) {
-    sq_diff += pow(color_[i] - other.color_[i], 2);
-  }
-  return sqrt(sq_diff);
+  return cv::norm(color_, other.color_, cv::NORM_L2);
+
+}
+
+double Piece::GetEuclideanDistance(ColorT &other_color) {
+  return cv::norm(color_, other_color, cv::NORM_L2);
 }

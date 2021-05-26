@@ -32,7 +32,7 @@ void PrintBest(std::set<Individual> &population, int best_n) {
 Individual GenerateIndividualGray(int length, int page_breaks) {
   std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
   for (int i = 0; i < length; i++) {
-    genome[i] = std::make_shared<Piece>(i);
+    genome[i] = std::make_shared<Piece>(i / 265.0);
   }
 
   for (int i = length; i < length + page_breaks; i++) {
@@ -128,7 +128,7 @@ void FillShuffle(std::set<Individual> &new_pop, const Individual &template_indiv
 }
 
 void ShowPage(const Page& page, const std::string &window_title) {
-  cv::Mat temp_mat(Page::max_pieces_, 1, CV_32FC3, ColorT(0, 1, 0));
+  cv::Mat temp_mat(Page::max_pieces_, 1, CV_64FC3, ColorT(0, 1, 0));
   cv::MatIterator_<ColorT> mat_iter = temp_mat.begin<ColorT>();
 
   int i = 0;

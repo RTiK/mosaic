@@ -73,7 +73,7 @@ std::vector<Page> Individual::SplitGenomeIntoPages(std::vector<std::shared_ptr<P
 
 void Individual::Evaluate() {
   pages_ = SplitGenomeIntoPages(genome_);
-  auto eval = [](double total_fitness, Page page) {
+  auto eval = [](double total_fitness, Page &page) {
     return total_fitness + page.GetFitness();
   };
   fitness_ = std::accumulate(pages_.begin(), pages_.end(), 0.0, eval);

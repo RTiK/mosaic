@@ -3,14 +3,16 @@ set(Headers
         Individual.h
         FileLogger.h
         LabPiece.h
-        Page.h)
+        Page.h
+        PageEvaluation.h)
 
 set(Sources
         Piece.cpp
         Individual.cpp
         FileLogger.cpp
         LabPiece.cpp
-        Page.cpp)
+        Page.cpp
+        PageEvaluation.cpp)
 
 add_library(Mosaic
         ${Sources}

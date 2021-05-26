@@ -11,28 +11,13 @@
  * This class represents a page on the iOS device. It holds pointers to the first and the last icons of the page.
  * Iterating between these pointers traverses the genome in the individual.
  */
-enum Neighbours : unsigned char {
-  N = 0x1 << 7,
-  NE = 0x1 << 6,
-  E = 0x1 << 5,
-  SE = 0x1 << 4,
-  S = 0x1 << 3,
-  SW = 0x1 << 2,
-  W = 0x1 << 1,
-  NW = 0x1 << 0,
-  ALL = N | NE | E | SE | S | SW | W | NW,
-  NONE = 0x0
-};
-
 class Page {
  private:
-  const double missing_piece_penalty_ = 1;
-  const double diagonal_weight_ = 1 / sqrt(2);
-
   std::shared_ptr<Piece> *first_piece_, *last_piece_;
   double fitness_;
 
-  double Evaluate(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece);
+  double Evaluate() const;
+
  public:
   const static unsigned int max_pieces_ = 24;
 
@@ -42,13 +27,11 @@ class Page {
 
   double GetFitness() const { return fitness_; }
 
+  unsigned int Size() const;
+
   std::shared_ptr<Piece> *GetFirstPiece() const { return first_piece_; };
 
   std::shared_ptr<Piece> *GetLastPiece() const { return last_piece_; };
-
-  static unsigned int CalculateNeighbors(std::shared_ptr<Piece> *current,
-                                         std::shared_ptr<Piece> *first,
-                                         std::shared_ptr<Piece> *last);
 };
 
 #endif //MOSAIC_SRC_PAGE_H_
