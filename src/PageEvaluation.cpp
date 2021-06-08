@@ -4,7 +4,7 @@
 
 #include "PageEvaluation.h"
 
-double page_evaluation::CalculatePageFitness(const Page &page, double diagonal_weight) {
+double page_evaluation::CalculatePageDistances(const Page &page, double diagonal_weight) {
   unsigned int total_pieces = page.Size();
 
   double total_fitness = 0.0;
@@ -65,7 +65,8 @@ double page_evaluation::CalculateColorVariance(const Page &page) {
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
     double euclidean = (**current).GetEuclideanDistance(mean_color);
     // euclidean distance is the square root of the mean squared error, we need to square it again
-    total_distance += pow(euclidean, 2) / mean_color.channels;
+    //total_distance += pow(euclidean, 2) / mean_color.channels;
+    total_distance += euclidean / mean_color.channels;
   }
   double num_of_pieces = 1.0 + double (page.GetLastPiece() - page.GetFirstPiece());
   return total_distance / num_of_pieces;
@@ -77,45 +78,34 @@ double page_evaluation::CalculateMissingIcons(const Page &page) {
 }
 
 unsigned int page_evaluation::CalculateNeighbors(unsigned int piece_index, unsigned int total_pieces) {
-
-  auto delta_a = piece_index;
-  auto delta_b = total_pieces - 1 - piece_index;
-
+  unsigned int piece_index_end = total_pieces - 1 - piece_index;
   unsigned int neighbours = Neighbours::ALL;
 
-  if (delta_a % 4 == 0) {  // position on far left -> can't go west
+  if (piece_index % 4 == 0) {  // position on far left -> can't go west
     neighbours &= ~(Neighbours::NW | Neighbours::W | Neighbours::SW);
-  } else if (delta_a % 4 == 3) {  // position on far right -> can't go east
+  } else if (piece_index % 4 == 3) {  // position on far right -> can't go east
     neighbours &= ~(Neighbours::SE | Neighbours::E | Neighbours::NE);
   }
 
-  if (delta_a < 4) {  // can't go north
+  if (piece_index < 4) {  // can't go north
     neighbours &= ~(Neighbours::NW | Neighbours::N | Neighbours::NE);
   }
 
-  if (delta_b < 3) {  // can't go south
+  if (piece_index_end < 3) {  // can't go south
     neighbours &= ~(Neighbours::SW | Neighbours::S | Neighbours::SE);
   }
 
-  if (delta_b == 3) {
+  if (piece_index_end == 3) {
     neighbours &= ~(Neighbours::S | Neighbours::SE);
   }
 
-  if (delta_b == 4) {
+  if (piece_index_end == 4) {
     neighbours &= ~Neighbours::SE;
   }
 
-  if (delta_b == 0) {
+  if (piece_index_end == 0) {
     neighbours &= ~(Neighbours::E | Neighbours::SE | Neighbours::S | Neighbours::SW);
   }
 
   return neighbours;
-}
-
-double page_evaluation::Evaluate(const Page &page) {
-  double total_distance = 0.0;
-  total_distance += page_evaluation::CalculatePageFitness(page);
-  total_distance += page_evaluation::CalculateMissingIcons(page);
-  total_distance += page_evaluation::CalculateColorVariance(page);
-  return total_distance;
 }

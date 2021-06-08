@@ -14,7 +14,7 @@ namespace page_evaluation {
 
   unsigned int CalculateNeighbors(unsigned int piece_index, unsigned int total_pieces);
 
-  double CalculatePageFitness(const Page &page, double diagonal_weight= 0.70711);
+  double CalculatePageDistances(const Page &page, double diagonal_weight= 0.70711);
 
   ColorT CalculateMeanPageColor(const Page &page);
 

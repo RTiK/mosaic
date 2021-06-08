@@ -9,10 +9,10 @@
 #include "FileLogger.h"
 
 
-const int kNumOfPageBreaks = 2;
+const int kNumOfPageBreaks = 4;
 const int kNumOfPieces = 40;
-const int kPopulation = 100;
-const int kMaxGenerations = 500;
+const int kPopulation = 200;
+const int kMaxGenerations = 1000;
 
 std::random_device rd;
 std::mt19937 g(rd());
@@ -146,6 +146,19 @@ void ShowPage(const Page& page, const std::string &window_title) {
   cv::waitKey(0);
 }
 
+void LogIndividual(Individual &individual, std::string file_name) {
+  std::string path = "/Users/rt/Desktop/test/";
+  std::string extension = ".csv";
+  std::ofstream out_file = std::ofstream();
+  out_file.open(path + file_name + extension, std::ios::out | std::ios::trunc);
+  for (Page page : individual.GetPages()) {
+    out_file << page.GetFitness() << std::endl;
+    out_file << page;
+    out_file << std::endl;
+  }
+  out_file.close();
+}
+
 int main() {
   g.seed(0);
   FileLogger logger;
@@ -184,6 +197,10 @@ int main() {
       iter++;
     }
     std::cout << std::endl;
+
+    auto best = *population.begin();
+    LogIndividual(best, "generation_" + std::to_string(i));
+
   }
 
   PrintBest(population, 10);
@@ -191,6 +208,8 @@ int main() {
   auto best = *population.begin();
 
   std::cout << best << std::endl;
+  PrintIndividual(best);
+  LogIndividual(best, "generation_" + std::to_string(kMaxGenerations));
 
   for (const auto page : best.GetPages()) {
     ShowPage(page, std::to_string(page.GetFitness()));

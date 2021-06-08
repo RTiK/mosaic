@@ -16,7 +16,7 @@ class Page {
   std::shared_ptr<Piece> *first_piece_, *last_piece_;
   double fitness_;
 
-  double Evaluate() const;
+  void Evaluate();
 
  public:
   const static unsigned int max_pieces_ = 24;
@@ -32,6 +32,8 @@ class Page {
   std::shared_ptr<Piece> *GetFirstPiece() const { return first_piece_; };
 
   std::shared_ptr<Piece> *GetLastPiece() const { return last_piece_; };
+
+  friend std::ostream& operator<<(std::ostream& os, Page &page);
 };
 
 #endif //MOSAIC_SRC_PAGE_H_

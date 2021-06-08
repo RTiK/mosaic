@@ -7,7 +7,7 @@
 
 LabPiece::LabPiece(double b, double g, double r) {
   color_bgr_ = ColorT(b, g, r);
-  color_ = LabToRgb(color_bgr_);
+  color_ = LabToRgb(color_bgr_);  // L [0..100], a* [-128..127], b* [-128..127]
 }
 
 ColorT LabPiece::LabToRgb(const ColorT &BGR) {
@@ -22,4 +22,7 @@ ColorT LabPiece::LabToRgb(const ColorT &BGR) {
   cv::cvtColor(mat_in, mat_out, cv::COLOR_BGR2Lab);
   float lab[] {mat_out.at<float>(0, 0), mat_out.at<float>(0, 1), mat_out.at<float>(0, 2)};
   return ColorT(lab[0], lab[1], lab[2]);
+}
+ColorT LabPiece::GetColorLab() const {
+  return color_;
 }
