@@ -14,18 +14,25 @@
 class Page {
  private:
   std::shared_ptr<Piece> *first_piece_, *last_piece_;
-  double fitness_;
+  double distances_;
+  double variance_;
+  double mean_color_;
 
   void Evaluate();
 
  public:
   const static unsigned int max_pieces_ = 24;
 
-  Page(const Page &page) : first_piece_{page.first_piece_}, last_piece_{page.last_piece_}, fitness_{page.fitness_} {};
+  Page(const Page &page) : first_piece_{page.first_piece_}, last_piece_{page.last_piece_},
+      distances_{page.distances_}, variance_{page.variance_} {};
 
   Page(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece);
 
-  double GetFitness() const { return fitness_; }
+  double GetDistances() const { return distances_; }
+
+  double GetVariance() const { return variance_; }
+
+  double GetMeanColor() const { return mean_color_; }
 
   unsigned int Size() const;
 

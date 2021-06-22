@@ -36,11 +36,21 @@ class Piece {
 
   Piece(double b, double g, double r);
 
-  virtual double GetEuclideanDistance(Piece &other);
+  virtual double GetEuclideanDistance(const Piece &other) const;
 
-  virtual ColorT GetColor() const { return color_; };
+  virtual double GetEuclideanDistance(const ColorT &other) const;
 
-  double GetEuclideanDistance(ColorT &other);
+  /**
+   * Getter for the color that represents the Piece internally
+   * @return
+   */
+  virtual ColorT GetInternalColor() const { return color_; };
+
+  /**
+   * Getter for the color that can be used to display the Piece (BGR)
+   * @return
+   */
+  virtual ColorT GetRepresentationColor() const { return color_; }
 };
 
 static std::shared_ptr<Piece> kPageBreak;

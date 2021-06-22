@@ -99,57 +99,47 @@ TEST(CalculateNeighborsTests, TestLowerUnobstructed) {
     EXPECT_EQ(neighbor & (Neighbours::SE | Neighbours::S | Neighbours::SW), Neighbours::NONE);
 }
 
-TEST(EvaluationTests, TestDistancesSimple) {
+TEST(EvaluationTests, TestDistancesSingleLine) {
   std::vector<std::shared_ptr<Piece>> pieces {
-      std::make_shared<Piece>(0.0), std::make_shared<Piece>(0.1),
-      std::make_shared<Piece>(0.2), std::make_shared<Piece>(0.3),
-      std::make_shared<Piece>(0.4), std::make_shared<Piece>(0.5),
-      std::make_shared<Piece>(0.6), std::make_shared<Piece>(0.7),
-      std::make_shared<Piece>(0.8), std::make_shared<Piece>(0.9)
+      std::make_shared<Piece>(1.0), std::make_shared<Piece>(2.0),
+      std::make_shared<Piece>(3.0), std::make_shared<Piece>(4.0)
   };
   Page page = Page(&pieces.front(), &pieces.back());
-  double fitness = CalculatePageDistances(page, 1.0 / sqrt(2));
-  EXPECT_NEAR(4.422329, fitness, 0.00001);
+  double distances = page.GetDistances();
+  EXPECT_NEAR(4.0, distances, 0.0001);
+}
+
+TEST(EvaluationTests, TestDistancesAdvanced) {
+  std::vector<std::shared_ptr<Piece>> pieces {
+      std::make_shared<Piece>(0.0), std::make_shared<Piece>(1.0),
+      std::make_shared<Piece>(2.0), std::make_shared<Piece>(3.0),
+      std::make_shared<Piece>(4.0), std::make_shared<Piece>(5.0),
+      std::make_shared<Piece>(6.0), std::make_shared<Piece>(7.0),
+      std::make_shared<Piece>(8.0), std::make_shared<Piece>(9.0)
+  };
+  Page page = Page(&pieces.front(), &pieces.back());
+  double distances = page.GetDistances();
+  EXPECT_NEAR(94.4484, distances, 0.0001);
 }
 
 TEST(EvaluationTests, TestVarianceSimple) {
   std::vector<std::shared_ptr<Piece>> pieces {
-      std::make_shared<Piece>(0.0), std::make_shared<Piece>(0.1),
-      std::make_shared<Piece>(0.2), std::make_shared<Piece>(0.3),
-      std::make_shared<Piece>(0.4), std::make_shared<Piece>(0.5),
-      std::make_shared<Piece>(0.6), std::make_shared<Piece>(0.7),
-      std::make_shared<Piece>(0.8), std::make_shared<Piece>(0.9)
+      std::make_shared<Piece>(0.0), std::make_shared<Piece>(1.0),
+      std::make_shared<Piece>(2.0), std::make_shared<Piece>(3.0),
+      std::make_shared<Piece>(4.0), std::make_shared<Piece>(5.0),
+      std::make_shared<Piece>(6.0), std::make_shared<Piece>(7.0),
+      std::make_shared<Piece>(8.0), std::make_shared<Piece>(9.0)
   };
   Page page = Page(&pieces.front(), &pieces.back());
-  double fitness = CalculateColorVariance(page);
-  EXPECT_NEAR(0.0825, fitness, 0.00001);
+  double variance = page.GetVariance();
+  EXPECT_NEAR(82.5, variance, 0.0001);
 }
 
-TEST(EvaluationTests, TestVarianceSimple2) {
-  std::vector<std::shared_ptr<Piece>> pieces {
-      std::make_shared<Piece>(0.0), std::make_shared<Piece>(0.9)
-  };
+TEST(EvaluationTests, TestVarianceSinglePiece) {
+  std::vector<std::shared_ptr<Piece>> pieces {std::make_shared<Piece>(0.5)};
   Page page = Page(&pieces.front(), &pieces.back());
-  double fitness = CalculateColorVariance(page);
-  EXPECT_NEAR(0.0825, fitness, 0.00001);
-}
-
-TEST(EvaluationTests, TestVarianceSimple3) {
-  std::vector<std::shared_ptr<Piece>> pieces {
-      std::make_shared<Piece>(0.0), std::make_shared<Piece>(0.1),
-      std::make_shared<Piece>(0.2), std::make_shared<Piece>(0.3),
-      std::make_shared<Piece>(0.4), std::make_shared<Piece>(0.5),
-      std::make_shared<Piece>(0.6), std::make_shared<Piece>(0.7),
-      std::make_shared<Piece>(0.8), std::make_shared<Piece>(0.9),
-      std::make_shared<Piece>(0.0), std::make_shared<Piece>(0.1),
-      std::make_shared<Piece>(0.2), std::make_shared<Piece>(0.3),
-      std::make_shared<Piece>(0.4), std::make_shared<Piece>(0.5),
-      std::make_shared<Piece>(0.6), std::make_shared<Piece>(0.7),
-      std::make_shared<Piece>(0.8), std::make_shared<Piece>(0.9)
-  };
-  Page page = Page(&pieces.front(), &pieces.back());
-  double fitness = CalculateColorVariance(page);
-  EXPECT_NEAR(0.0825, fitness, 0.00001);
+  double variance = page.GetVariance();
+  EXPECT_NEAR(0.0, variance, 0.0001);
 }
 
 TEST(MeanPageColorTests, TestSinglePiece) {
@@ -181,38 +171,43 @@ TEST(MeanPageColorTests, TestFullPage) {
   EXPECT_EQ(ColorT(11.5, 11.5, 11.5), mean_color);
 }
 
-TEST(MissingPiecesTest, MissingAll) {
+TEST(PageSizeTest, Zero) {
   std::vector<std::shared_ptr<Piece>> pieces {};
-  Page page = Page(&pieces.front(), &pieces.back());
-  double missing_pieces_penalty = CalculateMissingIcons(page);
-  EXPECT_EQ(24, missing_pieces_penalty);
+  EXPECT_DEATH(Page(&pieces.front(), &pieces.back()), "Assertion failed*");
 }
 
-TEST(MissingPiecesTest, MissingAllExceptOne) {
+TEST(PageSizeTest, One) {
   std::vector<std::shared_ptr<Piece>> pieces {std::make_shared<Piece>()};
   Page page = Page(&pieces.front(), &pieces.back());
-  double missing_pieces_penalty = CalculateMissingIcons(page);
-  EXPECT_EQ(23, missing_pieces_penalty);
+  unsigned int size = page.Size();
+  EXPECT_EQ(1, size);
 }
 
-TEST(MissingPiecesTest, MissingNone) {
-  std::vector<std::shared_ptr<Piece>> pieces (24, std::make_shared<Piece>());
+TEST(PageSizeTest, All) {
+  std::vector<std::shared_ptr<Piece>> pieces (kPiecesOnPage - 1, std::make_shared<Piece>());
   Page page = Page(&pieces.front(), &pieces.back());
-  double missing_pieces_penalty = page_evaluation::CalculateMissingIcons(page);
-  EXPECT_EQ(0, missing_pieces_penalty);
+  unsigned int size = page.Size();
+  EXPECT_EQ(kPiecesOnPage - 1, size);
+}
+
+TEST(PageSizeTest, AllExceptOne) {
+  std::vector<std::shared_ptr<Piece>> pieces (kPiecesOnPage, std::make_shared<Piece>());
+  Page page = Page(&pieces.front(), &pieces.back());
+  unsigned int size = page.Size();
+  EXPECT_EQ(kPiecesOnPage, size);
 }
 
 TEST(ColorVarianceTest, UnicolorPage) {
-  std::vector<std::shared_ptr<Piece>> pieces (24, std::make_shared<Piece>());
+  std::vector<std::shared_ptr<Piece>> pieces (kPiecesOnPage, std::make_shared<Piece>());
   Page page = Page(&pieces.front(), &pieces.back());
-  double variance = CalculateColorVariance(page);
+  double variance = page.GetVariance();
   EXPECT_EQ(0.0, variance);
 }
 
 TEST(ColorVarianceTest, SinglePiecePage) {
   std::vector<std::shared_ptr<Piece>> pieces {std::make_shared<Piece>(100.0)};
   Page page = Page(&pieces.front(), &pieces.back());
-  double variance = CalculateColorVariance(page);
+  double variance = page.GetVariance();
   EXPECT_EQ(0.0, variance);
 }
 
@@ -221,6 +216,6 @@ TEST(ColorVarianceTest, OneVariancePage) {
     std::make_shared<Piece>(-1.0), std::make_shared<Piece>(1.0)
   };
   Page page = Page(&pieces.front(), &pieces.back());
-  double variance = CalculateColorVariance(page);
-  EXPECT_NEAR(1.0, variance, 0.00001);
+  double variance = page.GetVariance();
+  EXPECT_NEAR(2.0, variance, 0.0001);
 }

@@ -23,6 +23,3 @@ ColorT LabPiece::LabToRgb(const ColorT &BGR) {
   float lab[] {mat_out.at<float>(0, 0), mat_out.at<float>(0, 1), mat_out.at<float>(0, 2)};
   return ColorT(lab[0], lab[1], lab[2]);
 }
-ColorT LabPiece::GetColorLab() const {
-  return color_;
-}

@@ -7,9 +7,9 @@
 #include "LabPiece.h"
 #include "Individual.h"
 #include "FileLogger.h"
+#include "IndividualGeneration.h"
 
-
-const int kNumOfPageBreaks = 4;
+const int kNumOfPageBreaks = 2;
 const int kNumOfPieces = 40;
 const int kPopulation = 200;
 const int kMaxGenerations = 1000;
@@ -17,7 +17,6 @@ const int kMaxGenerations = 1000;
 std::random_device rd;
 std::mt19937 g(rd());
 std::uniform_int_distribution<> random_ind_length(0, kNumOfPieces - 1);
-std::uniform_int_distribution<> random_color_value(0, 256);
 
 
 void PrintBest(std::set<Individual> &population, int best_n) {
@@ -41,52 +40,12 @@ Individual GenerateIndividualGray(int length, int page_breaks) {
   return Individual(genome);
 }
 
-Individual GenerateIndividualGrayRandom(int length, int page_breaks) {
-  std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
-  for (int i = 0; i < length; i++) {
-    genome[i] = std::make_shared<Piece>(random_color_value(g) / 256.0);
-  }
-
-  for (int i = length; i < length + page_breaks; i++) {
-    genome[i] = kPageBreak;
-  }
-  return Individual(genome);
-}
-
-Individual GenerateIndividualRgbRandom(int length, int page_breaks) {
-  std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
-  for (int i = 0; i < length; i++) {
-    genome[i] = std::make_shared<Piece>(random_color_value(g) / 256.0,
-                                        random_color_value(g) / 256.0,
-                                        random_color_value(g) / 256.0);
-  }
-
-  for (int i = length; i < length + page_breaks; i++) {
-    genome[i] = kPageBreak;
-  }
-  return Individual(genome);
-}
-
-Individual GenerateIndividualLabRandom(int length, int page_breaks) {
-  std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
-  for (int i = 0; i < length; i++) {
-    genome[i] = std::make_shared<LabPiece>(random_color_value(g) / 256.0,
-                                           random_color_value(g) / 256.0,
-                                           random_color_value(g) / 256.0);
-  }
-
-  for (int i = length; i < length + page_breaks; i++) {
-    genome[i] = kPageBreak;
-  }
-  return Individual(genome);
-}
-
 void PrintIndividual(Individual &individual) {
   for (std::shared_ptr<Piece> &p : individual.GetGenome()) {
     if (p == kPageBreak) {
       std::cout << "page break ";
     } else {
-      std::cout << p->GetColor();
+      std::cout << p->GetInternalColor();
     }
   }
   std::cout << std::endl;
@@ -133,8 +92,8 @@ void ShowPage(const Page& page, const std::string &window_title) {
 
   int i = 0;
   for (std::shared_ptr<Piece> *p = page.GetFirstPiece(); p <= page.GetLastPiece(); p++) {
-    temp_mat.at<ColorT>(i, 0) = p->get()->GetColor();
-    std::cout << p->get()->GetColor() << std::endl;
+    temp_mat.at<ColorT>(i, 0) = p->get()->GetRepresentationColor();
+    std::cout << p->get()->GetRepresentationColor() << std::endl;
     i++;
   }
 
@@ -152,7 +111,7 @@ void LogIndividual(Individual &individual, std::string file_name) {
   std::ofstream out_file = std::ofstream();
   out_file.open(path + file_name + extension, std::ios::out | std::ios::trunc);
   for (Page page : individual.GetPages()) {
-    out_file << page.GetFitness() << std::endl;
+    out_file << page.GetDistances() << " " << page.GetVariance() << std::endl;
     out_file << page;
     out_file << std::endl;
   }
@@ -160,12 +119,10 @@ void LogIndividual(Individual &individual, std::string file_name) {
 }
 
 int main() {
-  g.seed(0);
+  //g.seed(0);
   FileLogger logger;
-  Individual template_individual = GenerateIndividualLabRandom(kNumOfPieces, kNumOfPageBreaks);
-      //GenerateIndividualLabRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
-      //GenerateIndividualRgbRandom(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
-      //GenerateIndividualGray(NUM_OF_PIECES, NUM_OF_PAGE_BREAKS);
+  Individual template_individual = individual_generation::GenerateIndividualLabRandom(kNumOfPieces, kNumOfPageBreaks, g);
+
   PrintIndividual(template_individual);
 
   std::set<Individual> population{};
@@ -212,7 +169,7 @@ int main() {
   LogIndividual(best, "generation_" + std::to_string(kMaxGenerations));
 
   for (const auto page : best.GetPages()) {
-    ShowPage(page, std::to_string(page.GetFitness()));
+    ShowPage(page, std::to_string(page.GetDistances()) + " " + std::to_string(page.GetVariance()));
   }
 
   return 0;

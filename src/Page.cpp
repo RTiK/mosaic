@@ -4,15 +4,17 @@
 
 #include "Page.h"
 #include "PageEvaluation.h"
-#include "LabPiece.h"
 #ifdef _WIN32
   #include <bitset>
 #endif
 
 
-Page::Page(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece)
-    : first_piece_{first_piece}, last_piece_{last_piece} {
-  // TODO check whether the array is empty
+Page::Page(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece) {
+  assert(first_piece != nullptr);
+  assert(last_piece != nullptr);
+  assert(std::distance(first_piece, last_piece) + 1 <= page_evaluation::kPiecesOnPage);
+  first_piece_ = first_piece;
+  last_piece_ = last_piece;
   Evaluate();
 }
 
@@ -22,24 +24,15 @@ unsigned int Page::Size() const {
 
 std::ostream &operator<<(std::ostream &os, Page &page) {
   for (std::shared_ptr<Piece>* current = page.first_piece_; current <= page.last_piece_; current++) {
-    try {
-      // try to cast the piece into a lab piece
-      LabPiece* lab_piece = dynamic_cast<LabPiece*>(current->get());
-      ColorT lab_color = lab_piece->GetColorLab();
-      os << lab_color[0] << ";" << lab_color[1] << ";" << lab_color[2] << std::endl;
-    } catch (std::exception exception) {
-      // it must be a RGB piece then
-      ColorT color = (**current).GetColor();
-      os << color[0] << ";" << color[1] << ";" << color[2] << std::endl;
-    }
+    ColorT color = (**current).GetRepresentationColor();
+    os << color[0] << ";" << color[1] << ";" << color[2] << std::endl;
   }
   return os;
 }
 
 void Page::Evaluate() {
-  fitness_ = 0.0;
-  fitness_ += page_evaluation::CalculatePageDistances(*this);
-  fitness_ += page_evaluation::CalculateMissingIcons(*this) * 2;
-  fitness_ += page_evaluation::CalculateColorVariance(*this) * 3;
+  distances_ = page_evaluation::CalculatePageDistances(*this);
+  variance_ = page_evaluation::CalculateColorVariance(*this);
+  // TODO add penalty for underfilled pages
 }
 

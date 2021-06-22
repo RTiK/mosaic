@@ -16,9 +16,10 @@ class LabPiece : public Piece {
  public:
   LabPiece(double b, double g, double r);
 
-  ColorT GetColor() const override { return color_bgr_; };
+  ColorT GetRepresentationColor() const override { return color_bgr_; }
 
-  ColorT GetColorLab() const;
+  ColorT GetInternalColor() const override { return color_; };
+
 };
 
 #endif //MOSAIC_SRC_LABPIECE_H_
