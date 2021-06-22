@@ -20,11 +20,15 @@ void Piece::Init(double b, double g, double r) {
   color_ = ColorT(b, g, r);
 }
 
-double Piece::GetEuclideanDistance(Piece &other) {
-  assert(color_.channels == other.color_.channels);
+double Piece::GetEuclideanDistance(const Piece &other) const {
+  return GetEuclideanDistance(other.GetInternalColor());
+}
+
+double Piece::GetEuclideanDistance(const ColorT &other_color) const {
+  assert(GetInternalColor().channels == other_color.channels);
   double sq_diff = 0.0;
-  for (int i = 0; i < color_.channels; i++) {
-    sq_diff += pow(color_[i] - other.color_[i], 2);
+  for (int i = 0; i < GetInternalColor().channels; i++) {
+    sq_diff += pow(GetInternalColor()[i] - other_color[i], 2);
   }
-  return sqrt(sq_diff);
+  return sq_diff / GetInternalColor().channels;
 }

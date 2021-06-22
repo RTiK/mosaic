@@ -3,89 +3,36 @@
 //
 
 #include "Page.h"
+#include "PageEvaluation.h"
+#ifdef _WIN32
+  #include <bitset>
+#endif
 
 
-Page::Page(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece)
-    : first_piece_{first_piece}, last_piece_{last_piece} {
-  fitness_ = Evaluate(first_piece_, last_piece_);
+Page::Page(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece) {
+  assert(first_piece != nullptr);
+  assert(last_piece != nullptr);
+  assert(std::distance(first_piece, last_piece) + 1 <= page_evaluation::kPiecesOnPage);
+  first_piece_ = first_piece;
+  last_piece_ = last_piece;
+  Evaluate();
 }
 
-double Page::Evaluate(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece) {
-  double total_distance = 0.0;
-
-  for (std::shared_ptr<Piece> *current = first_piece; current <= last_piece; current++) {
-    unsigned char neighbours = CalculateNeighbors(current, first_piece, last_piece);
-
-    Piece *current_piece = current->get();
-
-    double piece_distance = 0.0;
-
-    if (neighbours & Neighbours::N) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current-4));
-    }
-    if (neighbours & Neighbours::NE) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current-3)) * diagonal_weight_;
-    }
-    if (neighbours & Neighbours::E) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current+1));
-    }
-    if (neighbours & Neighbours::SE) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current+5)) * diagonal_weight_;
-    }
-    if (neighbours & Neighbours::S) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current+4));
-    }
-    if (neighbours & Neighbours::SW) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current+3)) * diagonal_weight_;
-    }
-    if (neighbours & Neighbours::W) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current-1));
-    }
-    if (neighbours & Neighbours::NW) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current-5)) * diagonal_weight_;
-    }
-
-    unsigned int num_of_neighbors = neighbours > 0 ? std::bitset<8>(neighbours).count() : 1;
-    total_distance += piece_distance / num_of_neighbors;
-  }
-
-  return total_distance;
+unsigned int Page::Size() const {
+  return last_piece_ - first_piece_ + 1;
 }
 
-
-unsigned int Page::CalculateNeighbors(std::shared_ptr<Piece> *current,
-                                      std::shared_ptr<Piece> *first,
-                                      std::shared_ptr<Piece> *last) {
-  auto delta_a = current - first;
-  auto delta_b = last - current;
-
-  unsigned int neighbours = Neighbours::ALL;
-
-  if (delta_a % 4 == 0) {  // position on far left -> can't go west
-    neighbours &= ~(Neighbours::NW | Neighbours::W | Neighbours::SW);
-  } else if (delta_a % 4 == 3) {  // position on far right -> can't go east
-    neighbours &= ~(Neighbours::SE | Neighbours::E | Neighbours::NE);
+std::ostream &operator<<(std::ostream &os, Page &page) {
+  for (std::shared_ptr<Piece>* current = page.first_piece_; current <= page.last_piece_; current++) {
+    ColorT color = (**current).GetRepresentationColor();
+    os << color[0] << ";" << color[1] << ";" << color[2] << std::endl;
   }
-
-  if (delta_a < 4) {  // can't go north
-    neighbours &= ~(Neighbours::NW | Neighbours::N | Neighbours::NE);
-  }
-
-  if (delta_b < 3) {  // can't go immediate south
-    neighbours &= ~(Neighbours::SW | Neighbours::S | Neighbours::SE);
-  }
-
-  if (delta_b == 3) {
-    neighbours &= ~(Neighbours::S | Neighbours::SE);
-  }
-
-  if (delta_b == 4) {
-    neighbours &= ~Neighbours::SE;
-  }
-
-  if (delta_b == 0) {
-    neighbours &= ~(Neighbours::E | Neighbours::SE | Neighbours::S | Neighbours::SW);
-  }
-
-  return neighbours;
+  return os;
 }
+
+void Page::Evaluate() {
+  distances_ = page_evaluation::CalculatePageDistances(*this);
+  variance_ = page_evaluation::CalculateColorVariance(*this);
+  // TODO add penalty for underfilled pages
+}
+

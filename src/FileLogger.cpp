@@ -28,13 +28,12 @@ void FileLogger::Log(const std::set<Individual> &pop) {
 }
 
 std::string FileLogger::GenerateLogFileName() {
-  std::string dir_path = std::filesystem::current_path();
   std::string file_prefix = "mosaic";
   std::string file_ending = "csv";
   std::time_t time_object = std::time(nullptr);
   char datetime_code[16];
   std::strftime(datetime_code, sizeof(datetime_code), "%Y%m%d-%H%M%S", std::localtime(&time_object));
-  return dir_path + "/" + file_prefix + "_" + datetime_code + "." + file_ending;
+  return file_prefix + "_" + datetime_code + "." + file_ending;
 }
 
 bool FileLogger::OpenLogFile(const std::string &file_name) {

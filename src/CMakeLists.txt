@@ -3,18 +3,22 @@ set(Headers
         Individual.h
         FileLogger.h
         LabPiece.h
-        Page.h)
+        Page.h
+        PageEvaluation.h
+        IndividualGeneration.h)
 
 set(Sources
         Piece.cpp
         Individual.cpp
         FileLogger.cpp
         LabPiece.cpp
-        Page.cpp)
+        Page.cpp
+        PageEvaluation.cpp
+        IndividualGeneration.cpp)
 
 add_library(Mosaic
         ${Sources}
         ${Headers})
 
 target_link_libraries(Mosaic
-        ${OpenCV_LIBS})
+        PUBLIC ${OpenCV_LIBS})

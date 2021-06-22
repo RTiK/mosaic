@@ -3,8 +3,10 @@
 //
 
 #include "Individual.h"
-
 #include <utility>
+#ifdef _WIN32
+  #include <numeric>
+#endif
 
 Individual::Individual() = default;
 
@@ -71,10 +73,11 @@ std::vector<Page> Individual::SplitGenomeIntoPages(std::vector<std::shared_ptr<P
 
 void Individual::Evaluate() {
   pages_ = SplitGenomeIntoPages(genome_);
-  auto eval = [](double total_fitness, Page page) {
-    return total_fitness + page.GetFitness();
-  };
-  fitness_ = std::accumulate(pages_.begin(), pages_.end(), 0.0, eval);
+  fitness_ = 0.0;
+  for (Page &page : pages_) {
+    fitness_ += page.GetDistances() / genome_.size()  // normalized distance of all pieces across all pages
+        + page.GetVariance() / genome_.size();
+  }
 }
 
 bool Individual::operator<(const Individual &other) const {
