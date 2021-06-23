@@ -14,7 +14,7 @@ class LabPiece : public Piece {
   // Constructs the piece from BGR values
   static ColorT LabToRgb(const ColorT &BGR);
  public:
-  LabPiece(double b, double g, double r);
+  LabPiece(float b, float g, float r);
 
   ColorT GetRepresentationColor() const override { return color_bgr_; }
 

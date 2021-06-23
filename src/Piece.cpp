@@ -8,15 +8,15 @@ Piece::Piece() {
   Init(0.0, 0.0, 0.0);
 }
 
-Piece::Piece(double gray) {
+Piece::Piece(float gray) {
   Init(gray, gray, gray);
 }
 
-Piece::Piece(double b, double g, double r) {
+Piece::Piece(float b, float g, float r) {
   Init(b, g, r);
 }
 
-void Piece::Init(double b, double g, double r) {
+void Piece::Init(float b, float g, float r) {
   color_ = ColorT(b, g, r);
 }
 

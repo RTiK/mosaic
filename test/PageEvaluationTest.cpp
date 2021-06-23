@@ -119,7 +119,7 @@ TEST(EvaluationTests, TestDistancesAdvanced) {
   };
   Page page = Page(&pieces.front(), &pieces.back());
   double distances = page.GetDistances();
-  EXPECT_NEAR(94.4484, distances, 0.0001);
+  EXPECT_NEAR(106.8456, distances, 0.0001);
 }
 
 TEST(EvaluationTests, TestVarianceSimple) {
@@ -218,4 +218,26 @@ TEST(ColorVarianceTest, OneVariancePage) {
   Page page = Page(&pieces.front(), &pieces.back());
   double variance = page.GetVariance();
   EXPECT_NEAR(2.0, variance, 0.0001);
+}
+
+TEST(SumUpNeighborsTest, Empty) {
+  float sum = SumUpNeighbours(Neighbours::NONE);
+  EXPECT_EQ(sum, 0.0f);
+}
+
+TEST(SumUpNeighborsTest, Full) {
+  float sum = SumUpNeighbours(Neighbours::ALL);
+  EXPECT_EQ(sum, 4.0f + 4.0f * kDiagonalWeight);
+}
+
+TEST(SumUpNeighborsTest, Diagonal) {
+  unsigned char neighbours = Neighbours::NE | Neighbours::SE | Neighbours::SW | Neighbours::NW;
+  float sum = SumUpNeighbours(neighbours);
+  EXPECT_EQ(sum, 4.0f * kDiagonalWeight);
+}
+
+TEST(SumUpNeighborsTest, Normal) {
+  unsigned char neighbours = Neighbours::N | Neighbours::E | Neighbours::S | Neighbours::W;
+  float sum = SumUpNeighbours(neighbours);
+  EXPECT_EQ(sum, 4.0f);
 }

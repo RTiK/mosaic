@@ -7,7 +7,7 @@
 
 #include <opencv2/opencv.hpp>
 
-typedef cv::Vec<double, 3> ColorT;
+typedef cv::Vec<float, 3> ColorT;
 
 enum Neighbours : unsigned char {
   N = 0x1 << 7,
@@ -24,7 +24,7 @@ enum Neighbours : unsigned char {
 
 class Piece {
  private:
-  void Init(double b, double g, double r);
+  void Init(float b, float g, float r);
 
  protected:
   ColorT color_;
@@ -32,9 +32,9 @@ class Piece {
  public:
   Piece();
 
-  explicit Piece(double gray);
+  explicit Piece(float gray);
 
-  Piece(double b, double g, double r);
+  Piece(float b, float g, float r);
 
   virtual double GetEuclideanDistance(const Piece &other) const;
 
