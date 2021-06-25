@@ -47,4 +47,5 @@ cd examples
 
 Setting `seed=0` will yield the following pages
 
-![example1 seed0](example1_seed0.png)
+|![example1 seed0](doc/page0.png) | ![example1 seed0](doc/page1.png) | ![example1 seed0](doc/page2.png)|
+|---|---|---|
