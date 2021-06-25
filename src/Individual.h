@@ -48,6 +48,12 @@ class Individual {
   friend std::ostream &operator<<(std::ostream &out, Individual &ind);
 
   std::vector<std::shared_ptr<Piece>> GetGenome() { return genome_; };
+
+  int Size() const { return genome_.size(); };
+
+  void Print();
+
+  void Show();
 };
 
 #endif //MOSAIC_INDIVIDUAL_H

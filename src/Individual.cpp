@@ -91,3 +91,23 @@ bool Individual::operator<(const Individual &other) const {
     return false;
   }
 }
+
+void Individual::Print() {
+  std::string page_break = "PB";
+
+  for (std::shared_ptr<Piece> &p : genome_) {
+    if (p == kPageBreak) {
+      std::cout << page_break << " ";
+    } else {
+      std::cout << p->GetRepresentationColor();
+    }
+  }
+  std::cout << std::endl;
+}
+
+void Individual::Show() {
+  int page_n = 0;
+  for (const Page& page : pages_) {
+    page.Show("Page " + std::to_string(page_n++));
+  }
+}

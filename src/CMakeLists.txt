@@ -5,7 +5,9 @@ set(Headers
         LabPiece.h
         Page.h
         PageEvaluation.h
-        IndividualGeneration.h)
+        IndividualGeneration.h
+        PopulationUtil.h
+        )
 
 set(Sources
         Piece.cpp
@@ -14,7 +16,9 @@ set(Sources
         LabPiece.cpp
         Page.cpp
         PageEvaluation.cpp
-        IndividualGeneration.cpp)
+        IndividualGeneration.cpp
+        PopulationUtil.cpp
+        )
 
 add_library(Mosaic
         ${Sources}

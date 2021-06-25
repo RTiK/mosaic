@@ -41,6 +41,8 @@ class Page {
   std::shared_ptr<Piece> *GetLastPiece() const { return last_piece_; };
 
   friend std::ostream& operator<<(std::ostream& os, Page &page);
+
+  void Show(std::string &window_title="") const;
 };
 
 #endif //MOSAIC_SRC_PAGE_H_

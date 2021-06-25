@@ -36,3 +36,20 @@ void Page::Evaluate() {
   // TODO add penalty for underfilled pages
 }
 
+void Page::Show(std::string &window_title) const {
+  cv::Mat temp_mat(Page::max_pieces_, 1, CV_32FC3, ColorT(0, 1, 0));
+  cv::MatIterator_<ColorT> mat_iter = temp_mat.begin<ColorT>();
+
+  int i = 0;
+  for (std::shared_ptr<Piece> *p = first_piece_; p <= last_piece_; p++) {
+    temp_mat.at<ColorT>(i++, 0) = p->get()->GetRepresentationColor();
+  }
+
+  cv::Mat page_mat = temp_mat.reshape(3, page_evaluation::kHeight);
+
+  cv::Mat out_mat;
+  cv::resize(page_mat, out_mat, cv::Size(), 50, 50, cv::INTER_NEAREST);
+  cv::imshow(window_title, out_mat);
+  cv::waitKey(0);
+}
+
