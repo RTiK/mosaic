@@ -12,7 +12,7 @@ Everything is built with CMake. Before we begin installing the project we need t
 
 You can download the OpenCV source code and install it into the directory `3rdparty/opencv`. 
 
-There are binaries available for Windows but make sure that they are made for your compiler. Otherwise you'll still have to compile them with yourself. Also for Windows don't forget to add OpenCV `bin/` directory (Debug and Release) to your `PATH` variable.
+There are binaries available for Windows but make sure that they are made for your compiler. Otherwise you'll still have to compile them yourself. Also, for Windows don't forget to add OpenCV `bin/` directory (Debug and Release) to your `PATH` variable.
 The [OpenCV installation guide](https://docs.opencv.org/master/d3/d52/tutorial_windows_install.htmlhttps://docs.opencv.org/master/d3/d52/tutorial_windows_install.html) is a good first choice. 
 
 If you already have OpenCV installed somewhere on your computer the installation script will attempt to find a global installation as a fallback in case no installation could be found in the directory `3rdparty/opencv`. 
