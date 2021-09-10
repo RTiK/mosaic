@@ -16,13 +16,14 @@ namespace icon_centers {
       std::pair<int, int>(1274,128), std::pair<int, int>(1274,318), std::pair<int, int>(1274,510), std::pair<int, int>(1274,700)   // 6th row
   };
 
-  const std::vector<std::pair<int, int>>& kIphone11Page = kIphoneXrPage;
-
-  const std::vector<std::pair<int, int>> kIphoneXrDock = {
-      std::pair<int, int>(1664,128), std::pair<int, int>(1664,318), std::pair<int, int>(1664,510), std::pair<int, int>(1664,700),  // dock
+  // we declare different locations depending on the number of icons in dock
+  const std::vector<std::vector<std::pair<int, int>>> kIphoneXrDock = {
+      {},
+      {std::vector<std::pair<int, int>>{std::pair<int, int>(1664, 414)}},
+      {std::vector<std::pair<int, int>>{std::pair<int, int>(1664, 319), std::pair<int, int>(1664, 509)}},
+      {std::vector<std::pair<int, int>>{std::pair<int, int>(1664, 223), std::pair<int, int>(1664, 413), std::pair<int, int>(1664, 603)}},
+      {std::vector<std::pair<int, int>>{std::pair<int, int>(1664, 128), std::pair<int, int>(1664, 318), std::pair<int, int>(1664, 510), std::pair<int, int>(1664, 700)}}  // dock
   };
-
-  const std::vector<std::pair<int, int>>& kIphone11Dock = kIphoneXrDock;
 }
 
 #endif //MOSAIC_EXTRACT_EXAMPLE_ICONCENTERS_H_
