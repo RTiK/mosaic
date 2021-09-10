@@ -35,10 +35,11 @@ else ()
     message("GoogleTest compiled from source: " ${3RDPARTY_DIR}/googletest)
 endif ()
 
+add_subdirectory(Arrange)
+add_subdirectory(Extract)
 
+#include_directories(Arrange/src)
 
-include_directories(src)
-
-add_subdirectory(src)
-add_subdirectory(test)
-add_subdirectory(examples)
+#add_subdirectory(Arrange/src)
+#add_subdirectory(Arrange/test)
+#add_subdirectory(Arrange/examples)
