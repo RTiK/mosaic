@@ -51,6 +51,8 @@ class Piece {
    * @return
    */
   virtual ColorT GetRepresentationColor() const { return color_; }
+
+  virtual cv::Mat GetImage(int width, int height) const;
 };
 
 static std::shared_ptr<Piece> kPageBreak;

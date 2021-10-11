@@ -36,6 +36,31 @@ void Page::Evaluate() {
   // TODO add penalty for underfilled pages
 }
 
+void Page::Show(std::string &window_title, int side, ColorT default_color) const {
+
+  cv::Mat rows[page_evaluation::kHeight];
+  std::shared_ptr<Piece> *current = first_piece_;
+  int type = (**current).GetImage(side, side).type();
+
+  for (int i = 0; i < page_evaluation::kHeight; i++) {
+    cv::Mat r[page_evaluation::kWidth];
+    for (int j = 0; j < page_evaluation::kWidth; j++) {
+      if (current != last_piece_) {
+        r[j] = (**current++).GetImage(side, side);
+      } else {
+        r[j] = cv::Mat(side, side, type, default_color);
+      }
+    }
+    cv::hconcat(&r[0], page_evaluation::kWidth, rows[i]);
+  }
+
+  cv::Mat output;
+  cv::vconcat(&rows[0], page_evaluation::kHeight, output);
+  cv::imshow(window_title, output);
+  cv::waitKey();
+}
+
+/*
 void Page::Show(std::string &window_title) const {
   cv::Mat temp_mat(Page::max_pieces_, 1, CV_32FC3, ColorT(0, 1, 0));
   cv::MatIterator_<ColorT> mat_iter = temp_mat.begin<ColorT>();
@@ -51,5 +76,5 @@ void Page::Show(std::string &window_title) const {
   cv::resize(page_mat, out_mat, cv::Size(), 50, 50, cv::INTER_NEAREST);
   cv::imshow(window_title, out_mat);
   cv::waitKey(0);
-}
+}*/
 

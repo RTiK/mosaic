@@ -32,3 +32,7 @@ double Piece::GetEuclideanDistance(const ColorT &other_color) const {
   }
   return sq_diff / GetInternalColor().channels;
 }
+
+cv::Mat Piece::GetImage(int width, int height) const {
+  return cv::Mat(width, height, CV_32FC3, color_);
+}

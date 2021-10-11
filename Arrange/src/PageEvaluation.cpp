@@ -45,7 +45,7 @@ float page_evaluation::CalculatePageDistances(const Page &page) {
     if (neighbours > 0) {
       total_fitness += piece_distance / SumUpNeighbours(neighbours);
     } else {
-      total_fitness += FLT_MAX;  // having no neighbors means that we have a single piece on page and we ant to avoid that
+      total_fitness += FLT_MAX;  // having no neighbors means that we have a single piece on page and we want to avoid that
     }
 
   }

@@ -18,3 +18,7 @@ ColorT LabPiece::LabToRgb(const ColorT &BGR) {
   auto lab_color = mat_out.at<ColorT>(0, 0);
   return ColorT(lab_color[0], lab_color[1], lab_color[2]);
 }
+
+cv::Mat LabPiece::GetImage(int width, int height) const {
+  return cv::Mat(width, height, CV_32FC3, color_bgr_);
+}

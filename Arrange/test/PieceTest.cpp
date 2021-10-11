@@ -3,8 +3,8 @@
 //
 
 #include <gtest/gtest.h>
-#include "Piece.h"
-#include "LabPiece.h"
+#include "pieces/Piece.h"
+#include "pieces/LabPiece.h"
 
 
 TEST(PieceTests, DistanceTest) {

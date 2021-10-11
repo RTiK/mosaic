@@ -1,20 +1,16 @@
-
 //
-// Created by Artem Khatchatourov on 30.01.21.
+// Created by Artem Khatchatourov on 18.09.21.
 //
 
-#include <random>
-#include "pieces/LabPiece.h"
-#include "Individual.h"
-#include "FileLogger.h"
-#include "IndividualGeneration.h"
-#include "PopulationUtil.h"
+#include <iostream>
+#include <pieces/BgrIconPiece.h>
+#include <Individual.h>
+#include <IndividualGeneration.h>
+#include <PopulationUtil.h>
 
-const int kNumOfPageBreaks = 2;
-const int kNumOfPieces = 40;
+
 const int kPopulation = 200;
-const int kGenerations = 1000;
-
+const int kGenerations = 100;
 
 std::random_device rd;
 std::mt19937 g(rd());
@@ -22,7 +18,8 @@ std::mt19937 g(rd());
 
 int main() {
   g.seed(0);
-  Individual template_individual = individual_generation::GenerateIndividualLabRandom(kNumOfPieces, kNumOfPageBreaks, g);
+  std::string dir_path = "/Users/rt/Desktop/icons";
+  Individual template_individual = individual_generation::ReadRgbIcons(dir_path, 1, g);
 
   template_individual.Print();
 
@@ -30,20 +27,14 @@ int main() {
   population_util::FillShuffle(population, template_individual, kPopulation, g);
 
   for (int i = 0; i < kGenerations; i++) {
-    std::cout << "generation " << i << std::endl;
+    std::cout << " generation " << i << std::endl;
 
     std::set<Individual> temp_population{};
     temp_population.swap(population);
 
-    // pass through elites (first 10%)
     population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100, g);
-
-    // mutate (another 60%)
     population_util::MutateBest(population, temp_population, 60 * kPopulation / 100, g);
-
-    // fill remaining (~30%)
     population_util::FillShuffle(population, template_individual, kPopulation - population.size(), g);
-
     population_util::PrintBest(population, 10);
 
     auto best = *population.begin();

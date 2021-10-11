@@ -5,7 +5,7 @@
 #ifndef MOSAIC_SRC_PAGE_H_
 #define MOSAIC_SRC_PAGE_H_
 
-#include "Piece.h"
+#include "pieces/Piece.h"
 
 /**
  * This class represents a page on the iOS device. It holds pointers to the first and the last icons of the page.
@@ -42,7 +42,7 @@ class Page {
 
   friend std::ostream& operator<<(std::ostream& os, Page &page);
 
-  void Show(std::string &window_title="") const;
+  void Show(std::string &window_title, int side=20, ColorT default_color=ColorT(0.0, 1.0, 0.0)) const;
 };
 
 #endif //MOSAIC_SRC_PAGE_H_

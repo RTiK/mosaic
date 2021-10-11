@@ -2,7 +2,7 @@
 // Created by Artem Khatchatourov on 30.01.21.
 //
 
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 #include "PageEvaluation.h"
 
 using namespace page_evaluation;
