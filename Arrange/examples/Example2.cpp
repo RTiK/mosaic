@@ -10,7 +10,7 @@
 
 
 const int kPopulation = 200;
-const int kGenerations = 100;
+const int kGenerations = 200;
 
 std::random_device rd;
 std::mt19937 g(rd());
@@ -19,7 +19,7 @@ std::mt19937 g(rd());
 int main() {
   g.seed(0);
   std::string dir_path = "/Users/rt/Desktop/icons";
-  Individual template_individual = individual_generation::ReadRgbIcons(dir_path, 1, g);
+  Individual template_individual = individual_generation::ReadRgbIcons(dir_path, 3, g);
 
   template_individual.Print();
 

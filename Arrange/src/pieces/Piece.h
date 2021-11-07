@@ -52,7 +52,11 @@ class Piece {
    */
   virtual ColorT GetRepresentationColor() const { return color_; }
 
+  friend std::ostream &operator<<(std::ostream &out, const Piece &piece);
+
   virtual cv::Mat GetImage(int width, int height) const;
+
+  virtual std::string Print() const;
 };
 
 static std::shared_ptr<Piece> kPageBreak;

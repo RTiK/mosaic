@@ -36,3 +36,13 @@ double Piece::GetEuclideanDistance(const ColorT &other_color) const {
 cv::Mat Piece::GetImage(int width, int height) const {
   return cv::Mat(width, height, CV_32FC3, color_);
 }
+
+std::ostream &operator<<(std::ostream &out, const Piece &piece) {
+  out << piece.Print();
+  return out;
+}
+
+std::string Piece::Print() const {
+  return std::to_string(color_[0]) + " " + std::to_string(color_[1]) + " " + std::to_string(color_[2]);
+}
+

@@ -99,7 +99,7 @@ void Individual::Print() {
     if (p == kPageBreak) {
       std::cout << page_break << " ";
     } else {
-      std::cout << p->GetRepresentationColor();
+      std::cout << *p << " ";
     }
   }
   std::cout << std::endl;

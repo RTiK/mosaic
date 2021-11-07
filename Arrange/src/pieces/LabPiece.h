@@ -21,7 +21,6 @@ class LabPiece : public Piece {
   ColorT GetInternalColor() const override { return color_; };
 
   cv::Mat GetImage(int width, int height) const override;
-
 };
 
 #endif //MOSAIC_SRC_LABPIECE_H_

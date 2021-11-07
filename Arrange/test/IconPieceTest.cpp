@@ -4,7 +4,6 @@
 
 #include "pieces/IconPiece.h"
 #include "pieces/BgrIconPiece.h"
-//#include <HsvIconPiece.h>
 #include "gtest/gtest.h"
 
 TEST(SplitColorChannelsAndAlphaTest, Simple) {

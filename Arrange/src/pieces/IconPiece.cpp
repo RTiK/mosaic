@@ -14,15 +14,9 @@ cv::MatND IconPiece::GetHistogram(cv::Mat &colors, int channel, cv::Mat mask, in
 }
 
 IconPiece::IconPiece(std::filesystem::path path) {
-  icon_path_ = std::filesystem::path(path);
+  icon_path_ = path;
+  icon_name_ = icon_path_.filename();
   original_image_ = cv::imread(icon_path_, cv::IMREAD_UNCHANGED);
-
-  cv::Mat bgr, mask, hsv;
-  SplitColorChannelsAndAlpha(original_image_, bgr, mask);
-
-  //cv::cvtColor(bgr, hsv, cv::COLOR_BGR2HSV);
-
-  Analyze(bgr, mask);
 }
 
 void IconPiece::SplitColorChannelsAndAlpha(cv::Mat image, cv::Mat &colors, cv::Mat &alpha) {
@@ -42,7 +36,18 @@ void IconPiece::SplitColorChannelsAndAlpha(cv::Mat image, cv::Mat &colors, cv::M
   cv::threshold(alpha, alpha, 0.5, 1, cv::THRESH_BINARY);
 }
 
-IconPiece::IconPiece(cv::Mat image) {
+IconPiece::IconPiece(cv::Mat image, std::string name) {
   icon_path_ = "";
+  icon_name_ = name;
   original_image_ = image;
+}
+
+cv::Mat IconPiece::GetImage(int width, int height) const {
+  cv::Mat resized_image;
+  cv::resize(original_image_, resized_image, cv::Size(width, height));
+  return resized_image;
+}
+
+std::string IconPiece::Print() const {
+  return icon_name_;
 }

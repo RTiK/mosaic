@@ -17,10 +17,9 @@ class BgrIconPiece : public IconPiece {
  public:
   // TODO decide what to do with image path
   BgrIconPiece(cv::Mat image);
-  BgrIconPiece(std::string path) : BgrIconPiece(cv::imread(path, cv::IMREAD_UNCHANGED)) { };
+  BgrIconPiece(std::string path);
   friend double GetEuclideanDistance(const BgrIconPiece &p_1, const BgrIconPiece &p_2);
-  cv::Mat GetImage(int width, int height) const override;
-  double GetEuclideanDistance(const BgrIconPiece &other) const;
+  double GetEuclideanDistance(const Piece &other) const override;
 };
 
 #endif //MOSAIC_ARRANGE_SRC_HSVICONPIECE_H_
