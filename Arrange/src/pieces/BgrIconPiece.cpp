@@ -42,7 +42,7 @@ double GetEuclideanDistance(const BgrIconPiece &p_1, const BgrIconPiece &p_2) {
   return total_distances[0];
 }
 
-double BgrIconPiece::GetEuclideanDistance(const Piece &other) const {
+double BgrIconPiece::Distance(const Piece &other) const {
   BgrIconPiece* o = (BgrIconPiece*) &other;
 
   cv::Mat b_diff, g_diff, r_diff, b_diff_sq, g_diff_sq, r_diff_sq;
@@ -55,4 +55,21 @@ double BgrIconPiece::GetEuclideanDistance(const Piece &other) const {
 
   cv::Scalar_<double> total_distances = cv::sum(b_diff_sq) + cv::sum(g_diff_sq) + cv::sum(r_diff_sq);
   return total_distances[0];
+}
+
+cv::Vec3f BgrIconPiece::DominatingColor() const {
+  float step = 1.0f / 32.0f;
+  double min_val, max_val;
+  int min_idx, max_idx;
+
+  cv::minMaxIdx(b_histogram_, &min_val, &max_val, &min_idx, &max_idx);
+  float b_bin = max_idx * step;
+
+  cv::minMaxIdx(g_histogram_, &min_val, &max_val, &min_idx, &max_idx);
+  float g_bin = max_idx * step;
+
+  cv::minMaxIdx(r_histogram_, &min_val, &max_val, &min_idx, &max_idx);
+  float r_bin = max_idx * step;
+
+  return cv::Vec3f(b_bin, g_bin, r_bin);
 }

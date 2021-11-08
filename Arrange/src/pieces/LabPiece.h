@@ -5,22 +5,25 @@
 #ifndef MOSAIC_SRC_LABPIECE_H_
 #define MOSAIC_SRC_LABPIECE_H_
 
-#include "Piece.h"
+
+#include "ColorPiece.h"
 
 
-class LabPiece : public Piece {
-  ColorT color_bgr_;
+class LabPiece : public ColorPiece {
+  cv::Vec3f lab_color_;
 
   // Constructs the piece from BGR values
-  static ColorT LabToRgb(const ColorT &BGR);
+  static cv::Vec3f LabToRgb(const cv::Vec3f &BGR);
  public:
   LabPiece(float b, float g, float r);
 
-  ColorT GetRepresentationColor() const override { return color_bgr_; }
+  cv::Vec3f GetLabColor() const { return lab_color_; };
 
-  ColorT GetInternalColor() const override { return color_; };
+  cv::Vec3f DominatingColor() const override { return GetLabColor(); }
 
-  cv::Mat GetImage(int width, int height) const override;
+  virtual double Distance(const Piece &other) const override;
+
+  cv::Mat Image(int width, int height) const override;
 };
 
 #endif //MOSAIC_SRC_LABPIECE_H_

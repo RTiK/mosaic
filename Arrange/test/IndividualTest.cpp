@@ -4,11 +4,12 @@
 
 #include "gtest/gtest.h"
 #include "Individual.h"
+#include "pieces/ColorPiece.h"
 
 
 TEST(IndividualConstructorTests, CopyConstructorTest) {
   std::vector<std::shared_ptr<Piece>> genome {
-    std::make_shared<Piece>(), std::make_shared<Piece>(), std::make_shared<Piece>(), std::make_shared<Piece>()
+    std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
   Individual original_individual(genome);
   Individual copy_individual(original_individual);
@@ -22,7 +23,7 @@ TEST(IndividualConstructorTests, CopyConstructorTest) {
  */
 TEST(IndividualSwapTests, SwapAdjacent) {
   std::vector<std::shared_ptr<Piece>> genome {
-    std::make_shared<Piece>(), std::make_shared<Piece>(), std::make_shared<Piece>(), std::make_shared<Piece>()
+    std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
   Individual individual(genome);
   unsigned int index_1 = 1;
@@ -36,7 +37,7 @@ TEST(IndividualSwapTests, SwapAdjacent) {
 
 TEST(IndividualSwapTests, SwapEdges) {
   std::vector<std::shared_ptr<Piece>> genome {
-    std::make_shared<Piece>(), std::make_shared<Piece>(), std::make_shared<Piece>(), std::make_shared<Piece>()
+    std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
   Individual individual(genome);
   unsigned int index_1 = 0;
@@ -50,8 +51,8 @@ TEST(IndividualSwapTests, SwapEdges) {
 
 TEST(IndividualSwapTests, SwapSameIndex) {
   std::vector<std::shared_ptr<Piece>> genome {
-    std::make_shared<Piece>(), std::make_shared<Piece>(),
-    std::make_shared<Piece>(), std::make_shared<Piece>()
+    std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(),
+    std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
   Individual individual(genome);
   unsigned int index_1 = 1;
@@ -62,8 +63,8 @@ TEST(IndividualSwapTests, SwapSameIndex) {
 
 TEST(PageBreakTest, TestSimplePageBreak) {
   std::vector<std::shared_ptr<Piece>> pieces {
-      std::make_shared<Piece>(), std::make_shared<Piece>(),
-      std::make_shared<Piece>(), std::make_shared<Piece>()
+      std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(),
+      std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
   std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
   EXPECT_EQ(pages.size(), 1);
@@ -73,7 +74,7 @@ TEST(PageBreakTest, TestSimplePageBreak) {
 
 TEST(PageBreakTest, TestLeadingPageBreak) {
   std::vector<std::shared_ptr<Piece>> pieces {
-    std::make_shared<Piece>(), std::make_shared<Piece>()
+    std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
   pieces.emplace(pieces.begin(), kPageBreak);
   std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
@@ -84,8 +85,8 @@ TEST(PageBreakTest, TestLeadingPageBreak) {
 
 TEST(PageBreakTest, TestTrailingPageBreak) {
   std::vector<std::shared_ptr<Piece>> pieces {
-    std::make_shared<Piece>(), std::make_shared<Piece>(),
-    std::make_shared<Piece>(), std::make_shared<Piece>()
+    std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(),
+    std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
   pieces.emplace_back(kPageBreak);
   std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
@@ -96,7 +97,7 @@ TEST(PageBreakTest, TestTrailingPageBreak) {
 
 TEST(PageBreakTest, TestOnePiecePage) {
   std::vector<std::shared_ptr<Piece>> pieces {
-    std::make_shared<Piece>()
+    std::make_shared<ColorPiece>()
   };
   std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
   EXPECT_EQ(pages.size(), 1);
@@ -106,7 +107,7 @@ TEST(PageBreakTest, TestOnePiecePage) {
 
 TEST(PageBreakTest, TestTwoOnePiecePages) {
   std::vector<std::shared_ptr<Piece>> pieces {
-      std::make_shared<Piece>(), kPageBreak, std::make_shared<Piece>()
+      std::make_shared<ColorPiece>(), kPageBreak, std::make_shared<ColorPiece>()
   };
   std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
   EXPECT_EQ(pages.size(), 2);
@@ -118,9 +119,9 @@ TEST(PageBreakTest, TestTwoOnePiecePages) {
 
 TEST(PageBreakTest, TestTwoPage) {
   std::vector<std::shared_ptr<Piece>> pieces {
-      std::make_shared<Piece>(), std::make_shared<Piece>(),
+      std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(),
       kPageBreak,
-      std::make_shared<Piece>(), std::make_shared<Piece>()
+      std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
   std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
   EXPECT_EQ(pages.size(), 2);
@@ -132,9 +133,9 @@ TEST(PageBreakTest, TestTwoPage) {
 
 TEST(PageBreakTest, TestTripplePageBreak) {
   std::vector<std::shared_ptr<Piece>> pieces {
-      std::make_shared<Piece>(), std::make_shared<Piece>(),
+      std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(),
       kPageBreak, kPageBreak, kPageBreak,
-      std::make_shared<Piece>(), std::make_shared<Piece>()
+      std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
   std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
   EXPECT_EQ(pages.size(), 2);
@@ -146,20 +147,20 @@ TEST(PageBreakTest, TestTripplePageBreak) {
 
 TEST(PageBreakTest, TestPageOverflow) {
   std::vector<std::shared_ptr<Piece>> pieces{
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 0
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 2
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 4
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 6
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 8
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 10
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 12
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 14
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 16
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 20
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 22
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 24
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0),  // 0 - new page
-      std::make_shared<Piece>(1.0), std::make_shared<Piece>(1.0)   // 2
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 0
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 2
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 4
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 6
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 8
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 10
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 12
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 14
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 16
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 20
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 22
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 24
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0),  // 0 - new page
+      std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0)   // 2
   };
   std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
   EXPECT_EQ(pages.size(), 2);

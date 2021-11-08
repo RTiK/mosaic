@@ -19,7 +19,8 @@ class BgrIconPiece : public IconPiece {
   BgrIconPiece(cv::Mat image);
   BgrIconPiece(std::string path);
   friend double GetEuclideanDistance(const BgrIconPiece &p_1, const BgrIconPiece &p_2);
-  double GetEuclideanDistance(const Piece &other) const override;
+  double Distance(const Piece &other) const override;
+  virtual cv::Vec3f DominatingColor() const override;
 };
 
 #endif //MOSAIC_ARRANGE_SRC_HSVICONPIECE_H_

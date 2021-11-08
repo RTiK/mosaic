@@ -12,7 +12,7 @@ Individual individual_generation::GenerateIndividualGrayRandom(unsigned int leng
 
   std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
   for (int i = 0; i < length; i++) {
-    genome[i] = std::make_shared<Piece>(random_color_value(g) / 256.0f);
+    genome[i] = std::make_shared<ColorPiece>(random_color_value(g) / 256.0f);
   }
 
   for (int i = length; i < length + page_breaks; i++) {
@@ -26,9 +26,9 @@ Individual individual_generation::GenerateIndividualRgbRandom(unsigned int lengt
 
   std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
   for (int i = 0; i < length; i++) {
-    genome[i] = std::make_shared<Piece>(random_color_value(g) / 256.0f,
-                                        random_color_value(g) / 256.0f,
-                                        random_color_value(g) / 256.0f);
+    genome[i] = std::make_shared<ColorPiece>(random_color_value(g) / 256.0f,
+                                             random_color_value(g) / 256.0f,
+                                             random_color_value(g) / 256.0f);
   }
 
   for (int i = length; i < length + page_breaks; i++) {

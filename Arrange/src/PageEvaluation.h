@@ -6,7 +6,7 @@
 #define MOSAIC_SRC_PAGEEVALUATION_H_
 
 
-#include "pieces/Piece.h"
+#include "pieces/ColorPiece.h"
 #include "Page.h"
 #include <bitset>
 
@@ -23,7 +23,7 @@ namespace page_evaluation {
 
   float CalculatePageDistances(const Page &page);
 
-  ColorT CalculateMeanPageColor(const Page &page);
+  cv::Vec3f CalculateMeanPageColor(const Page &page);
 
   float CalculateColorVariance(const Page &page);
 

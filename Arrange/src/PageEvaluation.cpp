@@ -18,28 +18,28 @@ float page_evaluation::CalculatePageDistances(const Page &page) {
     double piece_distance = 0.0;
 
     if (neighbours & Neighbours::N) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current - kWidth));
+      piece_distance += current_piece->Distance(**(current - kWidth));
     }
     if (neighbours & Neighbours::NE) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current - (kWidth - 1))) * kDiagonalWeight;
+      piece_distance += current_piece->Distance(**(current - (kWidth - 1))) * kDiagonalWeight;
     }
     if (neighbours & Neighbours::E) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current + 1));
+      piece_distance += current_piece->Distance(**(current + 1));
     }
     if (neighbours & Neighbours::SE) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current + (kWidth + 1))) * kDiagonalWeight;
+      piece_distance += current_piece->Distance(**(current + (kWidth + 1))) * kDiagonalWeight;
     }
     if (neighbours & Neighbours::S) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current + kWidth));
+      piece_distance += current_piece->Distance(**(current + kWidth));
     }
     if (neighbours & Neighbours::SW) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current + (kWidth - 1))) * kDiagonalWeight;
+      piece_distance += current_piece->Distance(**(current + (kWidth - 1))) * kDiagonalWeight;
     }
     if (neighbours & Neighbours::W) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current - 1));
+      piece_distance += current_piece->Distance(**(current - 1));
     }
     if (neighbours & Neighbours::NW) {
-      piece_distance += current_piece->GetEuclideanDistance(**(current - (kWidth + 1))) * kDiagonalWeight;
+      piece_distance += current_piece->Distance(**(current - (kWidth + 1))) * kDiagonalWeight;
     }
 
     if (neighbours > 0) {
@@ -60,22 +60,23 @@ float page_evaluation::SumUpNeighbours(unsigned char neighbours) {
   return normal_neighbors_count + diagonal_neighbors_count * kDiagonalWeight;
 }
 
-ColorT page_evaluation::CalculateMeanPageColor(const Page &page) {
-  ColorT total_color = ColorT(0.0f, 0.0f, 0.0f);
+cv::Vec3f page_evaluation::CalculateMeanPageColor(const Page &page) {
+  cv::Vec3f total_color = cv::Vec3f(0.0f, 0.0f, 0.0f);
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
-    total_color += (**current).GetInternalColor();
+    total_color += (**current).DominatingColor();
   }
   float num_of_pieces = 1.0f + float (page.GetLastPiece() - page.GetFirstPiece());
-  return ColorT(total_color[0] / num_of_pieces,
+  return cv::Vec3f(total_color[0] / num_of_pieces,
                 total_color[1] / num_of_pieces,
                 total_color[2] / num_of_pieces);
 }
 
 float page_evaluation::CalculateColorVariance(const Page &page) {
-  ColorT mean_color = CalculateMeanPageColor(page);
+  cv::Vec3f mean_color = CalculateMeanPageColor(page);
   double total_distance = 0.0;
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
-    total_distance += (**current).GetEuclideanDistance(mean_color);
+    // TODO rethink this code
+    total_distance += ColorPiece::EuclideanDistance((**current).DominatingColor(), mean_color);
   }
   return total_distance;
 }

@@ -8,15 +8,15 @@
 
 
 TEST(PieceTests, DistanceTest) {
-  auto p_1 = Piece(0.2, 0.1, 0.1);
-  auto p_2 = Piece(0.0, 0.3, 0.2);
-  auto distance = p_1.GetEuclideanDistance(p_2);
+  auto p_1 = ColorPiece(0.2, 0.1, 0.1);
+  auto p_2 = ColorPiece(0.0, 0.3, 0.2);
+  auto distance = p_1.Distance(p_2);
   EXPECT_NEAR(distance, 0.03, 0.00001);
 }
 
 TEST(PieceTests, GrayAssignmentTest) {
-  auto piece = Piece(0.5);
-  ColorT gray = piece.GetRepresentationColor();
+  auto piece = ColorPiece(0.5);
+  cv::Vec3f gray = piece.GetColor();
   EXPECT_EQ(gray[0], 0.5);
   EXPECT_EQ(gray[1], 0.5);
   EXPECT_EQ(gray[2], 0.5);
@@ -28,8 +28,8 @@ TEST(PieceTests, GrayAssignmentTest) {
  */
 TEST(PieceTests, LabAssignmentTest) {
   LabPiece lab_piece = LabPiece(0.5, 0.5, 0.5);
-  EXPECT_EQ(lab_piece.GetRepresentationColor(), ColorT(0.5, 0.5, 0.5));
-  EXPECT_NEAR(lab_piece.GetEuclideanDistance(ColorT(53.4, 0, 0)), 0.0, 0.0001);
+  EXPECT_EQ(lab_piece.GetColor(), cv::Vec3f(0.5, 0.5, 0.5));
+  EXPECT_EQ(lab_piece.GetLabColor(), cv::Vec3f(53.4, 0, 0));
 }
 
 /**
@@ -40,21 +40,21 @@ TEST(PieceTests, LabColorTest) {
   LabPiece lab_piece_G = LabPiece(0.0, 1.0, 0.0);
   LabPiece lab_piece_R = LabPiece(0.0, 0.0, 1.0);
 
-  ColorT B = lab_piece_B.GetRepresentationColor();
-  ColorT G = lab_piece_G.GetRepresentationColor();
-  ColorT R = lab_piece_R.GetRepresentationColor();
+  cv::Vec3f B = lab_piece_B.GetColor();
+  cv::Vec3f G = lab_piece_G.GetColor();
+  cv::Vec3f R = lab_piece_R.GetColor();
 
-  EXPECT_EQ(B, ColorT(1.0, 0.0, 0.0));
-  EXPECT_EQ(G, ColorT(0.0, 1.0, 0.0));
-  EXPECT_EQ(R, ColorT(0.0, 0.0, 1.0));
+  EXPECT_EQ(B, cv::Vec3f(1.0, 0.0, 0.0));
+  EXPECT_EQ(G, cv::Vec3f(0.0, 1.0, 0.0));
+  EXPECT_EQ(R, cv::Vec3f(0.0, 0.0, 1.0));
 
-  ColorT lab_B = lab_piece_B.GetInternalColor();
-  ColorT lab_G = lab_piece_G.GetInternalColor();
-  ColorT lab_R = lab_piece_R.GetInternalColor();
+  cv::Vec3f lab_B = lab_piece_B.GetLabColor();
+  cv::Vec3f lab_G = lab_piece_G.GetLabColor();
+  cv::Vec3f lab_R = lab_piece_R.GetLabColor();
 
-  ColorT expect_lab_B = ColorT(32.2937, 79.1875, -107.859);
-  ColorT expect_lab_G = ColorT(87.738, -86.1875, 83.1719);
-  ColorT expect_lab_R = ColorT(53.241, 80.0938, 67.2031);
+  cv::Vec3f expect_lab_B = cv::Vec3f(32.2937, 79.1875, -107.859);
+  cv::Vec3f expect_lab_G = cv::Vec3f(87.738, -86.1875, 83.1719);
+  cv::Vec3f expect_lab_R = cv::Vec3f(53.241, 80.0938, 67.2031);
 
   EXPECT_NEAR(lab_B[0], expect_lab_B[0], 0.0001);
   EXPECT_NEAR(lab_B[1], expect_lab_B[1], 0.0001);

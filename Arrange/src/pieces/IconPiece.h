@@ -32,8 +32,8 @@ class IconPiece : public Piece {
   static void SplitColorChannelsAndAlpha(cv::Mat image, cv::Mat &colors, cv::Mat &alpha);
 
   std::string GetPath() const { return icon_path_.string(); };
-  cv::Mat GetIcon() const { return original_image_; };
-  cv::Mat GetImage(int width, int height) const override;
+
+  cv::Mat Image(int width, int height) const override;
 
   static cv::MatND GetHistogram(cv::Mat &colors, int channel, cv::Mat mask, int bins, float range[]);
 

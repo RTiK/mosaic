@@ -7,7 +7,6 @@
 
 #include <opencv2/opencv.hpp>
 
-typedef cv::Vec<float, 3> ColorT;
 
 enum Neighbours : unsigned char {
   N = 0x1 << 7,
@@ -22,44 +21,23 @@ enum Neighbours : unsigned char {
   NONE = 0x0
 };
 
+/**
+ * This pure virtual class acts as an interface to different types of Piece objects.
+ * Specializations of the class will have to implement the virtual methods.
+ */
 class Piece {
- private:
-  void Init(float b, float g, float r);
-
- protected:
-  ColorT color_;
-
  public:
-  Piece();
+  virtual double Distance(const Piece &other) const = 0;
 
-  explicit Piece(float gray);
+  virtual cv::Mat Image(int width, int height) const = 0;
 
-  Piece(float b, float g, float r);
+  virtual cv::Vec3f DominatingColor() const = 0;
 
-  virtual double GetEuclideanDistance(const Piece &other) const;
+  virtual std::string Print() const = 0;
 
-  virtual double GetEuclideanDistance(const ColorT &other) const;
-
-  /**
-   * Getter for the color that represents the Piece internally
-   * @return
-   */
-  virtual ColorT GetInternalColor() const { return color_; };
-
-  /**
-   * Getter for the color that can be used to display the Piece (BGR)
-   * @return
-   */
-  virtual ColorT GetRepresentationColor() const { return color_; }
-
-  friend std::ostream &operator<<(std::ostream &out, const Piece &piece);
-
-  virtual cv::Mat GetImage(int width, int height) const;
-
-  virtual std::string Print() const;
+  friend std::ostream &operator<<(std::ostream &out, const Piece &piece) { return out << piece.Print(); }
 };
 
 static std::shared_ptr<Piece> kPageBreak;
-
 
 #endif //MOSAIC_SRC_PIECE_H_

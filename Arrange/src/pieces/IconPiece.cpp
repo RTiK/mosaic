@@ -42,7 +42,7 @@ IconPiece::IconPiece(cv::Mat image, std::string name) {
   original_image_ = image;
 }
 
-cv::Mat IconPiece::GetImage(int width, int height) const {
+cv::Mat IconPiece::Image(int width, int height) const {
   cv::Mat resized_image;
   cv::resize(original_image_, resized_image, cv::Size(width, height));
   return resized_image;
