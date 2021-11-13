@@ -8,7 +8,7 @@
 #include <vector>
 #include <random>
 #include "Page.h"
-#include "Piece.h"
+#include "pieces/Piece.h"
 
 
 /**

@@ -1,23 +1,28 @@
 set(Headers
-        Piece.h
         Individual.h
         FileLogger.h
-        LabPiece.h
         Page.h
         PageEvaluation.h
         IndividualGeneration.h
         PopulationUtil.h
+        pieces/Piece.h
+        pieces/LabPiece.h
+        pieces/IconPiece.h
+        pieces/BgrIconPiece.h
+        pieces/ColorPiece.h
         )
 
 set(Sources
-        Piece.cpp
         Individual.cpp
         FileLogger.cpp
-        LabPiece.cpp
         Page.cpp
         PageEvaluation.cpp
         IndividualGeneration.cpp
         PopulationUtil.cpp
+        pieces/LabPiece.cpp
+        pieces/IconPiece.cpp
+        pieces/BgrIconPiece.cpp
+        pieces/ColorPiece.cpp
         )
 
 add_library(Mosaic

@@ -99,7 +99,7 @@ void Individual::Print() {
     if (p == kPageBreak) {
       std::cout << page_break << " ";
     } else {
-      std::cout << p->GetRepresentationColor();
+      std::cout << *p << " ";
     }
   }
   std::cout << std::endl;
@@ -108,6 +108,7 @@ void Individual::Print() {
 void Individual::Show() {
   int page_n = 0;
   for (const Page& page : pages_) {
-    page.Show("Page " + std::to_string(page_n++));
+    std::string window_title = "Page " + std::to_string(page_n++);
+    page.Show(window_title);
   }
 }

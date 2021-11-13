@@ -16,6 +16,8 @@ namespace individual_generation {
 
   Individual GenerateIndividualGrayRandom(unsigned int length, unsigned int page_breaks, std::mt19937 g);
 
+  Individual ReadRgbIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g);
+
 };
 
 #endif //MOSAIC_SRC_INDIVIDUALGENERATION_H_
