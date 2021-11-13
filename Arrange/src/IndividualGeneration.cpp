@@ -58,7 +58,7 @@ Individual individual_generation::ReadRgbIcons(std::string dir_path, unsigned in
 
   std::vector<std::filesystem::path> files{};
   for (auto file : std::filesystem::directory_iterator(dir_path)) {
-    if (file.is_regular_file() && file.path().filename().string()[0] != '.') {
+    if (file.is_regular_file() && file.path().extension().string() == ".png") {
       files.push_back(file);
     }
   }

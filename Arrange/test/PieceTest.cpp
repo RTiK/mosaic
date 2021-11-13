@@ -29,7 +29,11 @@ TEST(PieceTests, GrayAssignmentTest) {
 TEST(PieceTests, LabAssignmentTest) {
   LabPiece lab_piece = LabPiece(0.5, 0.5, 0.5);
   EXPECT_EQ(lab_piece.GetColor(), cv::Vec3f(0.5, 0.5, 0.5));
-  EXPECT_EQ(lab_piece.GetLabColor(), cv::Vec3f(53.4, 0, 0));
+  cv::Vec3f lab_color = lab_piece.GetLabColor();
+  EXPECT_NEAR(lab_color[0], 53.3875, 0.0001);
+  // input color is a shade of gray, thus, the color channels must evaluate to _exactly_ zero
+  EXPECT_EQ(lab_color[1], 0.0);
+  EXPECT_EQ(lab_color[2], 0.0);
 }
 
 /**

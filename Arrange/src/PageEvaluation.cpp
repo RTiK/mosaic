@@ -45,7 +45,7 @@ float page_evaluation::CalculatePageDistances(const Page &page) {
     if (neighbours > 0) {
       total_fitness += piece_distance / SumUpNeighbours(neighbours);
     } else {
-      total_fitness += FLT_MAX;  // having no neighbors means that we have a single piece on page and we want to avoid that
+      total_fitness += FLT_MAX;  // having no neighbours means that we have a single piece on page and we want to avoid that
     }
 
   }
@@ -66,9 +66,7 @@ cv::Vec3f page_evaluation::CalculateMeanPageColor(const Page &page) {
     total_color += (**current).DominatingColor();
   }
   float num_of_pieces = 1.0f + float (page.GetLastPiece() - page.GetFirstPiece());
-  return cv::Vec3f(total_color[0] / num_of_pieces,
-                total_color[1] / num_of_pieces,
-                total_color[2] / num_of_pieces);
+  return cv::Vec3f(total_color[0] / num_of_pieces, total_color[1] / num_of_pieces, total_color[2] / num_of_pieces);
 }
 
 float page_evaluation::CalculateColorVariance(const Page &page) {

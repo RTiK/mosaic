@@ -16,7 +16,7 @@ class Page {
   std::shared_ptr<Piece> *first_piece_, *last_piece_;
   double distances_;
   double variance_;
-  double mean_color_;
+  cv::Vec3f mean_color_;
 
   void Evaluate();
 
@@ -24,7 +24,7 @@ class Page {
   const static unsigned int max_pieces_ = 24;
 
   Page(const Page &page) : first_piece_{page.first_piece_}, last_piece_{page.last_piece_},
-      distances_{page.distances_}, variance_{page.variance_} {};
+      distances_{page.distances_}, variance_{page.variance_}, mean_color_{page.mean_color_} {};
 
   Page(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece);
 
@@ -32,7 +32,7 @@ class Page {
 
   double GetVariance() const { return variance_; }
 
-  double GetMeanColor() const { return mean_color_; }
+  cv::Vec3f GetMeanColor() const { return mean_color_; }
 
   unsigned int Size() const;
 
@@ -42,7 +42,7 @@ class Page {
 
   friend std::ostream& operator<<(std::ostream& os, Page &page);
 
-  void Show(std::string &window_title, int side=50, cv::Vec3f default_color=cv::Vec3f(0.0, 1.0, 0.0)) const;
+  void Show(std::string &window_title, int side=50, cv::Vec3f default_color=cv::Vec3f(0.0, 0.0, 0.0)) const;
 };
 
 #endif //MOSAIC_SRC_PAGE_H_

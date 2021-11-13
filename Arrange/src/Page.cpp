@@ -31,13 +31,14 @@ std::ostream &operator<<(std::ostream &os, Page &page) {
 
 void Page::Evaluate() {
   distances_ = page_evaluation::CalculatePageDistances(*this);
-  //variance_ = page_evaluation::CalculateColorVariance(*this);
+  mean_color_ = page_evaluation::CalculateMeanPageColor(*this);
+  variance_ = page_evaluation::CalculateColorVariance(*this);
   // TODO add penalty for underfilled pages
 }
 
 void Page::Show(std::string &window_title, int side, cv::Vec3f default_color) const {
 
-  cv::Mat rows[page_evaluation::kHeight];
+  cv::Mat rows[page_evaluation::kHeight + 1];
   std::shared_ptr<Piece> *current = first_piece_;
   int type = (**current).Image(side, side).type();
 
@@ -53,8 +54,11 @@ void Page::Show(std::string &window_title, int side, cv::Vec3f default_color) co
     cv::hconcat(&r[0], page_evaluation::kWidth, rows[i]);
   }
 
+  cv::Mat color_bar (side/2, page_evaluation::kWidth * side, type, mean_color_);
+  rows[page_evaluation::kHeight] = color_bar;
+
   cv::Mat output;
-  cv::vconcat(&rows[0], page_evaluation::kHeight, output);
+  cv::vconcat(&rows[0], page_evaluation::kHeight+1, output);
   cv::imshow(window_title, output);
   cv::waitKey();
 }
