@@ -25,7 +25,7 @@ IconPiece::IconPiece(cv::Mat image, std::string name) {
   original_image_ = image;
 }
 
-void IconPiece::SplitColorChannelsAndAlpha(cv::Mat image, cv::Mat &colors, cv::Mat &alpha) {
+void IconPiece::SplitColorChannelsAndAlpha(const cv::Mat &image, cv::Mat &colors, cv::Mat &alpha) {
   assert(image.type() == CV_16UC4);
   colors = cv::Mat(image.rows, image.cols, CV_16UC3);
   alpha = cv::Mat(image.rows, image.cols, CV_16UC1);

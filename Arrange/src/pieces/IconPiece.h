@@ -29,7 +29,7 @@ class IconPiece : public Piece {
    * @param colors Output matrix of type `CV_32FC3` containing three color channels
    * @param alpha Output matrix of type `CV_8U1C` containing the alpha channel
    */
-  static void SplitColorChannelsAndAlpha(cv::Mat image, cv::Mat &colors, cv::Mat &alpha);
+  static void SplitColorChannelsAndAlpha(const cv::Mat &image, cv::Mat &colors, cv::Mat &alpha);
 
   std::string GetPath() const { return icon_path_.string(); };
 

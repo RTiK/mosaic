@@ -23,9 +23,12 @@ unsigned int Page::Size() const {
 }
 
 std::ostream &operator<<(std::ostream &os, Page &page) {
+  os << "mean: " << page.mean_color_ << " variance: " << page.variance_ << std::endl;
+  os << page.Size() << " icons:";
   for (std::shared_ptr<Piece>* current = page.first_piece_; current <= page.last_piece_; current++) {
-    os << **current << std::endl;
+    os << " " << **current;
   }
+  os << std::endl;
   return os;
 }
 

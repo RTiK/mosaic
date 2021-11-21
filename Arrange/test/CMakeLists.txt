@@ -1,8 +1,8 @@
 set(TestSources
-        PieceTest.cpp
+        pieces/PieceTest.cpp
         PageEvaluationTest.cpp
         IndividualTest.cpp
-        IconPieceTest.cpp
+        pieces/IconPieceTest.cpp
         )
 
 add_executable(MosaicTest

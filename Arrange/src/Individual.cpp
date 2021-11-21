@@ -37,6 +37,10 @@ void Individual::Swap(unsigned int index_1, unsigned int index_2) {
 std::ostream &operator<<(std::ostream &out, Individual &ind) {
   auto pages = ind.GetPages();
   out << "Fitness: " << std::to_string(ind.fitness_) << " Pages: " << std::to_string(pages.size());
+  for (auto page : pages) {
+    out << page;
+  }
+  out << std::endl;
   return out;
 }
 
@@ -99,7 +103,7 @@ void Individual::Print() {
     if (p == kPageBreak) {
       std::cout << page_break << " ";
     } else {
-      std::cout << *p << " ";
+      std::cout << (*p).Print() << " ";
     }
   }
   std::cout << std::endl;

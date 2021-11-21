@@ -10,6 +10,7 @@ set(Headers
         pieces/IconPiece.h
         pieces/BgrIconPiece.h
         pieces/ColorPiece.h
+        pieces/LabIconPiece.h
         )
 
 set(Sources
@@ -23,6 +24,7 @@ set(Sources
         pieces/IconPiece.cpp
         pieces/BgrIconPiece.cpp
         pieces/ColorPiece.cpp
+        pieces/LabIconPiece.cpp
         )
 
 add_library(Mosaic

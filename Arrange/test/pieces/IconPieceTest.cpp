@@ -4,6 +4,7 @@
 
 #include "pieces/IconPiece.h"
 #include "pieces/BgrIconPiece.h"
+#include "pieces/LabIconPiece.h"
 #include "gtest/gtest.h"
 
 TEST(SplitColorChannelsAndAlphaTest, Simple) {
@@ -94,7 +95,7 @@ TEST(RGBDistanceTests, DistanceTestB) {
   BgrIconPiece piece_1(image_1);
   BgrIconPiece piece_2(image_2);
 
-  double distance = GetEuclideanDistance(piece_1, piece_2);
+  double distance = EuclideanDistance(&piece_1, &piece_2);
 
   ASSERT_EQ(0, distance);
 }
@@ -120,7 +121,7 @@ TEST(RGBDistanceTests, DistanceTestG) {
   BgrIconPiece piece_1(image_1);
   BgrIconPiece piece_2(image_2);
 
-  double distance = GetEuclideanDistance(piece_1, piece_2);
+  double distance = EuclideanDistance(&piece_1, &piece_2);
 
   ASSERT_EQ(20, distance);
 }
@@ -146,7 +147,17 @@ TEST(RGBDistanceTests, DistanceTestR) {
   BgrIconPiece piece_1(image_1);
   BgrIconPiece piece_2(image_2);
 
-  double distance = GetEuclideanDistance(piece_1, piece_2);
+  double distance = EuclideanDistance(&piece_1, &piece_2);
 
   ASSERT_EQ(32, distance);
+}
+
+TEST(AssignmentTest, LabIconTests) {
+  cv::Vec4w bgra(USHRT_MAX, 0, 0, USHRT_MAX);
+
+  cv::Mat image(2, 2, CV_16UC4, bgra);
+
+  LabIconPiece piece(image);
+
+  EXPECT_EQ(piece.DominatingColor(), cv::Vec3f(1, 0, 0));
 }
