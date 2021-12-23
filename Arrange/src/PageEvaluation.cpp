@@ -61,7 +61,7 @@ float page_evaluation::SumUpNeighbours(unsigned char neighbours) {
 }
 
 cv::Vec3f page_evaluation::CalculateMeanPageColor(const Page &page) {
-  cv::Vec3f total_color = cv::Vec3f(0.0f, 0.0f, 0.0f);
+  cv::Vec3f total_color(0.0f, 0.0f, 0.0f);
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
     total_color += (**current).DominatingColor();
   }
@@ -110,4 +110,8 @@ unsigned char page_evaluation::CalculateNeighbors(unsigned int piece_index, unsi
   }
 
   return neighbours;
+}
+
+int page_evaluation::CalculateIconsMissing(const Page &page) {
+  return kHeight * kWidth - page.Size();
 }

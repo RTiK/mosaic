@@ -36,7 +36,7 @@ void Individual::Swap(unsigned int index_1, unsigned int index_2) {
 
 std::ostream &operator<<(std::ostream &out, Individual &ind) {
   auto pages = ind.GetPages();
-  out << "Fitness: " << std::to_string(ind.fitness_) << " Pages: " << std::to_string(pages.size());
+  out << "Fitness: " << std::to_string(ind.fitness_) << " Pages: " << std::to_string(pages.size()) << std::endl;
   for (auto page : pages) {
     out << page;
   }
@@ -77,11 +77,18 @@ std::vector<Page> Individual::SplitGenomeIntoPages(std::vector<std::shared_ptr<P
 
 void Individual::Evaluate() {
   pages_ = SplitGenomeIntoPages(genome_);
-  fitness_ = 0.0;
+  double total_variance = 0.0;
+  double total_icons_missing = 0.0;
+  double total_distance = 0.0;
   for (Page &page : pages_) {
-    fitness_ += page.GetDistances() / genome_.size()  // normalized distance of all pieces across all pages
-        + page.GetVariance() / genome_.size();
+    total_distance += page.GetDistances();
+    total_variance += page.GetVariance();
+    total_icons_missing += page.GetIconsMissing();
   }
+  total_variance /= pages_.size();
+  double missing_icons_penalty = total_icons_missing * total_variance;
+  fitness_ = missing_icons_penalty*2 + total_distance;
+  fitness_ /= genome_.size();
 }
 
 bool Individual::operator<(const Individual &other) const {
@@ -110,9 +117,12 @@ void Individual::Print() {
 }
 
 void Individual::Show() {
-  int page_n = 0;
-  for (const Page& page : pages_) {
-    std::string window_title = "Page " + std::to_string(page_n++);
-    page.Show(window_title);
+  cv::Mat page_images[pages_.size()];
+  for (int i = 0; i < pages_.size(); i++) {
+    page_images[i] = pages_[i].Image();
   }
+  cv::Mat individual_image;
+  cv::hconcat(&page_images[0], pages_.size(), individual_image);
+  cv::imshow(std::to_string(GetFitness()), individual_image);
+  cv::waitKey();
 }

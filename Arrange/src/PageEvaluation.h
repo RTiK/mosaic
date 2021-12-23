@@ -27,6 +27,8 @@ namespace page_evaluation {
 
   float CalculateColorVariance(const Page &page);
 
+  int CalculateIconsMissing(const Page &page);
+
   double Evaluate(const Page &page);
 };
 
