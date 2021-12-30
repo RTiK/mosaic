@@ -220,6 +220,28 @@ TEST(ColorVarianceTest, OneVariancePage) {
   EXPECT_NEAR(2.0, variance, 0.0001);
 }
 
+TEST(MissingIconsTest, NoIconsMissing) {
+  std::vector<std::shared_ptr<Piece>> pieces {kPiecesOnPage, std::make_shared<ColorPiece>(0.0)};
+  Page page = Page(&pieces.front(), &pieces.back());
+  double icons_missing = page.GetIconsMissing();
+  EXPECT_EQ(0, icons_missing);
+}
+
+TEST(MissingIconsTest, OneIconMissing) {
+  int exp_icons_missing = 1;
+  std::vector<std::shared_ptr<Piece>> pieces {kPiecesOnPage-exp_icons_missing, std::make_shared<ColorPiece>(0.0)};
+  Page page = Page(&pieces.front(), &pieces.back());
+  double icons_missing = page.GetIconsMissing();
+  EXPECT_EQ(exp_icons_missing, icons_missing);
+}
+
+TEST(MissingIconsTest, AllButOneIconsMissing) {
+  std::vector<std::shared_ptr<Piece>> pieces {std::make_shared<ColorPiece>(0.0)};
+  Page page = Page(&pieces.front(), &pieces.back());
+  double icons_missing = page.GetIconsMissing();
+  EXPECT_EQ(kPiecesOnPage-1, icons_missing);
+}
+
 TEST(SumUpNeighborsTest, Empty) {
   float sum = SumUpNeighbours(Neighbours::NONE);
   EXPECT_EQ(sum, 0.0f);

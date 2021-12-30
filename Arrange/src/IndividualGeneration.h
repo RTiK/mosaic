@@ -18,6 +18,8 @@ namespace individual_generation {
 
   Individual ReadRgbIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g);
 
+  Individual ReadLabIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g);
+
 };
 
 #endif //MOSAIC_SRC_INDIVIDUALGENERATION_H_

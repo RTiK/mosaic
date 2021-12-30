@@ -45,12 +45,20 @@ class Individual {
 
   bool operator<(const Individual &ind_1) const;
 
+  /**
+   * Prints the fitness parameters of pages in the individual.
+   * See Print method for per-piece output.
+   */
   friend std::ostream &operator<<(std::ostream &out, Individual &ind);
 
   std::vector<std::shared_ptr<Piece>> GetGenome() { return genome_; };
 
   int Size() const { return genome_.size(); };
 
+  /**
+   * Prints the pieces in the genome.
+   * See operator<< for output of pages.
+   */
   void Print();
 
   void Show();

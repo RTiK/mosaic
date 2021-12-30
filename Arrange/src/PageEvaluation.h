@@ -15,7 +15,7 @@ namespace page_evaluation {
   const unsigned int kWidth = 4;
   const unsigned int kHeight = 6;
   const unsigned int kPiecesOnPage = kWidth * kHeight;
-  const float kDiagonalWeight = 1;//0.70711;
+  const float kDiagonalWeight = 0.70711;
 
   unsigned char CalculateNeighbors(unsigned int piece_index, unsigned int total_pieces);
 
@@ -25,7 +25,9 @@ namespace page_evaluation {
 
   cv::Vec3f CalculateMeanPageColor(const Page &page);
 
-  float CalculateColorVariance(const Page &page);
+  float CalculateTotalVariance(const Page &page);
+
+  int CalculateIconsMissing(const Page &page);
 
   double Evaluate(const Page &page);
 };

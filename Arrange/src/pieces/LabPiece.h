@@ -19,7 +19,7 @@ class LabPiece : public ColorPiece {
 
   cv::Vec3f GetLabColor() const { return lab_color_; };
 
-  cv::Vec3f DominatingColor() const override { return GetLabColor(); }
+  virtual cv::Vec3f DominatingColor() const override { return GetColor(); }
 
   virtual double Distance(const Piece &other) const override;
 

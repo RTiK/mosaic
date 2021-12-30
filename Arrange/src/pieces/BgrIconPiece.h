@@ -18,7 +18,7 @@ class BgrIconPiece : public IconPiece {
   // TODO decide what to do with image path
   BgrIconPiece(cv::Mat image);
   BgrIconPiece(std::string path);
-  friend double GetEuclideanDistance(const BgrIconPiece &p_1, const BgrIconPiece &p_2);
+  friend double EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPiece* p_2);
   double Distance(const Piece &other) const override;
   virtual cv::Vec3f DominatingColor() const override;
 };
