@@ -36,6 +36,7 @@ void IconPiece::SplitColorChannelsAndAlpha(const cv::Mat &image, cv::Mat &colors
       2, 2,
       3, 3   // 3rd (alpha) channel goes into the alpha Mat
   };
+
   cv::mixChannels(&image, 1, out, 2, from_to, 4);
   colors.convertTo(colors, CV_32F, 1.0/(USHRT_MAX+1), 0);
   alpha.convertTo(alpha, CV_8UC1);

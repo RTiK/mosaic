@@ -159,5 +159,7 @@ TEST(AssignmentTest, LabIconTests) {
 
   LabIconPiece piece(image);
 
-  EXPECT_EQ(piece.DominatingColor(), cv::Vec3f(1, 0, 0));
+  EXPECT_NEAR(32.5, piece.DominatingColor()[0], 0.0001);
+  EXPECT_NEAR(84.0, piece.DominatingColor()[1], 0.0001);
+  EXPECT_NEAR(-108.0, piece.DominatingColor()[2], 0.0001);
 }

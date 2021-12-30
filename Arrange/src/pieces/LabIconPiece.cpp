@@ -24,6 +24,9 @@ void LabIconPiece::Analyze(cv::Mat &color, cv::Mat &mask) {
   cv::Mat lab;
   cv::cvtColor(color, lab, cv::COLOR_BGR2Lab);
 
+  lab_ = lab;
+  mask_ = mask;
+
   float L_range[] = {0.0f, 100.0f};
   float a_range[] = {-128.0f, 127.0f};
   float b_range[] = {-128.0f, 127.0f};
@@ -53,7 +56,9 @@ double EuclideanDistance(const LabIconPiece *p_1, const LabIconPiece *p_2) {
   return total_distances[0];
 }
 
+// TODO move this method into Analysis so it will be ran only once
 cv::Vec3f LabIconPiece::DominatingColor() const {
+
   double min_val, max_val;
   int min_idx, max_idx;
 
@@ -66,10 +71,5 @@ cv::Vec3f LabIconPiece::DominatingColor() const {
   cv::minMaxIdx(b_histogram_, &min_val, &max_val, &min_idx, &max_idx);
   float b_bin = -128 + max_idx * 8 + 4;
 
-  cv::Mat src(1, 1, CV_32FC3, cv::Vec3f(L_bin, a_bin, b_bin));
-  cv::Mat dst;
-  cv::cvtColor(src, dst, cv::COLOR_Lab2BGR);
-  cv::Vec3f bgr = dst.at<cv::Vec3f>(0, 0);
-  std::cout << "BGR: " << bgr << std::endl;
-  return bgr;
+  return cv::Vec3f(L_bin, a_bin, b_bin);
 }

@@ -22,6 +22,8 @@ class IconPiece : public Piece {
  public:
   IconPiece(std::filesystem::path path);
   IconPiece(cv::Mat image, std::string name="");
+  IconPiece(const IconPiece &piece) : icon_path_{piece.icon_path_},
+    original_image_{cv::imread(icon_path_, cv::IMREAD_UNCHANGED)} {};
 
   /**
    * Splits an image consisting of three color channels and an alpha channel (e.g. BGRA) into two separate matrices.

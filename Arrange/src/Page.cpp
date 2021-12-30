@@ -35,7 +35,7 @@ std::ostream &operator<<(std::ostream &os, Page &page) {
 void Page::Evaluate() {
   distances_ = page_evaluation::CalculatePageDistances(*this);
   mean_color_ = page_evaluation::CalculateMeanPageColor(*this);
-  variance_ = page_evaluation::CalculateColorVariance(*this);
+  variance_ = page_evaluation::CalculateTotalVariance(*this);
   icons_missing_ = page_evaluation::CalculateIconsMissing(*this);
 }
 
@@ -56,7 +56,11 @@ cv::Mat Page::Image(int side, cv::Vec3f default_color) const {
     cv::hconcat(&r[0], page_evaluation::kWidth, rows[i]);
   }
 
-  cv::Mat color_bar (side/2, page_evaluation::kWidth * side, type, mean_color_);
+  cv::Mat src(1, 1, CV_32FC3, mean_color_);
+  cv::Mat dst;
+  cv::cvtColor(src, dst, cv::COLOR_Lab2BGR);
+  cv::Vec3f bgr = dst.at<cv::Vec3f>(0, 0);
+  cv::Mat color_bar (side/2, page_evaluation::kWidth * side, type, bgr);
   rows[page_evaluation::kHeight] = color_bar;
 
   cv::Mat image;
