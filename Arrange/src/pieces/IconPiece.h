@@ -14,7 +14,7 @@ class IconPiece : public Piece {
   std::string icon_name_;
   std::filesystem::path icon_path_;
 
-  virtual void Analyze(cv::Mat &bgr, cv::Mat &mask) {};
+  virtual void Analyze(cv::Mat &color, cv::Mat &mask) {};
 
  protected:
   cv::Mat original_image_;  // BGRA

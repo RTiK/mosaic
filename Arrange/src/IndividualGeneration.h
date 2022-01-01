@@ -20,6 +20,7 @@ namespace individual_generation {
 
   Individual ReadLabIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g);
 
+  Individual ReadLabClusteringIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g);
 };
 
 #endif //MOSAIC_SRC_INDIVIDUALGENERATION_H_

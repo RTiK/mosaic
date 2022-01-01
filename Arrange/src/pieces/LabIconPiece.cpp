@@ -6,9 +6,9 @@
 
 
 LabIconPiece::LabIconPiece(cv::Mat image) : IconPiece(image) {
-  cv::Mat lab, mask;
-  SplitColorChannelsAndAlpha(original_image_, lab, mask);
-  Analyze(lab, mask);
+  cv::Mat color, mask;
+  SplitColorChannelsAndAlpha(original_image_, color, mask);
+  Analyze(color, mask);
 }
 
 LabIconPiece::LabIconPiece(std::string path) : IconPiece(path) {

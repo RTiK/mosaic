@@ -152,7 +152,7 @@ TEST(RGBDistanceTests, DistanceTestR) {
   ASSERT_EQ(32, distance);
 }
 
-TEST(AssignmentTest, LabIconTests) {
+TEST(LabIconTests, AssignmentTest) {
   cv::Vec4w bgra(USHRT_MAX, 0, 0, USHRT_MAX);
 
   cv::Mat image(2, 2, CV_16UC4, bgra);

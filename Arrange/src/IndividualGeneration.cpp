@@ -3,6 +3,7 @@
 //
 
 #include <filesystem>
+#include "pieces/LabIconClusteringPiece.h"
 #include "pieces/ColorPiece.h"
 #include "pieces/BgrIconPiece.h"
 #include "pieces/LabIconPiece.h"
@@ -101,6 +102,34 @@ Individual individual_generation::ReadLabIcons(std::string dir_path, unsigned in
     auto file = files[i];
     std::cout << file << std::endl;
     auto piece = std::make_shared<LabIconPiece>(file);
+    genome[i] = piece;
+  }
+
+  for (int i = num_of_icons; i < num_of_icons + page_breaks; i++) {
+    genome[i] = kPageBreak;
+  }
+
+  return Individual(genome);
+}
+
+Individual individual_generation::ReadLabClusteringIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g) {
+  assert(std::filesystem::is_directory(dir_path));  // TODO make exception
+
+  std::vector<std::filesystem::path> files{};
+  for (auto file : std::filesystem::directory_iterator(dir_path)) {
+    if (file.is_regular_file() && file.path().extension().string() == ".png") {
+      files.push_back(file);
+    }
+  }
+
+  int num_of_icons = files.size();
+  std::cout << num_of_icons << std::endl;
+  std::vector<std::shared_ptr<Piece>> genome(num_of_icons + page_breaks);
+
+  for (int i = 0; i < num_of_icons; i++) {
+    auto file = files[i];
+    std::cout << file << std::endl;
+    auto piece = std::make_shared<LabIconClusteringPiece>(file);
     genome[i] = piece;
   }
 
