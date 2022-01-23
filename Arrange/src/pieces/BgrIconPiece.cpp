@@ -22,16 +22,16 @@ void BgrIconPiece::Analyze(cv::Mat &colors, cv::Mat &mask) {
   assert(mask.type() == CV_8UC1);
 
   float range[] = {0, 1};
-  b_histogram_ = GetHistogram(colors, 0, mask, 32, range);
-  g_histogram_ = GetHistogram(colors, 1, mask, 32, range);
-  r_histogram_ = GetHistogram(colors, 2, mask, 32, range);
+  b_histogram_ = GetHistogram(colors, 0, mask, b_bins_, range);
+  g_histogram_ = GetHistogram(colors, 1, mask, g_bins_, range);
+  r_histogram_ = GetHistogram(colors, 2, mask, r_bins_, range);
 }
 
 double BgrIconPiece::Distance(const Piece &other) const {
   return EuclideanDistance(this, (BgrIconPiece *) &other);
 }
 
-double EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPiece* p_2) {
+double BgrIconPiece::EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPiece* p_2) {
   cv::Mat b_diff, g_diff, r_diff, b_diff_sq, g_diff_sq, r_diff_sq;
   cv::subtract(p_1->b_histogram_, p_2->b_histogram_, b_diff);
   cv::subtract(p_1->g_histogram_, p_2->g_histogram_, g_diff);

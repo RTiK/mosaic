@@ -25,7 +25,7 @@ namespace page_evaluation {
 
   cv::Vec3f CalculateMeanPageColor(const Page &page);
 
-  float CalculateTotalVariance(const Page &page);
+  float CalculateVariance(const Page &page);
 
   int CalculateIconsMissing(const Page &page);
 

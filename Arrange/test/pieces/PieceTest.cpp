@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include "pieces/Piece.h"
 #include "pieces/LabPiece.h"
+#include "pieces/LabIconClusteringPiece.h"
 
 
 TEST(PieceTests, DistanceTest) {
@@ -71,4 +72,29 @@ TEST(PieceTests, LabColorTest) {
   EXPECT_NEAR(lab_R[0], expect_lab_R[0], 0.0001);
   EXPECT_NEAR(lab_R[1], expect_lab_R[1], 0.0001);
   EXPECT_NEAR(lab_R[2], expect_lab_R[2], 0.0001);
+}
+
+TEST(LabIconClusteringPieceTests, DistanceTest) {
+  cv::Vec4w data_1[] = {
+      cv::Vec4w(USHRT_MAX, 0, 0, USHRT_MAX),  // Lab: 32.3026, 79.1967, -107.8637
+      cv::Vec4w(USHRT_MAX, 0, 0, USHRT_MAX),
+      cv::Vec4w(0, 0, USHRT_MAX, USHRT_MAX),  // Lab: 53.2329, 80.1093, 67.2201
+      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),  // Lab: 87.7370, -86.1846, 83.1812
+  };
+
+  cv::Vec4w data_2[] = {
+      cv::Vec4w(0, 0, USHRT_MAX, USHRT_MAX),  // Lab: 53.2329, 80.1093, 67.2201
+      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),  // Lab: 87.7370, -86.1846, 83.1812
+      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),
+      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),
+  };
+
+  cv::Mat icon_1(2, 2, CV_16UC4, &data_1);
+  cv::Mat icon_2(2, 2, CV_16UC4, &data_2);
+
+  LabIconClusteringPiece piece_1(icon_1);
+  LabIconClusteringPiece piece_2(icon_2);
+
+  double distance = LabIconClusteringPiece::EuclideanDistance(&piece_1, &piece_2);
+  std::cout << distance << std::endl;
 }

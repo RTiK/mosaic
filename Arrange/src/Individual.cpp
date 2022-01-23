@@ -85,10 +85,10 @@ void Individual::Evaluate() {
     total_variance += page.GetVariance();
     total_icons_missing += page.GetIconsMissing();
   }
-  total_variance /= pages_.size();
-  double missing_icons_penalty = total_icons_missing * total_variance;
-  fitness_ = missing_icons_penalty*2 + total_distance;
-  fitness_ /= genome_.size();
+
+  double variance_normalized = total_variance / genome_.size();
+  double missing_icons_penalty = total_icons_missing * variance_normalized * 0.2;
+  fitness_ = total_distance + total_variance * 0.5 + missing_icons_penalty;
 }
 
 bool Individual::operator<(const Individual &other) const {

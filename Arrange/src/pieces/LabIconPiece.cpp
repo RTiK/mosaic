@@ -43,17 +43,17 @@ double LabIconPiece::Distance(const Piece &other) const {
   return EuclideanDistance(this, (LabIconPiece*) &other);
 }
 
-double EuclideanDistance(const LabIconPiece *p_1, const LabIconPiece *p_2) {
+double LabIconPiece::EuclideanDistance(const LabIconPiece *p_1, const LabIconPiece *p_2) {
   cv::Mat L_diff, a_diff, b_diff, L_diff_sq, a_diff_sq, b_diff_sq;
-  cv::subtract(p_1->L_histogram_, p_1->L_histogram_, L_diff);
-  cv::subtract(p_1->a_histogram_, p_1->a_histogram_, a_diff);
-  cv::subtract(p_1->b_histogram_, p_1->b_histogram_, b_diff);
+  cv::subtract(p_1->L_histogram_, p_2->L_histogram_, L_diff);
+  cv::subtract(p_1->a_histogram_, p_2->a_histogram_, a_diff);
+  cv::subtract(p_1->b_histogram_, p_2->b_histogram_, b_diff);
   cv::pow(L_diff, 2, L_diff_sq);
   cv::pow(a_diff, 2, a_diff_sq);
   cv::pow(b_diff, 2, b_diff_sq);
 
   cv::Scalar_<double> total_distances = cv::sum(L_diff_sq) + cv::sum(a_diff_sq) + cv::sum(b_diff_sq);
-  return total_distances[0];
+  return sqrt(total_distances[0]);
 }
 
 // TODO move this method into Analysis so it will be ran only once

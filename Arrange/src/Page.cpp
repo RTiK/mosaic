@@ -23,7 +23,7 @@ unsigned int Page::Size() const {
 }
 
 std::ostream &operator<<(std::ostream &os, Page &page) {
-  os << "mean: " << page.mean_color_ << " variance: " << page.variance_ << " icons missing: " << page.icons_missing_ << std::endl;
+  os << "total distance: " << page.distances_ << " mean: " << page.mean_color_ << " variance: " << page.variance_ << " icons missing: " << page.icons_missing_ << std::endl;
   os << page.Size() << " icons:";
   for (std::shared_ptr<Piece>* current = page.first_piece_; current <= page.last_piece_; current++) {
     os << " " << **current;
@@ -35,7 +35,7 @@ std::ostream &operator<<(std::ostream &os, Page &page) {
 void Page::Evaluate() {
   distances_ = page_evaluation::CalculatePageDistances(*this);
   mean_color_ = page_evaluation::CalculateMeanPageColor(*this);
-  variance_ = page_evaluation::CalculateTotalVariance(*this);
+  variance_ = page_evaluation::CalculateVariance(*this);
   icons_missing_ = page_evaluation::CalculateIconsMissing(*this);
 }
 

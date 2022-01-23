@@ -42,12 +42,9 @@ float page_evaluation::CalculatePageDistances(const Page &page) {
       piece_distance += current_piece->Distance(**(current - (kWidth + 1))) * kDiagonalWeight;
     }
 
-    if (neighbours > 0) {
-      total_fitness += piece_distance / SumUpNeighbours(neighbours);
-    } else {
-      total_fitness += FLT_MAX;  // having no neighbours means that we have a single piece on page and we want to avoid that
-    }
-
+    total_fitness += neighbours > 0
+        ? piece_distance / SumUpNeighbours(neighbours)
+        : FLT_MAX;  // having no neighbours means that we have a single piece on page and we want to avoid that
   }
   return total_fitness;
 }
@@ -65,11 +62,11 @@ cv::Vec3f page_evaluation::CalculateMeanPageColor(const Page &page) {
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
     total_color += (**current).DominatingColor();
   }
-  float num_of_pieces = 1.0f + float (page.GetLastPiece() - page.GetFirstPiece());
+  float num_of_pieces = page.Size();
   return cv::Vec3f(total_color[0] / num_of_pieces, total_color[1] / num_of_pieces, total_color[2] / num_of_pieces);
 }
 
-float page_evaluation::CalculateTotalVariance(const Page &page) {
+float page_evaluation::CalculateVariance(const Page &page) {
   cv::Vec3f mean_color = page.GetMeanColor();
   double total_distance = 0.0;
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
