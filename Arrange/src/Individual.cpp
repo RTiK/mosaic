@@ -105,13 +105,8 @@ bool Individual::operator<(const Individual &other) const {
 
 void Individual::Print() {
   std::string page_break = "PB";
-
   for (std::shared_ptr<Piece> &p : genome_) {
-    if (p == kPageBreak) {
-      std::cout << page_break << " ";
-    } else {
-      std::cout << (*p).Print() << " ";
-    }
+    std::cout << (p == kPageBreak ? page_break : (*p).Print()) << " " ;
   }
   std::cout << std::endl;
 }

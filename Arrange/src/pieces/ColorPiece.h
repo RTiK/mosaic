@@ -24,9 +24,7 @@ class ColorPiece : public Piece {
 
   virtual cv::Mat Image(int width, int height) const override;
 
-  virtual cv::Vec3f DominatingColor() const override { return GetColor(); };
-
-  cv::Vec3f GetColor() const { return original_color_; }
+  virtual cv::Vec3f DominatingColor() const override { return original_color_; };
 
   virtual double Distance(const Piece &other) const override;
 

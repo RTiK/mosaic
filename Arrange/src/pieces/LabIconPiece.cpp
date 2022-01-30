@@ -27,16 +27,9 @@ void LabIconPiece::Analyze(cv::Mat &color, cv::Mat &mask) {
   lab_ = lab;
   mask_ = mask;
 
-  float L_range[] = {0.0f, 100.0f};
-  float a_range[] = {-128.0f, 127.0f};
-  float b_range[] = {-128.0f, 127.0f};
-  int L_bins = 20;
-  int a_bins = 32;
-  int b_bins = 32;
-
-  L_histogram_ = GetHistogram(lab, 0, mask, L_bins, L_range);
-  a_histogram_ = GetHistogram(lab, 1, mask, a_bins, a_range);
-  b_histogram_ = GetHistogram(lab, 2, mask, b_bins, b_range);
+  L_histogram_ = GetHistogram(lab, 0, mask, L_bins_, L_range_);
+  a_histogram_ = GetHistogram(lab, 1, mask, a_bins_, a_range_);
+  b_histogram_ = GetHistogram(lab, 2, mask, b_bins_, b_range_);
 }
 
 double LabIconPiece::Distance(const Piece &other) const {
@@ -62,14 +55,19 @@ cv::Vec3f LabIconPiece::DominatingColor() const {
   double min_val, max_val;
   int min_idx, max_idx;
 
+  float L_step = (L_range_[1] - L_range_[0]) / L_bins_;
+  float a_step = (a_range_[1] - a_range_[0]) / a_bins_;
+  float b_step = (b_range_[1] - b_range_[0]) / b_bins_;
+
+  // lowest value in the range + index of the max bin * bin size (step) + half a bin to hit the middle of it
   cv::minMaxIdx(L_histogram_, &min_val, &max_val, &min_idx, &max_idx);
-  float L_bin = max_idx * 5.0 + 2.5f;
+  float L_bin = max_idx * L_step + L_step * 0.5;
 
   cv::minMaxIdx(a_histogram_, &min_val, &max_val, &min_idx, &max_idx);
-  float a_bin = -128 + max_idx * 8 + 4;
+  float a_bin = a_range_[0] + max_idx * a_step + a_step * 0.5;
 
   cv::minMaxIdx(b_histogram_, &min_val, &max_val, &min_idx, &max_idx);
-  float b_bin = -128 + max_idx * 8 + 4;
+  float b_bin = b_range_[0] + max_idx * b_step + b_step * 0.5;
 
   return cv::Vec3f(L_bin, a_bin, b_bin);
 }

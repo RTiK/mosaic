@@ -13,6 +13,12 @@ class LabIconPiece : public IconPiece {
   void Analyze(cv::Mat &color, cv::Mat &mask) override;
 
   cv::Mat L_histogram_, a_histogram_, b_histogram_;
+  const int L_bins_ = 50;
+  const int a_bins_ = 64;
+  const int b_bins_ = 64;
+  float L_range_[2] = {0.0f, 100.0f};
+  float a_range_[2] = {-128.0f, 127.0f};
+  float b_range_[2] = {-128.0f, 127.0f};
 
   cv::Mat lab_, mask_;
  public:

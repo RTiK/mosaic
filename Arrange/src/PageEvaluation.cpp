@@ -67,7 +67,7 @@ cv::Vec3f page_evaluation::CalculateMeanPageColor(const Page &page) {
 }
 
 float page_evaluation::CalculateVariance(const Page &page) {
-  cv::Vec3f mean_color = page.GetMeanColor();
+  cv::Vec3f mean_color = page.MeanPageColor();
   double total_distance = 0.0;
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
     total_distance += ColorPiece::EuclideanDistance((**current).DominatingColor(), mean_color);

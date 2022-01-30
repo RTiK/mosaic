@@ -36,7 +36,7 @@ class Page {
 
   int GetIconsMissing() const { return icons_missing_; }
 
-  cv::Vec3f GetMeanColor() const { return mean_color_; }
+  cv::Vec3f MeanPageColor() const { return mean_color_; }
 
   unsigned int Size() const;
 

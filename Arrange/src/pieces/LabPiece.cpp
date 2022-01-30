@@ -24,5 +24,5 @@ cv::Mat LabPiece::Image(int width, int height) const {
 
 double LabPiece::Distance(const Piece &other) const {
   auto o = (LabPiece*) &other;
-  return ColorPiece::EuclideanDistance(lab_color_, o->lab_color_);
+  return EuclideanDistance(lab_color_, o->lab_color_);
 }
