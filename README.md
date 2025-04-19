@@ -1,8 +1,12 @@
 # Mosaic
 
-Mosaic is an application that arranges icons on the home screen of your iOS device by color using evolutionary algorithms... Will be.
+Mosaic is an application that arranges icons on the home screen of your iOS device by color using evolutionary algorithms.
 
 This is currently a work in progress and all it does right now is just arranging solid colors into home screen pages using a simple mutation.
+
+## Constains
+
+This library is only made for arranging icons on old school screen layouts. The screens are filled with icons from left to right and from top to bottom. Just as Steve Jobs intended. There is currently no support for widgets or arbitrary icon placement.
 
 ## Installation
 

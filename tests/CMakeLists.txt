@@ -11,9 +11,9 @@ set(TestSources
 add_executable(MosaicTests ${TestSources})
 
 target_link_libraries(MosaicTests
-        PRIVATE Mosaic
-        PRIVATE GTest::gtest
-        PRIVATE GTest::gtest_main
+        Mosaic
+        GTest::gtest
+        GTest::gtest_main
 )
 
 include(GoogleTest)
