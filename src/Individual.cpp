@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 15.02.21.
-//
-
 #include "Mosaic/Individual.hpp"
 #include <utility>
 #ifdef _WIN32

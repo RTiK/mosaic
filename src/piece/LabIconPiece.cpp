@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 13.11.21.
-//
-
 #include "Mosaic/piece/LabIconPiece.hpp"
 
 

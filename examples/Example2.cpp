@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 18.09.21.
-//
-
 #include <iostream>
 #include <Mosaic/piece/BgrIconPiece.hpp>
 #include <Mosaic/Individual.hpp>

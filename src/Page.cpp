@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 14.03.21.
-//
-
 #include "Mosaic/Page.hpp"
 #include "Mosaic/PageEvaluation.hpp"
 #ifdef _WIN32

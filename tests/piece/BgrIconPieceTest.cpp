@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 09.01.22.
-//
-
 #include <gtest/gtest.h>
 #include <Mosaic/piece/BgrIconPiece.hpp>
 

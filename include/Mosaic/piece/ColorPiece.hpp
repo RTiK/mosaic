@@ -1,12 +1,7 @@
-//
-// Created by Artem Khatchatourov on 08.11.21.
-//
-
 #ifndef MOSAIC_ARRANGE_SRC_PIECES_COLORPIECE_H_
 #define MOSAIC_ARRANGE_SRC_PIECES_COLORPIECE_H_
 
 #include "Piece.hpp"
-
 
 class ColorPiece : public Piece {
  private:

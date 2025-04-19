@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 18.02.21.
-//
-
 #include <gtest/gtest.h>
 #include <Mosaic/Individual.hpp>
 #include <Mosaic/piece/ColorPiece.hpp>

@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 28.02.21.
-//
-
 #ifndef MOSAIC_SRC_FILELOGGER_H_
 #define MOSAIC_SRC_FILELOGGER_H_
 

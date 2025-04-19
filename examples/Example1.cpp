@@ -1,8 +1,3 @@
-
-//
-// Created by Artem Khatchatourov on 30.01.21.
-//
-
 #include <random>
 #include <Mosaic/piece/LabPiece.hpp>
 #include <Mosaic/Individual.hpp>

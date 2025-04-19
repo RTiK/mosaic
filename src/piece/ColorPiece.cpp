@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 08.11.21.
-//
-
 #include "Mosaic/piece/ColorPiece.hpp"
 
 

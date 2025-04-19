@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 25.06.21.
-//
-
 #include "Mosaic/PopulationUtil.hpp"
 
 void population_util::FillShuffle(std::set<Individual> &population, const Individual &template_individual, int n, std::mt19937 &g) {

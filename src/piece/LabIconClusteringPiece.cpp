@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 30.12.21.
-//
-
 #include "Mosaic/piece/LabIconClusteringPiece.hpp"
 
 void LabIconClusteringPiece::Analyze(cv::Mat &color, cv::Mat &mask) {

@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 22.06.21.
-//
-
 #ifndef MOSAIC_SRC_INDIVIDUALGENERATION_H_
 #define MOSAIC_SRC_INDIVIDUALGENERATION_H_
 

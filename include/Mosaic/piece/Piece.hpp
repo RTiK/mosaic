@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 14.09.20.
-//
-
 #ifndef MOSAIC_SRC_PIECE_H_
 #define MOSAIC_SRC_PIECE_H_
 

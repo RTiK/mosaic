@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 28.02.21.
-//
-
 #include "Mosaic/FileLogger.hpp"
 
 FileLogger::FileLogger() {

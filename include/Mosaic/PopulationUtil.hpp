@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 25.06.21.
-//
-
 #ifndef MOSAIC_SRC_POPULATIONUTIL_H_
 #define MOSAIC_SRC_POPULATIONUTIL_H_
 

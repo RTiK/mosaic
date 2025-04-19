@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 22.04.21.
-//
-
 #include "Mosaic/PageEvaluation.hpp"
 
 float page_evaluation::CalculatePageDistances(const Page &page) {

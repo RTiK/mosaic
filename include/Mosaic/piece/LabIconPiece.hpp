@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 13.11.21.
-//
-
 #ifndef MOSAIC_ARRANGE_SRC_PIECES_LABICONPIECE_H_
 #define MOSAIC_ARRANGE_SRC_PIECES_LABICONPIECE_H_
 

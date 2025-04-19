@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 22.06.21.
-//
-
 #include <filesystem>
 #include "Mosaic/piece/LabIconClusteringPiece.hpp"
 #include "Mosaic/piece/ColorPiece.hpp"

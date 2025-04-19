@@ -1,13 +1,7 @@
-//
-// Created by Artem Khatchatourov on 02.03.21.
-//
-
 #ifndef MOSAIC_SRC_LABPIECE_H_
 #define MOSAIC_SRC_LABPIECE_H_
 
-
 #include "ColorPiece.hpp"
-
 
 class LabPiece : public ColorPiece {
   cv::Vec3f lab_color_;

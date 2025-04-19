@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 13.10.21.
-//
-
 #include <Mosaic/piece/IconPiece.hpp>
 #include <Mosaic/piece/LabIconPiece.hpp>
 #include <gtest/gtest.h>

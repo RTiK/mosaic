@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 18.09.21.
-//
-
 #include "Mosaic/piece/IconPiece.hpp"
 
 cv::MatND IconPiece::GetHistogram(cv::Mat &colors, int channel, cv::Mat mask, int bins, float range[]) {

@@ -1,7 +1,3 @@
-//
-// Created by Artem Khatchatourov on 17.10.21.
-//
-
 #ifndef MOSAIC_ARRANGE_SRC_HSVICONPIECE_H_
 #define MOSAIC_ARRANGE_SRC_HSVICONPIECE_H_
 
