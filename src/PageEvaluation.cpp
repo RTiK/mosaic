@@ -48,8 +48,8 @@ float page_evaluation::CalculatePageDistances(const Page &page) {
 float page_evaluation::SumUpNeighbours(unsigned char neighbours) {
   unsigned char normal_neighbors = neighbours & (Neighbours::N | Neighbours::E | Neighbours::S | Neighbours::W);
   unsigned char diagonal_neighbors = neighbours & (Neighbours::NE | Neighbours::SE | Neighbours::SW | Neighbours::NW);
-  float normal_neighbors_count = (float) std::bitset<8>(normal_neighbors).count();
-  float diagonal_neighbors_count = (float) std::bitset<8>(diagonal_neighbors).count();
+  float normal_neighbors_count = static_cast<float>(std::bitset<8>(normal_neighbors).count());
+  float diagonal_neighbors_count = static_cast<float>(std::bitset<8>(diagonal_neighbors).count());
   return normal_neighbors_count + diagonal_neighbors_count * kDiagonalWeight;
 }
 

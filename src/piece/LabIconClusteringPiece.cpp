@@ -75,7 +75,7 @@ LabIconClusteringPiece::LabIconClusteringPiece(cv::Mat image) : IconPiece(image)
 }
 
 double LabIconClusteringPiece::Distance(const Piece &other) const {
-  return EuclideanDistance(this, (LabIconClusteringPiece*) &other);
+  return EuclideanDistance(this, dynamic_cast<const LabIconClusteringPiece*>(&other));
 }
 
 double LabIconClusteringPiece::EuclideanDistance(const LabIconClusteringPiece *p_1, const LabIconClusteringPiece *p_2) {

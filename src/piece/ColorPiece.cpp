@@ -37,7 +37,7 @@ double ColorPiece::EuclideanDistance(const cv::Vec3f &c_1, const cv::Vec3f &c_2)
 }
 
 double ColorPiece::Distance(const Piece &other) const {
-  auto* other_color_piece = (ColorPiece*) &other;
+  const ColorPiece* other_color_piece = static_cast<const ColorPiece*>(&other);
   return EuclideanDistance(original_color_, other_color_piece->original_color_);
 }
 
