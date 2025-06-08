@@ -3,7 +3,7 @@
 float page_evaluation::CalculatePageDistances(const Page &page) {
   unsigned int total_pieces = page.Size();
 
-  double total_fitness = 0.0;
+  double total_distance = 0.0;
 
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
     unsigned int piece_index = current - page.GetFirstPiece();
@@ -38,19 +38,20 @@ float page_evaluation::CalculatePageDistances(const Page &page) {
       piece_distance += current_piece->Distance(**(current - (kWidth + 1))) * kDiagonalWeight;
     }
 
-    total_fitness += neighbours > 0
+    total_distance += neighbours > 0
         ? piece_distance / SumUpNeighbours(neighbours)
         : FLT_MAX;  // having no neighbours means that we have a single piece on page and we want to avoid that
   }
-  return total_fitness;
+  
+  return total_distance;
 }
 
 float page_evaluation::SumUpNeighbours(unsigned char neighbours) {
-  unsigned char normal_neighbors = neighbours & (Neighbours::N | Neighbours::E | Neighbours::S | Neighbours::W);
+  unsigned char direct_neighbors = neighbours & (Neighbours::N | Neighbours::E | Neighbours::S | Neighbours::W);
   unsigned char diagonal_neighbors = neighbours & (Neighbours::NE | Neighbours::SE | Neighbours::SW | Neighbours::NW);
-  float normal_neighbors_count = static_cast<float>(std::bitset<8>(normal_neighbors).count());
+  float direct_neighbors_count = static_cast<float>(std::bitset<8>(direct_neighbors).count());
   float diagonal_neighbors_count = static_cast<float>(std::bitset<8>(diagonal_neighbors).count());
-  return normal_neighbors_count + diagonal_neighbors_count * kDiagonalWeight;
+  return direct_neighbors_count + diagonal_neighbors_count * kDiagonalWeight;
 }
 
 cv::Vec3f page_evaluation::CalculateMeanPageColor(const Page &page) {

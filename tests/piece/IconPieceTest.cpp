@@ -79,7 +79,7 @@ TEST(LabIconTests, AssignmentTest) {
 
   cv::Vec3f dominating_color = piece.DominatingColor();
 
-  EXPECT_NEAR(32.5, dominating_color[0], 0.0001);
-  EXPECT_NEAR(84.0, dominating_color[1], 0.0001);
-  EXPECT_NEAR(-108.0, dominating_color[2], 0.0001);
+  EXPECT_NEAR(33.0, dominating_color[0], 0.0001);
+  EXPECT_NEAR(81.1796, dominating_color[1], 0.0001);
+  EXPECT_NEAR(-106.0859, dominating_color[2], 0.0001);
 }

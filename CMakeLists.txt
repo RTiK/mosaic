@@ -34,6 +34,8 @@ else ()
     message("GoogleTest compiled from source: " ${3RDPARTY_DIR}/googletest)
 endif ()
 
+enable_testing()
+
 set(Headers
         include/Mosaic/FileLogger.hpp
         include/Mosaic/Individual.hpp

@@ -94,5 +94,6 @@ TEST(RGBDominatingColorTest, DominatingColorTest) {
   BgrIconPiece piece(image);
   cv::Vec3f distance = piece.DominatingColor();
 
-  ASSERT_EQ(cv::Vec3f(USHRT_MAX, 0, 0), distance);
+  float bin_center = 1.0f / 32.0f / 2.0f;
+  ASSERT_EQ(cv::Vec3f(1.0f - bin_center, bin_center, bin_center), distance);
 }

@@ -41,18 +41,18 @@ double BgrIconPiece::EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPie
 }
 
 cv::Vec3f BgrIconPiece::DominatingColor() const {
-  float step = 1.0f / 32.0f;
+  float step = 1.0f / b_bins_;
   double min_val, max_val;
   int min_idx, max_idx;
 
   cv::minMaxIdx(b_histogram_, &min_val, &max_val, &min_idx, &max_idx);
-  float b_bin = max_idx * step;
+  float b_bin = max_idx * step + step / 2.0f;
 
   cv::minMaxIdx(g_histogram_, &min_val, &max_val, &min_idx, &max_idx);
-  float g_bin = max_idx * step;
+  float g_bin = max_idx * step + step / 2.0f;
 
   cv::minMaxIdx(r_histogram_, &min_val, &max_val, &min_idx, &max_idx);
-  float r_bin = max_idx * step;
+  float r_bin = max_idx * step + step / 2.0f;
 
   return cv::Vec3f(b_bin, g_bin, r_bin);
 }

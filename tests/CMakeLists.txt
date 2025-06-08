@@ -1,5 +1,3 @@
-enable_testing()
-
 set(TestSources
         PageEvaluationTest.cpp
         IndividualTest.cpp
