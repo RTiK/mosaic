@@ -9,6 +9,7 @@ const int kNumOfPageBreaks = 2;
 const int kNumOfPieces = 40;
 const int kPopulation = 200;
 const int kGenerations = 1000;
+const int kMaxAge = 50;
 
 
 std::random_device rd;
@@ -30,10 +31,10 @@ int main() {
     std::set<Individual> temp_population{};
     temp_population.swap(population);
 
-    // pass through elites (first 10%)
-    population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100, g);
+    // pass through elites (first 10%) with age filtering
+    population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100, g, kMaxAge);
 
-    // mutate (another 60%)
+    // mutate (another 60%) from temp population (age increment handled in PassThroughElites)
     population_util::MutateBest(population, temp_population, 60 * kPopulation / 100, g);
 
     // fill remaining (~30%)

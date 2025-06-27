@@ -4,20 +4,20 @@
   #include <numeric>
 #endif
 
-Individual::Individual() = default;
+Individual::Individual() : age_(0) {}
 
-Individual::Individual(const Individual &ind) {
+Individual::Individual(const Individual &ind) : age_(0) {
   genome_ = std::vector(ind.genome_);
   Evaluate();
 }
 
-Individual::Individual(std::vector<std::shared_ptr<Piece>> &genome) {
+Individual::Individual(std::vector<std::shared_ptr<Piece>> &genome) : age_(0) {
   genome_ = std::vector(genome);
   Evaluate();
 }
 
 
-Individual::Individual(const Individual &ind, std::mt19937 &g) {
+Individual::Individual(const Individual &ind, std::mt19937 &g) : age_(0) {
   genome_ = std::vector(ind.genome_);
   std::shuffle(genome_.begin(), genome_.end(), g);
   Evaluate();
