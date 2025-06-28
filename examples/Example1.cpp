@@ -2,6 +2,7 @@
 #include <Mosaic/piece/LabPiece.hpp>
 #include <Mosaic/Individual.hpp>
 #include <Mosaic/FileLogger.hpp>
+#include <Mosaic/HallOfFame.hpp>
 #include <Mosaic/IndividualGeneration.hpp>
 #include <Mosaic/PopulationUtil.hpp>
 
@@ -25,6 +26,9 @@ int main() {
   std::set<Individual> population{};
   population_util::FillShuffle(population, template_individual, kPopulation, g);
 
+  HallOfFame hall_of_fame(10);
+  hall_of_fame.Update(population);
+
   for (int i = 0; i < kGenerations; i++) {
     std::cout << "generation " << i << std::endl;
 
@@ -40,16 +44,31 @@ int main() {
     // fill remaining (~30%)
     population_util::FillShuffle(population, template_individual, kPopulation - population.size(), g);
 
+    // update hall of fame with current population
+    hall_of_fame.Update(population);
+
     population_util::PrintBest(population, 10);
 
     auto best = *population.begin();
     best.Print();
+
+    // print hall of fame every 100 generations
+    if ((i + 1) % 100 == 0) {
+      std::cout << "\n--- Generation " << (i + 1) << " ---" << std::endl;
+      hall_of_fame.Print();
+      std::cout << std::endl;
+    }
   }
 
   population_util::PrintBest(population, 10);
 
-  auto best = *population.begin();
+  // Final hall of fame results
+  std::cout << "\n=== FINAL HALL OF FAME ===" << std::endl;
+  hall_of_fame.Print();
 
+  auto best = hall_of_fame.GetBestIndividual();
+
+  std::cout << "\n=== BEST INDIVIDUAL EVER ===" << std::endl;
   std::cout << best << std::endl;
   best.Print();
   best.Show();

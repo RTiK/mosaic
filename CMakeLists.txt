@@ -38,6 +38,7 @@ enable_testing()
 
 set(Headers
         include/Mosaic/FileLogger.hpp
+        include/Mosaic/HallOfFame.hpp
         include/Mosaic/Individual.hpp
         include/Mosaic/IndividualGeneration.hpp
         include/Mosaic/Page.hpp
@@ -54,6 +55,7 @@ set(Headers
 
 set(Sources 
         src/FileLogger.cpp
+        src/HallOfFame.cpp
         src/Individual.cpp
         src/IndividualGeneration.cpp
         src/Page.cpp
