@@ -1,7 +1,9 @@
 #ifndef MOSAIC_SRC_PAGE_H_
 #define MOSAIC_SRC_PAGE_H_
 
-#include "Mosaic/piece/Piece.hpp"
+#include "piece/Piece.hpp"
+#include <memory>
+#include <opencv2/opencv.hpp>
 
 /**
  * This class represents a page on the iOS device. It holds pointers to the first and the last icons of the page.

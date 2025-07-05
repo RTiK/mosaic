@@ -3,8 +3,9 @@
 
 #include <vector>
 #include <random>
-#include "Mosaic/Page.hpp"
-#include "Mosaic/piece/Piece.hpp"
+#include "Page.hpp"
+#include "piece/Piece.hpp"
+#include <opencv2/opencv.hpp>
 
 
 /**
@@ -28,7 +29,7 @@ class Individual {
 
   Individual(const Individual &ind);
 
-  explicit Individual(std::vector<std::shared_ptr<Piece>> &genome);
+  explicit Individual(std::vector<std::shared_ptr<Piece>> &genome, int age = 0);
 
   Individual(const Individual &ind, std::mt19937 &g);
 

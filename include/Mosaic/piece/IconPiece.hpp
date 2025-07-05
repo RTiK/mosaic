@@ -2,6 +2,8 @@
 #define MOSAIC_ARRANGE_SRC_ICONPIECE_H_
 
 #include <filesystem>
+#include <opencv2/opencv.hpp>
+#include <opencv2/imgcodecs.hpp>
 #include "Piece.hpp"
 
 
@@ -20,7 +22,7 @@ class IconPiece : public Piece {
   IconPiece(cv::Mat image, std::string name="");
   IconPiece(const IconPiece &piece) : icon_path_{piece.icon_path_},
     original_image_{cv::imread(icon_path_, cv::IMREAD_UNCHANGED)} {};
-
+    
   /**
    * Splits an image consisting of three color channels and an alpha channel (e.g. BGRA) into two separate matrices.
    * @param image Color + alpha image of type `CV_16UC4`

@@ -2,8 +2,8 @@
 #define MOSAIC_SRC_PAGEEVALUATION_H_
 
 
-#include "Mosaic/piece/ColorPiece.hpp"
-#include "Mosaic/Page.hpp"
+#include "piece/ColorPiece.hpp"
+#include "Page.hpp"
 #include <bitset>
 
 namespace page_evaluation {

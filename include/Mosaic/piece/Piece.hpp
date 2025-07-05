@@ -1,7 +1,9 @@
 #ifndef MOSAIC_SRC_PIECE_H_
 #define MOSAIC_SRC_PIECE_H_
 
-#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <memory>
+#include <opencv2/core.hpp>
 
 
 enum Neighbours : unsigned char {

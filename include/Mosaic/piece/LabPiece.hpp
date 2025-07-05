@@ -1,6 +1,7 @@
 #ifndef MOSAIC_SRC_LABPIECE_H_
 #define MOSAIC_SRC_LABPIECE_H_
 
+#include <opencv2/opencv.hpp>
 #include "ColorPiece.hpp"
 
 class LabPiece : public ColorPiece {

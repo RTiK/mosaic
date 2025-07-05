@@ -2,6 +2,9 @@
 #define MOSAIC_SRC_POPULATIONUTIL_H_
 
 #include "Individual.hpp"
+#include <set>
+#include <random>
+#include <vector>
 
 namespace population_util {
 
@@ -13,7 +16,6 @@ namespace population_util {
 
   void PrintBest(std::set<Individual> &population, int n);
 
-
-};
+}; // namespace population_util
 
 #endif //MOSAIC_SRC_POPULATIONUTIL_H_

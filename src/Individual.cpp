@@ -6,7 +6,7 @@
 
 Individual::Individual() : age_(0) {}
 
-Individual::Individual(const Individual &ind) : age_(0) {
+Individual::Individual(const Individual &ind) : age_(ind.age_) {
   genome_ = std::vector(ind.genome_);
   Evaluate();
 }
