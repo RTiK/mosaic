@@ -24,7 +24,7 @@ int main() {
   template_individual.Print();
 
   std::set<Individual> population{};
-  population_util::FillShuffle(population, template_individual, kPopulation, g);
+  population_util::FillShuffle(population, template_individual, kPopulation, g, 0);
 
   HallOfFame hall_of_fame(10);
   hall_of_fame.Update(population);
@@ -39,18 +39,18 @@ int main() {
     population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100, g, kMaxAge);
 
     // mutate (another 60%) from temp population (age increment handled in PassThroughElites)
-    population_util::MutateBest(population, temp_population, 60 * kPopulation / 100, g);
+    population_util::MutateBest(population, temp_population, 60 * kPopulation / 100, g, i);
 
     // fill remaining (~30%)
-    population_util::FillShuffle(population, template_individual, kPopulation - population.size(), g);
+    population_util::FillShuffle(population, template_individual, kPopulation - population.size(), g, i);
 
     // update hall of fame with current population
     hall_of_fame.Update(population);
 
     population_util::PrintBest(population, 10);
 
-    auto best = *population.begin();
-    best.Print();
+    //auto best = *population.begin();
+    //best.Print();
 
     // print hall of fame every 100 generations
     if ((i + 1) % 100 == 0) {

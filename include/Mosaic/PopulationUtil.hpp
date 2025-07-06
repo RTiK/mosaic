@@ -8,9 +8,9 @@
 
 namespace population_util {
 
-  void FillShuffle(std::set<Individual> &population, const Individual &template_individual, int n, std::mt19937 &g);
+  void FillShuffle(std::set<Individual> &population, const Individual &template_individual, int n, std::mt19937 &g, int current_generation);
 
-  void MutateBest(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g);
+  void MutateBest(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g, int current_generation);
 
   void PassThroughElites(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g, int max_age = -1);
 

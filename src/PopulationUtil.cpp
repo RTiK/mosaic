@@ -1,12 +1,12 @@
 #include "Mosaic/PopulationUtil.hpp"
 
-void population_util::FillShuffle(std::set<Individual> &population, const Individual &template_individual, int n, std::mt19937 &g) {
+void population_util::FillShuffle(std::set<Individual> &population, const Individual &template_individual, int n, std::mt19937 &g, int current_generation) {
   for (int i = n; i > 0; i--) {
-    population.emplace(template_individual, g);  // call copy construct with shuffle arg
+    population.emplace(template_individual, g, current_generation);  // call copy construct with shuffle arg
   }
 }
 
-void population_util::MutateBest(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g) {
+void population_util::MutateBest(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g, int current_generation) {
   assert(!population.empty());
   // TODO this should be initialized globally
   std::uniform_int_distribution<> random_ind_length(0, population.begin()->Size() - 1);
@@ -39,7 +39,7 @@ void population_util::PassThroughElites(std::set<Individual> &population, const 
 void population_util::PrintBest(std::set<Individual> &population, int n) {
   auto current = population.begin();
   while (current != population.end() && n >= 0) {
-    std::cout << current->GetFitness() << ", ";
+    std::cout << std::format("{}, {}", current->GetFitness(), current->GetAge()) << " | ";
     current++;
     n--;
   }

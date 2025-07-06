@@ -34,7 +34,7 @@ void HallOfFame::Print() const {
   std::cout << "Hall of Fame (" << hall_.size() << "/" << max_size_ << "):" << std::endl;
   int rank = 1;
   for (const auto& individual : hall_) {
-    std::cout << "Rank " << rank++ << ": Fitness " << individual.GetFitness() 
+    std::cout << "Rank " << rank++ << ": Fitness " << individual.GetFitness() << ", Birth " << individual.GetBirthGeneration()
               << ", Age " << individual.GetAge() << std::endl;
   }
 }
@@ -43,7 +43,7 @@ std::ostream& operator<<(std::ostream& out, const HallOfFame& hof) {
   out << "Hall of Fame (" << hof.hall_.size() << "/" << hof.max_size_ << "):" << std::endl;
   int rank = 1;
   for (const auto& individual : hof.hall_) {
-    out << "Rank " << rank++ << ": Fitness " << individual.GetFitness() 
+    out << "Rank " << rank++ << ": Fitness " << individual.GetFitness() << ", Birth " << individual.GetBirthGeneration()
         << ", Age " << individual.GetAge() << std::endl;
   }
   return out;
