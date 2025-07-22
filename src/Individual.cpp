@@ -22,16 +22,17 @@ Individual::Individual(const Individual &ind, std::mt19937 &g, int birth_generat
   Evaluate();
 }
 
-void Individual::Swap(unsigned int index_1, unsigned int index_2) {
+void Individual::Swap(unsigned int index_1, unsigned int index_2, int generation) {
   auto temp_piece = genome_.at(index_1);
   genome_.at(index_1) = genome_.at(index_2);
   genome_.at(index_2) = temp_piece;
+  birth_generation_ = generation;
   Evaluate();
 }
 
 std::ostream &operator<<(std::ostream &out, Individual &ind) {
   auto pages = ind.GetPages();
-  out << "Fitness: " << std::to_string(ind.fitness_) << " Pages: " << std::to_string(pages.size()) << std::endl;
+  out << "Fitness: " << std::to_string(ind.fitness_) << " Pages: " << std::to_string(pages.size()) << " Born: " << ind.GetBirthGeneration() << std::endl;
   for (auto page : pages) {
     out << page;
   }
@@ -82,8 +83,8 @@ void Individual::Evaluate() {
   }
 
   double variance_normalized = total_variance / genome_.size();
-  double missing_icons_penalty = total_icons_missing * variance_normalized * 0.2;
-  fitness_ = total_distance + total_variance * 0.5 + missing_icons_penalty;
+  double missing_icons_penalty = total_icons_missing * variance_normalized;
+  fitness_ = total_distance + total_variance * 0.3 + missing_icons_penalty * 0.2;
 }
 
 bool Individual::operator<(const Individual &other) const {

@@ -41,7 +41,7 @@ class Individual {
 
   static std::vector<Page> SplitGenomeIntoPages(std::vector<std::shared_ptr<Piece>> &genome);
 
-  void Swap(unsigned int index_1, unsigned int index_2);
+  void Swap(unsigned int index_1, unsigned int index_2, int generation);
 
   bool operator<(const Individual &ind_1) const;
 

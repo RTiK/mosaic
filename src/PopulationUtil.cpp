@@ -14,14 +14,14 @@ void population_util::MutateBest(std::set<Individual> &population, const std::se
   auto old_pop_iter = old_pop.begin();
   while (old_pop_iter != old_pop.end() && n > 0) {
     Individual ind = *old_pop_iter;
-    ind.Swap(random_ind_length(g), random_ind_length(g));
+    ind.Swap(random_ind_length(g), random_ind_length(g), current_generation);
     population.insert(ind);
     old_pop_iter++;
     n--;
   }
 }
 
-void population_util::PassThroughElites(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g) {
+void population_util::PassThroughElites(std::set<Individual> &population, const std::set<Individual> &old_pop, int n) {
   auto old_pop_iter = old_pop.begin();
   while (old_pop_iter != old_pop.end() && n > 0) {
     population.insert(*old_pop_iter);
@@ -38,5 +38,17 @@ void population_util::PrintBest(std::set<Individual> &population, int n) {
     n--;
   }
   std::cout << std::endl;
+}
+
+void population_util::FilterByAge(std::set<Individual> &population, int current_generation, int max_age) {
+    auto it = population.begin();
+    while (it != population.end()) {
+        int age = current_generation - it->GetBirthGeneration();
+        if (age > max_age) {
+            it = population.erase(it);  // erase returns iterator to next element
+        } else {
+            ++it;
+        }
+    }
 }
 
