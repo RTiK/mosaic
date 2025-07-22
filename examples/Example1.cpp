@@ -36,7 +36,7 @@ int main() {
     temp_population.swap(population);
 
     // pass through elites (first 10%) with age filtering
-    population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100, g, kMaxAge);
+    population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100, g);
 
     // mutate (another 60%) from temp population (age increment handled in PassThroughElites)
     population_util::MutateBest(population, temp_population, 60 * kPopulation / 100, g, i);

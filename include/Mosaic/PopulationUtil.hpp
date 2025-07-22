@@ -12,7 +12,7 @@ namespace population_util {
 
   void MutateBest(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g, int current_generation);
 
-  void PassThroughElites(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g, int max_age = -1);
+  void PassThroughElites(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g);
 
   void PrintBest(std::set<Individual> &population, int n);
 

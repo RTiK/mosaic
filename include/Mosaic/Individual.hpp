@@ -20,7 +20,6 @@ class Individual {
   double fitness_;
   std::vector<Page> pages_;
   std::vector<std::shared_ptr<Piece>> genome_;
-  int age_;
   int birth_generation_;
 
   void Evaluate();
@@ -35,10 +34,6 @@ class Individual {
   Individual(const Individual &ind, std::mt19937 &g, int birth_generation);
 
   double GetFitness() const { return fitness_; };
-
-  int GetAge() const { return age_; };
-
-  void IncrementAge() { age_++; };
 
   int GetBirthGeneration() const { return birth_generation_; }
 

@@ -21,25 +21,19 @@ void population_util::MutateBest(std::set<Individual> &population, const std::se
   }
 }
 
-void population_util::PassThroughElites(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g, int max_age) {
+void population_util::PassThroughElites(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g) {
   auto old_pop_iter = old_pop.begin();
   while (old_pop_iter != old_pop.end() && n > 0) {
-    Individual ind = *old_pop_iter;
-    ind.IncrementAge();
-    
-    // If max_age is -1 (default), skip age filtering; otherwise filter by age
-    if (max_age == -1 || ind.GetAge() <= max_age) {
-      population.insert(ind);
-      n--;
-    }
+    population.insert(*old_pop_iter);
     old_pop_iter++;
+    n--;
   }
 }
 
 void population_util::PrintBest(std::set<Individual> &population, int n) {
   auto current = population.begin();
   while (current != population.end() && n >= 0) {
-    std::cout << std::format("{}, {}", current->GetFitness(), current->GetAge()) << " | ";
+    std::cout << std::format("{}, {}", current->GetFitness(), current->GetBirthGeneration()) << " | ";
     current++;
     n--;
   }
