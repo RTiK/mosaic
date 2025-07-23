@@ -76,6 +76,7 @@ void Individual::Evaluate() {
   double total_variance = 0.0;
   double total_icons_missing = 0.0;
   double total_distance = 0.0;
+
   for (Page &page : pages_) {
     total_distance += page.GetDistances();
     total_variance += page.GetVariance();
@@ -84,7 +85,31 @@ void Individual::Evaluate() {
 
   double variance_normalized = total_variance / genome_.size();
   double missing_icons_penalty = total_icons_missing * variance_normalized;
-  fitness_ = total_distance + total_variance * 0.3 + missing_icons_penalty * 0.2;
+  double page_dissimilarity = CalculatePageDissimilarity(pages_);
+  fitness_ = total_distance + total_variance * 0.4 + missing_icons_penalty * 0.1 - page_dissimilarity * 0.5;
+}
+
+double Individual::CalculatePageDissimilarity(std::vector<Page> &pages) {
+  if (pages.size() <= 1) {
+    return 0.0; // No dissimilarity with only one page
+  }
+
+  double total_dissimilarity = 0.0;
+  int comparisons = 0;
+
+  // Compare all pairs of pages
+  for (size_t i = 0; i < pages.size(); ++i) {
+    for (size_t j = i + 1; j < pages.size(); ++j) {
+      cv::Vec3f mean_color_i = pages[i].MeanPageColor();
+      cv::Vec3f mean_color_j = pages[j].MeanPageColor();
+      total_dissimilarity += std::sqrt(std::pow(mean_color_i[0] - mean_color_j[0], 2) +
+                                       std::pow(mean_color_i[0] - mean_color_j[0], 2) +
+                                       std::pow(mean_color_i[0] - mean_color_j[0], 2));
+      comparisons++;
+    }
+  }
+
+  return comparisons > 0 ? total_dissimilarity / comparisons : 0.0;
 }
 
 bool Individual::operator<(const Individual &other) const {
