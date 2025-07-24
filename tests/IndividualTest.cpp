@@ -7,7 +7,7 @@ TEST(IndividualConstructorTests, CopyConstructorTest) {
   std::vector<std::shared_ptr<Piece>> genome {
     std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
-  Individual original_individual(genome);
+  Individual original_individual(genome, 0);
   Individual copy_individual(original_individual);
   EXPECT_NE(&original_individual, &copy_individual);
   EXPECT_EQ(original_individual.GetGenome(), copy_individual.GetGenome());
@@ -21,12 +21,12 @@ TEST(IndividualSwapTests, SwapAdjacent) {
   std::vector<std::shared_ptr<Piece>> genome {
     std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
-  Individual individual(genome);
+  Individual individual(genome, 0);
   unsigned int index_1 = 1;
   unsigned int index_2 = 2;
   auto ref_1 = individual.GetGenome().at(index_1).get();
   auto ref_2 = individual.GetGenome().at(index_2).get();
-  individual.Swap(index_1, index_2);
+  individual.Swap(index_1, index_2, 0);
   EXPECT_EQ(ref_1, individual.GetGenome().at(index_2).get());
   EXPECT_EQ(ref_2, individual.GetGenome().at(index_1).get());
 }
@@ -35,12 +35,12 @@ TEST(IndividualSwapTests, SwapEdges) {
   std::vector<std::shared_ptr<Piece>> genome {
     std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
-  Individual individual(genome);
+  Individual individual(genome, 0);
   unsigned int index_1 = 0;
   unsigned int index_2 = genome.size() - 1;
   auto ref_1 = individual.GetGenome().at(index_1).get();
   auto ref_2 = individual.GetGenome().at(index_2).get();
-  individual.Swap(index_1, index_2);
+  individual.Swap(index_1, index_2, 0);
   EXPECT_EQ(ref_1, individual.GetGenome().at(index_2).get());
   EXPECT_EQ(ref_2, individual.GetGenome().at(index_1).get());
 }
@@ -50,10 +50,10 @@ TEST(IndividualSwapTests, SwapSameIndex) {
     std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>(),
     std::make_shared<ColorPiece>(), std::make_shared<ColorPiece>()
   };
-  Individual individual(genome);
+  Individual individual(genome, 0);
   unsigned int index_1 = 1;
   auto ref_1 = individual.GetGenome().at(index_1).get();
-  individual.Swap(index_1, index_1);
+  individual.Swap(index_1, index_1, 0);
   EXPECT_EQ(ref_1, individual.GetGenome().at(index_1).get());
 }
 
@@ -162,4 +162,26 @@ TEST(PageBreakTest, TestPageOverflow) {
   EXPECT_EQ(pages.size(), 2);
   EXPECT_EQ(pages[0].GetLastPiece() - pages[0].GetFirstPiece(), Page::max_pieces_ - 1);
   EXPECT_EQ(pages[1].GetLastPiece() - pages[1].GetFirstPiece(), pieces.size() - Page::max_pieces_ - 1);
+}
+
+TEST(PageDissimilarityTest, SinglePage) {
+  std::vector<std::shared_ptr<Piece>> pieces {
+      std::make_shared<ColorPiece>(1.0)
+  };
+  std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
+  double dissimilarity = Individual::CalculatePageDissimilarity(pages);
+  EXPECT_EQ(0.0, dissimilarity);
+}
+
+TEST(PageDissimilarityTest, ThreePages) {
+  std::vector<std::shared_ptr<Piece>> pieces {
+      std::make_shared<ColorPiece>(1.0),
+      kPageBreak,
+      std::make_shared<ColorPiece>(0.5),
+      kPageBreak,
+      std::make_shared<ColorPiece>(0.0),
+  };
+  std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
+  double dissimilarity = Individual::CalculatePageDissimilarity(pages);
+  EXPECT_NEAR(1.1547, dissimilarity, 0.0001);
 }

@@ -13,6 +13,7 @@ enable_testing()
 set(TestSources
         PageEvaluationTest.cpp
         IndividualTest.cpp
+        PopulationUtilFilterByAgeTest.cpp
         piece/PieceTest.cpp
         piece/IconPieceTest.cpp
         piece/BgrIconPieceTest.cpp
@@ -25,6 +26,8 @@ target_link_libraries(MosaicTests
         Mosaic
         GTest::gtest
         GTest::gtest_main
+        GTest::gmock
+        GTest::gmock_main
 )
 
 target_include_directories(MosaicTests

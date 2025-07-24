@@ -20,7 +20,8 @@ std::mt19937 g(rd());
 int main() {
   g.seed(0);
   //Individual template_individual = individual_generation::GenerateIndividualRgbRandom(kNumOfPieces, kNumOfPageBreaks, g, 0);
-  Individual template_individual = individual_generation::GenerateIndividualGrayRandom(kNumOfPieces, kNumOfPageBreaks, g, 0);
+  //Individual template_individual = individual_generation::GenerateIndividualGrayRandom(kNumOfPieces, kNumOfPageBreaks, g, 0);
+  Individual template_individual = individual_generation::GenerateIndividualLabRandom(kNumOfPieces, kNumOfPageBreaks, g, 0);
 
   template_individual.Print();
 

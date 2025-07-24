@@ -63,7 +63,7 @@ class Individual {
 
   void Show();
 
-  double CalculatePageDissimilarity(std::vector<Page> &pages);
+  static double CalculatePageDissimilarity(std::vector<Page> &pages);
 };
 
 #endif //MOSAIC_INDIVIDUAL_H
