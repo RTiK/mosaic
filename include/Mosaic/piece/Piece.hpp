@@ -36,6 +36,6 @@ class Piece {
   friend std::ostream &operator<<(std::ostream &out, const Piece &piece) { return out << piece.Print(); }
 };
 
-static std::shared_ptr<Piece> kPageBreak;
+static const std::shared_ptr<Piece> kPageBreak;
 
 #endif //MOSAIC_SRC_PIECE_H_
