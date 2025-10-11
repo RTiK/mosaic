@@ -1,13 +1,14 @@
 #include <Mosaic/piece/IconPiece.hpp>
 #include <Mosaic/piece/LabIconPiece.hpp>
 #include <gtest/gtest.h>
+#include <opencv2/core.hpp>
 
 
 TEST(SplitColorChannelsAndAlphaTest, Simple) {
-  // we expect the image to be of type CV_16UC4, which houses ushorts
-  cv::Vec4w bgra((USHRT_MAX+1)/8, (USHRT_MAX+1)/4, (USHRT_MAX+1)/2, USHRT_MAX);
-  cv::Vec4w data[] = {bgra};
-  cv::Mat mat(1, 1, CV_16UC4, &data);
+  // we expect the image to be of type CV_8UC4, which houses uchar
+  cv::Vec4b bgra((UCHAR_MAX+1)/8, (UCHAR_MAX+1)/4, (UCHAR_MAX+1)/2, UCHAR_MAX);
+  cv::Vec4b data[] = {bgra};
+  cv::Mat mat(1, 1, CV_8UC4, &data);
 
   cv::Mat colors, alpha;
   IconPiece::SplitColorChannelsAndAlpha(mat, colors, alpha);
@@ -21,9 +22,9 @@ TEST(SplitColorChannelsAndAlphaTest, Simple) {
 
 
 TEST(SplitColorChannelsAndAlphaTest, TestTypes) {
-  cv::Vec4w bgra(0, 0, 0, 0);
-  cv::Vec4w data[] = {bgra};
-  cv::Mat mat(1, 1, CV_16UC4, &data);
+  cv::Vec4b bgra(0, 0, 0, 0);
+  cv::Vec4b data[] = {bgra};
+  cv::Mat mat(1, 1, CV_8UC4, &data);
 
   cv::Mat colors, alpha;
   IconPiece::SplitColorChannelsAndAlpha(mat, colors, alpha);
@@ -34,16 +35,16 @@ TEST(SplitColorChannelsAndAlphaTest, TestTypes) {
 
 
 TEST(SplitColorChannelsAndAlphaTest, TestAlpha) {
-  cv::Vec4w alpha_0(0, 0, 0, 0);
-  cv::Vec4w alpha_1(0, 0, 0, 1);
-  cv::Vec4w alpha_255(0, 0, 0, 255);
-  cv::Vec4w alpha_65535(0, 0, 0, 65535);  // USHRT_MAX
+  cv::Vec4b alpha_0(0, 0, 0, 0);
+  cv::Vec4b alpha_1(0, 0, 0, 1);
+  cv::Vec4b alpha_255(0, 0, 0, 255);
+  cv::Vec4b alpha_65535(0, 0, 0, UCHAR_MAX);
 
-  cv::Vec4w data[2][2] {
+  cv::Vec4b data[2][2] {
       {alpha_0, alpha_1},
       {alpha_255, alpha_65535}
   };
-  cv::Mat mat(2, 2, CV_16UC4, &data);
+  cv::Mat mat(2, 2, CV_8UC4, &data);
 
   cv::Mat colors, alpha;
   IconPiece::SplitColorChannelsAndAlpha(mat, colors, alpha);
@@ -71,15 +72,15 @@ TEST(GetHistogramTests, EvenDistributionTest) {
 
 
 TEST(LabIconTests, AssignmentTest) {
-  cv::Vec4w bgra(USHRT_MAX, 0, 0, USHRT_MAX);
+  cv::Vec4b bgra(UCHAR_MAX, 0, 0, UCHAR_MAX);
 
-  cv::Mat image(2, 2, CV_16UC4, bgra);
+  cv::Mat image(2, 2, CV_8UC4, bgra);
 
   LabIconPiece piece(image);
 
   cv::Vec3f dominating_color = piece.DominatingColor();
 
   EXPECT_NEAR(33.0, dominating_color[0], 0.0001);
-  EXPECT_NEAR(81.1796, dominating_color[1], 0.0001);
+  EXPECT_NEAR(77.1953, dominating_color[1], 0.0001);
   EXPECT_NEAR(-106.0859, dominating_color[2], 0.0001);
 }

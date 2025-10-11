@@ -1,7 +1,9 @@
+#include <climits>
 #include <gtest/gtest.h>
 #include <Mosaic/piece/Piece.hpp>
 #include <Mosaic/piece/LabPiece.hpp>
 #include <Mosaic/piece/LabIconClusteringPiece.hpp>
+#include <opencv2/core.hpp>
 
 
 TEST(PieceTests, DistanceTest) {
@@ -62,22 +64,22 @@ TEST(PieceTests, LabColorTest) {
 }
 
 TEST(LabIconClusteringPieceTests, DistanceTest) {
-  cv::Vec4w data_1[] = {
-      cv::Vec4w(USHRT_MAX, 0, 0, USHRT_MAX),  // Lab: 32.3026, 79.1967, -107.8637
-      cv::Vec4w(USHRT_MAX, 0, 0, USHRT_MAX),
-      cv::Vec4w(0, 0, USHRT_MAX, USHRT_MAX),  // Lab: 53.2329, 80.1093, 67.2201
-      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),  // Lab: 87.7370, -86.1846, 83.1812
+  cv::Vec4b data_1[] = {
+      cv::Vec4b(UCHAR_MAX, 0, 0, UCHAR_MAX),  // Lab: 32.3026, 79.1967, -107.8637
+      cv::Vec4b(UCHAR_MAX, 0, 0, UCHAR_MAX),
+      cv::Vec4b(0, 0, UCHAR_MAX, UCHAR_MAX),  // Lab: 53.2329, 80.1093, 67.2201
+      cv::Vec4b(0, UCHAR_MAX, 0, UCHAR_MAX),  // Lab: 87.7370, -86.1846, 83.1812
   };
 
-  cv::Vec4w data_2[] = {
-      cv::Vec4w(0, 0, USHRT_MAX, USHRT_MAX),  // Lab: 53.2329, 80.1093, 67.2201
-      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),  // Lab: 87.7370, -86.1846, 83.1812
-      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),
-      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),
+  cv::Vec4b data_2[] = {
+      cv::Vec4b(0, 0, UCHAR_MAX, UCHAR_MAX),  // Lab: 53.2329, 80.1093, 67.2201
+      cv::Vec4b(0, UCHAR_MAX, 0, UCHAR_MAX),  // Lab: 87.7370, -86.1846, 83.1812
+      cv::Vec4b(0, UCHAR_MAX, 0, UCHAR_MAX),
+      cv::Vec4b(0, UCHAR_MAX, 0, UCHAR_MAX),
   };
 
-  cv::Mat icon_1(2, 2, CV_16UC4, &data_1);
-  cv::Mat icon_2(2, 2, CV_16UC4, &data_2);
+  cv::Mat icon_1(2, 2, CV_8UC4, &data_1);
+  cv::Mat icon_2(2, 2, CV_8UC4, &data_2);
 
   LabIconClusteringPiece piece_1(icon_1);
   LabIconClusteringPiece piece_2(icon_2);

@@ -23,6 +23,10 @@ class BgrIconPiece : public IconPiece {
   static double EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPiece* p_2);
   double Distance(const Piece &other) const override;
   virtual cv::Vec3f DominatingColor() const override;
+
+  // Testing accessors
+  const std::vector<DominantColor>& GetDominantColors() const { return dominant_colors_; }
+  size_t GetNumClusters() const { return kClusters; }
 };
 
 #endif //MOSAIC_ARRANGE_SRC_HSVICONPIECE_H_

@@ -54,5 +54,8 @@ target_include_directories(Mosaic PUBLIC
 
 target_link_libraries(Mosaic PUBLIC ${OpenCV_LIBS})
 
+# Enable testing support
+enable_testing()
+
 add_subdirectory(tests)
 add_subdirectory(examples)

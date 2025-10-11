@@ -22,9 +22,14 @@ IconPiece::IconPiece(cv::Mat image, std::string name) {
 }
 
 void IconPiece::SplitColorChannelsAndAlpha(const cv::Mat &image, cv::Mat &colors, cv::Mat &alpha) {
-  assert(image.type() == CV_8UC4);
-  colors = cv::Mat(image.rows, image.cols, CV_8UC3);
-  alpha = cv::Mat(image.rows, image.cols, CV_8UC1);
+  assert(image.type() == CV_8UC4 || image.type() == CV_16UC4);
+
+  // Determine the appropriate intermediate types based on input
+  int intermediate_color_type = (image.type() == CV_16UC4) ? CV_16UC3 : CV_8UC3;
+  int intermediate_alpha_type = (image.type() == CV_16UC4) ? CV_16UC1 : CV_8UC1;
+
+  colors = cv::Mat(image.rows, image.cols, intermediate_color_type);
+  alpha = cv::Mat(image.rows, image.cols, intermediate_alpha_type);
   cv::Mat out[] = {colors, alpha};
   int from_to[] = {  // source channel -> channel in destination matrix
       0, 0,  // copy color channels into colors Mat
@@ -34,8 +39,16 @@ void IconPiece::SplitColorChannelsAndAlpha(const cv::Mat &image, cv::Mat &colors
   };
 
   cv::mixChannels(&image, 1, out, 2, from_to, 4);
-  colors.convertTo(colors, CV_32F, 1.0/(USHRT_MAX+1), 0);
-  alpha.convertTo(alpha, CV_8UC1);
+
+  // Normalize based on input type
+  if (image.type() == CV_16UC4) {
+    colors.convertTo(colors, CV_32F, 1.0/(USHRT_MAX+1), 0);
+    alpha.convertTo(alpha, CV_8UC1, 1.0/(USHRT_MAX+1), 0);
+  } else {
+    colors.convertTo(colors, CV_32F, 1.0/256.0, 0);
+    alpha.convertTo(alpha, CV_8UC1);
+  }
+
   cv::threshold(alpha, alpha, 0.5, 1, cv::THRESH_BINARY);
 }
 

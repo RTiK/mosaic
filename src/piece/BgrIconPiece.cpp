@@ -61,11 +61,6 @@ void BgrIconPiece::Analyze(cv::Mat &colors, cv::Mat &mask) {
   std::sort(dominant_colors_.begin(), dominant_colors_.end(),[](const DominantColor& a, const DominantColor& b) {
     return a.weight > b.weight;
   });
-
-  std::cout << "Dominant colors " << ":\n";
-  for (const auto& dc : dominant_colors_) {
-    std::cout << "Color: " << dc.color * 65535 << ", Weight: " << dc.weight << "\n";
-  } 
 }
 
 double BgrIconPiece::Distance(const Piece &other) const {
