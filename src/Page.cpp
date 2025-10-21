@@ -53,8 +53,8 @@ cv::Mat Page::Image(int side, cv::Vec3f default_color) const {
   }
 
   cv::Mat src(1, 1, CV_32FC3, mean_color_);
-  cv::Mat dst;// = src.clone();
-  cv::cvtColor(src, dst, cv::COLOR_Lab2BGR);  // comment this line and uncomment the previous one when operating in RGB space
+  cv::Mat dst = src.clone();
+  //cv::cvtColor(src, dst, cv::COLOR_Lab2BGR);  // comment this line and uncomment the previous one when operating in RGB space
   cv::Vec3f bgr = dst.at<cv::Vec3f>(0, 0);
   cv::Mat color_bar (side/2, page_evaluation::kWidth * side, type, bgr);
   rows[page_evaluation::kHeight] = color_bar;
