@@ -4,11 +4,6 @@
 #include "IconPiece.hpp"
 #include <vector>
 
-struct DominantColor {
-    cv::Vec3f color;
-    float weight;
-};
-
 class BgrIconPiece : public IconPiece {
  private:
     std::vector<DominantColor> dominant_colors_;
@@ -22,10 +17,10 @@ class BgrIconPiece : public IconPiece {
   explicit BgrIconPiece(std::string path);
   static double EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPiece* p_2);
   double Distance(const Piece &other) const override;
-  virtual cv::Vec3f DominatingColor() const override;
+  cv::Vec3f DominatingColor() const override;
+  std::vector<DominantColor> GetDominantColors() const override;
 
   // Testing accessors
-  const std::vector<DominantColor>& GetDominantColors() const { return dominant_colors_; }
   size_t GetNumClusters() const { return kClusters; }
 };
 

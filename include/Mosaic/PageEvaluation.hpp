@@ -19,7 +19,7 @@ namespace page_evaluation {
 
   float CalculatePageDistances(const Page &page);
 
-  cv::Vec3f CalculateMeanPageColor(const Page &page);
+  std::vector<DominantColor> CalculateColorDistribution(const Page &page);
 
   float CalculateVariance(const Page &page);
 

@@ -53,7 +53,7 @@ Individual individual_generation::GenerateIndividualLabRandom(unsigned int lengt
 }
 
 Individual individual_generation::ReadRgbIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g, int current_generation) {
-  assert(std::filesystem::is_directory(dir_path));  // TODO make exception
+  //assert(std::filesystem::is_directory(dir_path));  // TODO make exception
 
   std::vector<std::filesystem::path> files{};
   for (auto file : std::filesystem::directory_iterator(dir_path)) {

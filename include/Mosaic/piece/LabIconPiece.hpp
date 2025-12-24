@@ -25,6 +25,7 @@ class LabIconPiece : public IconPiece {
   double Distance(const Piece &other) const override;
   static double EuclideanDistance(const LabIconPiece* p_1, const LabIconPiece* p_2);
   virtual cv::Vec3f DominatingColor() const override;
+  virtual std::vector<DominantColor> GetDominantColors() const override;
 };
 
 #endif //MOSAIC_ARRANGE_SRC_PIECES_LABICONPIECE_H_

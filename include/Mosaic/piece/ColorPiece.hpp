@@ -21,6 +21,8 @@ class ColorPiece : public Piece {
 
   virtual cv::Vec3f DominatingColor() const override { return original_color_; };
 
+  virtual std::vector<DominantColor> GetDominantColors() const override;
+
   virtual double Distance(const Piece &other) const override;
 
   static double EuclideanDistance(const cv::Vec3f &c_1, const cv::Vec3f &c_2);

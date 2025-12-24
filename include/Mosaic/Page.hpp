@@ -14,7 +14,7 @@ class Page {
   std::shared_ptr<Piece> *first_piece_, *last_piece_;
   double distances_;
   double variance_;
-  cv::Vec3f mean_color_;
+  std::vector<DominantColor> color_distribution_;
   int icons_missing_;
 
   void Evaluate();
@@ -23,7 +23,7 @@ class Page {
   const static unsigned int max_pieces_ = 24;
 
   Page(const Page &page) : first_piece_{page.first_piece_}, last_piece_{page.last_piece_},
-      distances_{page.distances_}, variance_{page.variance_}, mean_color_{page.mean_color_},
+      distances_{page.distances_}, variance_{page.variance_}, color_distribution_{page.color_distribution_},
       icons_missing_{page.icons_missing_} {};
 
   Page(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece);
@@ -34,7 +34,7 @@ class Page {
 
   int GetIconsMissing() const { return icons_missing_; }
 
-  cv::Vec3f MeanPageColor() const { return mean_color_; }
+  std::vector<DominantColor> GetColorDistribution() const { return color_distribution_; }
 
   unsigned int Size() const;
 

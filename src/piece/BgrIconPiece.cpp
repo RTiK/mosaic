@@ -72,19 +72,32 @@ double BgrIconPiece::Distance(const Piece &other) const {
 
 double BgrIconPiece::EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPiece* p_2) {
   double distance = 0.0;
+
+  // Compare all color pairs between the two pieces
   for (size_t i = 0; i < p_1->dominant_colors_.size(); i++) {
-    cv::Vec3f color1 = p_1->dominant_colors_[i].color;
-    cv::Vec3f color2 = p_2->dominant_colors_[i].color;
-    float weight1 = p_1->dominant_colors_[i].weight;
-    float weight2 = p_2->dominant_colors_[i].weight;
-    
-    // Weighted Euclidean distance
-    cv::Vec3f diff = color1 - color2;
-    distance += cv::norm(diff) * (weight1 + weight2) / 2.0;
+    for (size_t j = 0; j < p_2->dominant_colors_.size(); j++) {
+      cv::Vec3f color1 = p_1->dominant_colors_[i].color;
+      cv::Vec3f color2 = p_2->dominant_colors_[j].color;
+      float weight1 = p_1->dominant_colors_[i].weight;
+      float weight2 = p_2->dominant_colors_[j].weight;
+
+      // Weighted Euclidean distance between this color pair
+      cv::Vec3f diff = color1 - color2;
+      distance += cv::norm(diff) * weight1 * weight2;
+    }
   }
+
   return distance;
 }
 
 cv::Vec3f BgrIconPiece::DominatingColor() const {
-  return dominant_colors_[0].color;  // Return the most dominant color
+  cv::Vec3f mean_color(0.0f, 0.0f, 0.0f);
+  for (const auto& dc : dominant_colors_) {
+    mean_color += dc.color * dc.weight;
+  }
+  return mean_color;
+}
+
+std::vector<DominantColor> BgrIconPiece::GetDominantColors() const {
+  return dominant_colors_;
 }

@@ -14,6 +14,8 @@ class LabPiece : public ColorPiece {
 
   virtual cv::Vec3f DominatingColor() const override { return lab_color_; }
 
+  virtual std::vector<DominantColor> GetDominantColors() const override;
+
   virtual double Distance(const Piece &other) const override;
 
   cv::Mat Image(int width, int height) const override;
