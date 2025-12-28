@@ -135,3 +135,17 @@ void LabIconClusteringPiece::ShowClusters(cv::Mat icon_array, cv::Mat mask) {
   cv::imshow("", icon);
   cv::waitKey();
 }
+
+std::vector<WeightedColor> LabIconClusteringPiece::GetQuantifiedColors() const {
+  std::vector<WeightedColor> result;
+  int total_weight = 0;
+  for (int weight : weights_) {
+    total_weight += weight;
+  }
+
+  for (size_t i = 0; i < centers_.size(); i++) {
+    result.push_back({centers_[i], static_cast<float>(weights_[i]) / total_weight});
+  }
+
+  return result;
+}

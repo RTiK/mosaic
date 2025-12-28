@@ -18,8 +18,8 @@ class IconPiece : public Piece {
   cv::Mat original_image_;  // BGRA
 
  public:
-  IconPiece(std::filesystem::path path);
-  IconPiece(cv::Mat image, std::string name="");
+  explicit IconPiece(std::filesystem::path path);
+  explicit IconPiece(cv::Mat image, std::string name="");
   IconPiece(const IconPiece &piece) : icon_path_{piece.icon_path_},
     original_image_{cv::imread(icon_path_, cv::IMREAD_UNCHANGED)} {};
     

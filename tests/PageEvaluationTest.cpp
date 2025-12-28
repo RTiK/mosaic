@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <Mosaic/PageEvaluation.hpp>
+#include "Mosaic/piece/ColorPiece.hpp"
 
 using namespace page_evaluation;
 

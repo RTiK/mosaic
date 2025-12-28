@@ -4,6 +4,9 @@ project(Mosaic CXX C)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Export compile commands for IDE integration (IntelliSense, clangd, etc.)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 find_package(OpenCV REQUIRED)
 message("OpenCV version found: " ${OpenCV_VERSION})
 include_directories( ${OpenCV_INCLUDE_DIRS} )
@@ -53,6 +56,9 @@ target_include_directories(Mosaic PUBLIC
 )
 
 target_link_libraries(Mosaic PUBLIC ${OpenCV_LIBS})
+
+# Enable testing support
+enable_testing()
 
 add_subdirectory(tests)
 add_subdirectory(examples)

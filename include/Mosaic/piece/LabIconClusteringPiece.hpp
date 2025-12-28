@@ -20,7 +20,8 @@ class LabIconClusteringPiece : public IconPiece {
 
   double Distance(const Piece &other) const override;
   static double EuclideanDistance(const LabIconClusteringPiece* p_1, const LabIconClusteringPiece* p_2);
-  cv::Vec3f DominatingColor() const override { return dominating_color_; };
+  cv::Vec3f GetMainColor() const override { return dominating_color_; };
+  std::vector<WeightedColor> GetQuantifiedColors() const override;
 
 };
 

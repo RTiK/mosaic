@@ -46,7 +46,7 @@ double LabIconPiece::EuclideanDistance(const LabIconPiece *p_1, const LabIconPie
 }
 
 // TODO move this method into Analysis so it will be ran only once
-cv::Vec3f LabIconPiece::DominatingColor() const {
+cv::Vec3f LabIconPiece::GetMainColor() const {
 
   double min_val, max_val;
   int min_idx, max_idx;
@@ -66,4 +66,9 @@ cv::Vec3f LabIconPiece::DominatingColor() const {
   float b_bin = b_range_[0] + max_idx * b_step + b_step * 0.5;
 
   return cv::Vec3f(L_bin, a_bin, b_bin);
+}
+
+std::vector<WeightedColor> LabIconPiece::GetQuantifiedColors() const {
+  // LabIconPiece uses histograms, so it has one dominant color
+  return {{GetMainColor(), 1.0f}};
 }

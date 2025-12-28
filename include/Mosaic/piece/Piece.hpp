@@ -3,8 +3,13 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 #include <opencv2/core.hpp>
 
+struct WeightedColor {
+    cv::Vec3f color;
+    float weight;
+};
 
 enum Neighbours : unsigned char {
   N = 0x1 << 7,
@@ -29,13 +34,15 @@ class Piece {
 
   virtual cv::Mat Image(int width, int height) const = 0;
 
-  virtual cv::Vec3f DominatingColor() const = 0;
+  virtual cv::Vec3f GetMainColor() const = 0;
+
+  virtual std::vector<WeightedColor> GetQuantifiedColors() const = 0;
 
   virtual std::string Print() const = 0;
 
   friend std::ostream &operator<<(std::ostream &out, const Piece &piece) { return out << piece.Print(); }
 };
 
-static std::shared_ptr<Piece> kPageBreak;
+static const std::shared_ptr<Piece> kPageBreak;
 
 #endif //MOSAIC_SRC_PIECE_H_

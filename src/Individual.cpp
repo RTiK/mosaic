@@ -1,8 +1,5 @@
 #include "Mosaic/Individual.hpp"
-#include <utility>
-#ifdef _WIN32
-  #include <numeric>
-#endif
+#include "Mosaic/piece/Piece.hpp"
 
 Individual::Individual() : birth_generation_(0) {}
 
@@ -19,6 +16,7 @@ Individual::Individual(std::vector<std::shared_ptr<Piece>> &genome, int birth_ge
 Individual::Individual(const Individual &ind, std::mt19937 &g, int birth_generation) : birth_generation_(birth_generation) {
   genome_ = std::vector(ind.genome_);
   std::shuffle(genome_.begin(), genome_.end(), g);
+
   Evaluate();
 }
 
@@ -85,8 +83,8 @@ void Individual::Evaluate() {
 
   double variance_normalized = total_variance / genome_.size();
   double missing_icons_penalty = total_icons_missing * variance_normalized;
-  double page_dissimilarity = CalculatePageDissimilarity(pages_);
-  fitness_ = total_distance + total_variance * 0.4 + missing_icons_penalty * 0.1 - page_dissimilarity * 0.5;
+  //double page_dissimilarity = CalculatePageDissimilarity(pages_);
+  fitness_ = total_distance + total_variance * 0.4 + missing_icons_penalty * 0.1; // - page_dissimilarity * 0.5;
 }
 
 double Individual::CalculatePageDissimilarity(std::vector<Page> &pages) {
@@ -97,14 +95,24 @@ double Individual::CalculatePageDissimilarity(std::vector<Page> &pages) {
   double total_dissimilarity = 0.0;
   int comparisons = 0;
 
-  // Compare all pairs of pages
+  // Compare all pairs of pages using their color distributions
   for (size_t i = 0; i < pages.size(); ++i) {
     for (size_t j = i + 1; j < pages.size(); ++j) {
-      cv::Vec3f mean_color_i = pages[i].MeanPageColor();
-      cv::Vec3f mean_color_j = pages[j].MeanPageColor();
-      total_dissimilarity += std::sqrt(std::pow(mean_color_i[0] - mean_color_j[0], 2) +
-                                       std::pow(mean_color_i[0] - mean_color_j[0], 2) +
-                                       std::pow(mean_color_i[0] - mean_color_j[0], 2));
+      std::vector<WeightedColor> colors_i = pages[i].GetColorDistribution();
+      std::vector<WeightedColor> colors_j = pages[j].GetColorDistribution();
+
+      // Calculate weighted Euclidean distance between color distributions
+      double page_distance = 0.0;
+      for (const auto& dc_i : colors_i) {
+        for (const auto& dc_j : colors_j) {
+          cv::Vec3f diff = dc_i.color - dc_j.color;
+          double color_dist = cv::norm(diff);
+          // Weight by the product of the two weights (colors that are more dominant contribute more)
+          page_distance += color_dist * dc_i.weight * dc_j.weight;
+        }
+      }
+
+      total_dissimilarity += page_distance;
       comparisons++;
     }
   }

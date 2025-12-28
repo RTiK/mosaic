@@ -2,6 +2,7 @@
 #include <Mosaic/piece/Piece.hpp>
 #include <Mosaic/piece/LabPiece.hpp>
 #include <Mosaic/piece/LabIconClusteringPiece.hpp>
+#include <opencv2/core.hpp>
 
 
 TEST(PieceTests, DistanceTest) {
@@ -13,7 +14,7 @@ TEST(PieceTests, DistanceTest) {
 
 TEST(PieceTests, GrayAssignmentTest) {
   auto piece = ColorPiece(0.5);
-  cv::Vec3f gray = piece.DominatingColor();
+  cv::Vec3f gray = piece.GetMainColor();
   EXPECT_EQ(gray[0], 0.5);
   EXPECT_EQ(gray[1], 0.5);
   EXPECT_EQ(gray[2], 0.5);
@@ -25,7 +26,7 @@ TEST(PieceTests, GrayAssignmentTest) {
  */
 TEST(PieceTests, LabAssignmentTest) {
   LabPiece lab_piece = LabPiece(0.5, 0.5, 0.5);
-  cv::Vec3f lab_color = lab_piece.DominatingColor();
+  cv::Vec3f lab_color = lab_piece.GetMainColor();
   EXPECT_NEAR(lab_color[0], 53.3875, 0.0001);
   // input color is a shade of gray, thus, the color channels must evaluate to _exactly_ zero
   EXPECT_EQ(lab_color[1], 0.0);
@@ -40,9 +41,9 @@ TEST(PieceTests, LabColorTest) {
   LabPiece lab_piece_G = LabPiece(0.0, 1.0, 0.0);
   LabPiece lab_piece_R = LabPiece(0.0, 0.0, 1.0);
 
-  cv::Vec3f lab_B = lab_piece_B.DominatingColor();
-  cv::Vec3f lab_G = lab_piece_G.DominatingColor();
-  cv::Vec3f lab_R = lab_piece_R.DominatingColor();
+  cv::Vec3f lab_B = lab_piece_B.GetMainColor();
+  cv::Vec3f lab_G = lab_piece_G.GetMainColor();
+  cv::Vec3f lab_R = lab_piece_R.GetMainColor();
 
   cv::Vec3f expect_lab_B = cv::Vec3f(32.2937, 79.1875, -107.859);
   cv::Vec3f expect_lab_G = cv::Vec3f(87.738, -86.1875, 83.1719);
@@ -62,22 +63,22 @@ TEST(PieceTests, LabColorTest) {
 }
 
 TEST(LabIconClusteringPieceTests, DistanceTest) {
-  cv::Vec4w data_1[] = {
-      cv::Vec4w(USHRT_MAX, 0, 0, USHRT_MAX),  // Lab: 32.3026, 79.1967, -107.8637
-      cv::Vec4w(USHRT_MAX, 0, 0, USHRT_MAX),
-      cv::Vec4w(0, 0, USHRT_MAX, USHRT_MAX),  // Lab: 53.2329, 80.1093, 67.2201
-      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),  // Lab: 87.7370, -86.1846, 83.1812
+  cv::Vec4b data_1[] = {
+      cv::Vec4b(UCHAR_MAX, 0, 0, UCHAR_MAX),  // Lab: 32.3026, 79.1967, -107.8637
+      cv::Vec4b(UCHAR_MAX, 0, 0, UCHAR_MAX),
+      cv::Vec4b(0, 0, UCHAR_MAX, UCHAR_MAX),  // Lab: 53.2329, 80.1093, 67.2201
+      cv::Vec4b(0, UCHAR_MAX, 0, UCHAR_MAX),  // Lab: 87.7370, -86.1846, 83.1812
   };
 
-  cv::Vec4w data_2[] = {
-      cv::Vec4w(0, 0, USHRT_MAX, USHRT_MAX),  // Lab: 53.2329, 80.1093, 67.2201
-      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),  // Lab: 87.7370, -86.1846, 83.1812
-      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),
-      cv::Vec4w(0, USHRT_MAX, 0, USHRT_MAX),
+  cv::Vec4b data_2[] = {
+      cv::Vec4b(0, 0, UCHAR_MAX, UCHAR_MAX),  // Lab: 53.2329, 80.1093, 67.2201
+      cv::Vec4b(0, UCHAR_MAX, 0, UCHAR_MAX),  // Lab: 87.7370, -86.1846, 83.1812
+      cv::Vec4b(0, UCHAR_MAX, 0, UCHAR_MAX),
+      cv::Vec4b(0, UCHAR_MAX, 0, UCHAR_MAX),
   };
 
-  cv::Mat icon_1(2, 2, CV_16UC4, &data_1);
-  cv::Mat icon_2(2, 2, CV_16UC4, &data_2);
+  cv::Mat icon_1(2, 2, CV_8UC4, &data_1);
+  cv::Mat icon_2(2, 2, CV_8UC4, &data_2);
 
   LabIconClusteringPiece piece_1(icon_1);
   LabIconClusteringPiece piece_2(icon_2);

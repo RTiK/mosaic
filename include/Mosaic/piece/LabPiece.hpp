@@ -12,7 +12,9 @@ class LabPiece : public ColorPiece {
  public:
   LabPiece(float b, float g, float r);
 
-  virtual cv::Vec3f DominatingColor() const override { return lab_color_; }
+  virtual cv::Vec3f GetMainColor() const override { return lab_color_; }
+
+  virtual std::vector<WeightedColor> GetQuantifiedColors() const override;
 
   virtual double Distance(const Piece &other) const override;
 

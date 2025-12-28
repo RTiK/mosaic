@@ -13,5 +13,48 @@
                 "CMAKE_BUILD_TYPE": "Debug"
             }
         }
+    ],
+    "testPresets": [
+        {
+            "name": "all-tests",
+            "displayName": "All Tests",
+            "description": "Run all unit tests",
+            "configurePreset": "default",
+            "output": {
+                "outputOnFailure": true
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": false
+            }
+        },
+        {
+            "name": "bgr-icon-tests",
+            "displayName": "BgrIconPiece Tests",
+            "description": "Run only BgrIconPiece tests",
+            "configurePreset": "default",
+            "filter": {
+                "include": {
+                    "name": ".*BgrIconPiece.*"
+                }
+            },
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "icon-tests",
+            "displayName": "Icon Tests",
+            "description": "Run all icon-related tests",
+            "configurePreset": "default",
+            "filter": {
+                "include": {
+                    "name": ".*Icon.*"
+                }
+            },
+            "output": {
+                "outputOnFailure": true
+            }
+        }
     ]
 }

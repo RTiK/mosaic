@@ -22,9 +22,10 @@ IconPiece::IconPiece(cv::Mat image, std::string name) {
 }
 
 void IconPiece::SplitColorChannelsAndAlpha(const cv::Mat &image, cv::Mat &colors, cv::Mat &alpha) {
-  assert(image.type() == CV_16UC4);
-  colors = cv::Mat(image.rows, image.cols, CV_16UC3);
-  alpha = cv::Mat(image.rows, image.cols, CV_16UC1);
+  assert(image.type() == CV_8UC4);
+
+  colors = cv::Mat(image.rows, image.cols, CV_8UC3);
+  alpha = cv::Mat(image.rows, image.cols, CV_8UC1);
   cv::Mat out[] = {colors, alpha};
   int from_to[] = {  // source channel -> channel in destination matrix
       0, 0,  // copy color channels into colors Mat
@@ -34,16 +35,18 @@ void IconPiece::SplitColorChannelsAndAlpha(const cv::Mat &image, cv::Mat &colors
   };
 
   cv::mixChannels(&image, 1, out, 2, from_to, 4);
-  colors.convertTo(colors, CV_32F, 1.0/(USHRT_MAX+1), 0);
+
+  colors.convertTo(colors, CV_32F, 1.0/256.0, 0);
   alpha.convertTo(alpha, CV_8UC1);
+
   cv::threshold(alpha, alpha, 0.5, 1, cv::THRESH_BINARY);
 }
 
 cv::Mat IconPiece::Image(int width, int height) const {
   cv::Mat resized_image, converted_image;
   cv::resize(original_image_, resized_image, cv::Size(width, height));
-  resized_image.convertTo(converted_image, CV_32F, 1.0/(USHRT_MAX+1), 0);
-  return converted_image;
+  //resized_image.convertTo(converted_image, CV_32F, 1.0/(USHRT_MAX+1), 0);
+  return resized_image;
 }
 
 std::string IconPiece::Print() const {
