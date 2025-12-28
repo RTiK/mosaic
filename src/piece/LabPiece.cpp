@@ -23,7 +23,7 @@ double LabPiece::Distance(const Piece &other) const {
   return EuclideanDistance(lab_color_, o->lab_color_);
 }
 
-std::vector<DominantColor> LabPiece::GetDominantColors() const {
+std::vector<WeightedColor> LabPiece::GetQuantifiedColors() const {
   // LabPiece has only one color with full weight
   return {{lab_color_, 1.0f}};
 }

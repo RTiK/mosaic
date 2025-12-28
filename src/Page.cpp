@@ -59,7 +59,7 @@ cv::Mat Page::Image(int side, cv::Vec3f default_color) const {
   int accumulated_width = 0;
 
   for (size_t i = 0; i < color_distribution_.size(); i++) {
-    const DominantColor& dominant_color = color_distribution_[i];
+    const WeightedColor& dominant_color = color_distribution_[i];
 
     // Calculate segment width based on weight
     int segment_width = static_cast<int>(std::round(dominant_color.weight * total_width));

@@ -78,7 +78,7 @@ TEST(LabIconTests, AssignmentTest) {
 
   LabIconPiece piece(image);
 
-  cv::Vec3f dominating_color = piece.DominatingColor();
+  cv::Vec3f dominating_color = piece.GetMainColor();
 
   EXPECT_NEAR(33.0, dominating_color[0], 0.0001);
   EXPECT_NEAR(77.1953, dominating_color[1], 0.0001);

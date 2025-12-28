@@ -6,7 +6,7 @@
 #include <vector>
 #include <opencv2/core.hpp>
 
-struct DominantColor {
+struct WeightedColor {
     cv::Vec3f color;
     float weight;
 };
@@ -34,9 +34,9 @@ class Piece {
 
   virtual cv::Mat Image(int width, int height) const = 0;
 
-  virtual cv::Vec3f DominatingColor() const = 0;
+  virtual cv::Vec3f GetMainColor() const = 0;
 
-  virtual std::vector<DominantColor> GetDominantColors() const = 0;
+  virtual std::vector<WeightedColor> GetQuantifiedColors() const = 0;
 
   virtual std::string Print() const = 0;
 

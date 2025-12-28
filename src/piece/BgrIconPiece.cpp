@@ -51,14 +51,14 @@ void BgrIconPiece::Analyze(cv::Mat &colors, cv::Mat &mask) {
   // Store results
   dominant_colors_.clear();
   for(int i = 0; i < kClusters; i++) {
-    DominantColor dc;
+    WeightedColor dc;
     dc.color = cv::Vec3f(centers.at<float>(i, 0), centers.at<float>(i, 1), centers.at<float>(i, 2));
     dc.weight = static_cast<float>(cluster_counts[i]) / labels.rows;
     dominant_colors_.push_back(dc);
   }
 
   // Sort by weight (most dominant first)
-  std::sort(dominant_colors_.begin(), dominant_colors_.end(),[](const DominantColor& a, const DominantColor& b) {
+  std::sort(dominant_colors_.begin(), dominant_colors_.end(),[](const WeightedColor& a, const WeightedColor& b) {
     return a.weight > b.weight;
   });
 }
@@ -90,7 +90,7 @@ double BgrIconPiece::EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPie
   return distance;
 }
 
-cv::Vec3f BgrIconPiece::DominatingColor() const {
+cv::Vec3f BgrIconPiece::GetMainColor() const {
   cv::Vec3f mean_color(0.0f, 0.0f, 0.0f);
   for (const auto& dc : dominant_colors_) {
     mean_color += dc.color * dc.weight;
@@ -98,6 +98,6 @@ cv::Vec3f BgrIconPiece::DominatingColor() const {
   return mean_color;
 }
 
-std::vector<DominantColor> BgrIconPiece::GetDominantColors() const {
+std::vector<WeightedColor> BgrIconPiece::GetQuantifiedColors() const {
   return dominant_colors_;
 }

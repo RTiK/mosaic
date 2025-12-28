@@ -59,12 +59,12 @@ float page_evaluation::SumUpNeighbours(unsigned char neighbours) {
   return direct_neighbors_count + diagonal_neighbors_count * kDiagonalWeight;
 }
 
-std::vector<DominantColor> page_evaluation::CalculateColorDistribution(const Page &page) {
+std::vector<WeightedColor> page_evaluation::CalculateColorDistribution(const Page &page) {
   // Collect all dominant colors from all pieces with their weights
   std::map<std::tuple<float, float, float>, float> color_weight_map;
 
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
-    std::vector<DominantColor> piece_colors = (**current).GetDominantColors();
+    std::vector<WeightedColor> piece_colors = (**current).GetQuantifiedColors();
     for (const auto& dc : piece_colors) {
       // Use color as key - round to 4 decimal places to avoid floating point issues
       float r0 = std::round(dc.color[0] * 10000.0f) / 10000.0f;
@@ -76,7 +76,7 @@ std::vector<DominantColor> page_evaluation::CalculateColorDistribution(const Pag
   }
 
   // Convert map to vector and normalize weights
-  std::vector<DominantColor> result;
+  std::vector<WeightedColor> result;
   float total_weight = 0.0f;
   for (const auto& [color_tuple, weight] : color_weight_map) {
     total_weight += weight;
@@ -93,7 +93,7 @@ std::vector<DominantColor> page_evaluation::CalculateColorDistribution(const Pag
   }
 
   // Sort by weight (most dominant first)
-  std::sort(result.begin(), result.end(), [](const DominantColor& a, const DominantColor& b) {
+  std::sort(result.begin(), result.end(), [](const WeightedColor& a, const WeightedColor& b) {
     return a.weight > b.weight;
   });
 
@@ -105,7 +105,7 @@ float page_evaluation::CalculateVariance(const Page &page) {
   cv::Vec3f mean_color(0.0f, 0.0f, 0.0f);
   int num_pieces = 0;
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
-    mean_color += (**current).DominatingColor();
+    mean_color += (**current).GetMainColor();
     num_pieces++;
   }
   mean_color /= static_cast<float>(num_pieces);
@@ -113,7 +113,7 @@ float page_evaluation::CalculateVariance(const Page &page) {
   // Calculate variance as distance from mean
   double total_distance = 0.0;
   for (std::shared_ptr<Piece> *current = page.GetFirstPiece(); current <= page.GetLastPiece(); current++) {
-    total_distance += ColorPiece::EuclideanDistance((**current).DominatingColor(), mean_color);
+    total_distance += ColorPiece::EuclideanDistance((**current).GetMainColor(), mean_color);
   }
   return total_distance;
 }

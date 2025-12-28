@@ -24,8 +24,8 @@ class LabIconPiece : public IconPiece {
   LabIconPiece(const LabIconPiece &piece) : L_histogram_(piece.L_histogram_), a_histogram_(piece.b_histogram_), b_histogram_(piece.b_histogram_), IconPiece(piece.GetPath()) {};
   double Distance(const Piece &other) const override;
   static double EuclideanDistance(const LabIconPiece* p_1, const LabIconPiece* p_2);
-  virtual cv::Vec3f DominatingColor() const override;
-  virtual std::vector<DominantColor> GetDominantColors() const override;
+  virtual cv::Vec3f GetMainColor() const override;
+  virtual std::vector<WeightedColor> GetQuantifiedColors() const override;
 };
 
 #endif //MOSAIC_ARRANGE_SRC_PIECES_LABICONPIECE_H_

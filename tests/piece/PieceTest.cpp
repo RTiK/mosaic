@@ -15,7 +15,7 @@ TEST(PieceTests, DistanceTest) {
 
 TEST(PieceTests, GrayAssignmentTest) {
   auto piece = ColorPiece(0.5);
-  cv::Vec3f gray = piece.DominatingColor();
+  cv::Vec3f gray = piece.GetMainColor();
   EXPECT_EQ(gray[0], 0.5);
   EXPECT_EQ(gray[1], 0.5);
   EXPECT_EQ(gray[2], 0.5);
@@ -27,7 +27,7 @@ TEST(PieceTests, GrayAssignmentTest) {
  */
 TEST(PieceTests, LabAssignmentTest) {
   LabPiece lab_piece = LabPiece(0.5, 0.5, 0.5);
-  cv::Vec3f lab_color = lab_piece.DominatingColor();
+  cv::Vec3f lab_color = lab_piece.GetMainColor();
   EXPECT_NEAR(lab_color[0], 53.3875, 0.0001);
   // input color is a shade of gray, thus, the color channels must evaluate to _exactly_ zero
   EXPECT_EQ(lab_color[1], 0.0);
@@ -42,9 +42,9 @@ TEST(PieceTests, LabColorTest) {
   LabPiece lab_piece_G = LabPiece(0.0, 1.0, 0.0);
   LabPiece lab_piece_R = LabPiece(0.0, 0.0, 1.0);
 
-  cv::Vec3f lab_B = lab_piece_B.DominatingColor();
-  cv::Vec3f lab_G = lab_piece_G.DominatingColor();
-  cv::Vec3f lab_R = lab_piece_R.DominatingColor();
+  cv::Vec3f lab_B = lab_piece_B.GetMainColor();
+  cv::Vec3f lab_G = lab_piece_G.GetMainColor();
+  cv::Vec3f lab_R = lab_piece_R.GetMainColor();
 
   cv::Vec3f expect_lab_B = cv::Vec3f(32.2937, 79.1875, -107.859);
   cv::Vec3f expect_lab_G = cv::Vec3f(87.738, -86.1875, 83.1719);

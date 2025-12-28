@@ -136,8 +136,8 @@ void LabIconClusteringPiece::ShowClusters(cv::Mat icon_array, cv::Mat mask) {
   cv::waitKey();
 }
 
-std::vector<DominantColor> LabIconClusteringPiece::GetDominantColors() const {
-  std::vector<DominantColor> result;
+std::vector<WeightedColor> LabIconClusteringPiece::GetQuantifiedColors() const {
+  std::vector<WeightedColor> result;
   int total_weight = 0;
   for (int weight : weights_) {
     total_weight += weight;

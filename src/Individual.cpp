@@ -101,8 +101,8 @@ double Individual::CalculatePageDissimilarity(std::vector<Page> &pages) {
   // Compare all pairs of pages using their color distributions
   for (size_t i = 0; i < pages.size(); ++i) {
     for (size_t j = i + 1; j < pages.size(); ++j) {
-      std::vector<DominantColor> colors_i = pages[i].GetColorDistribution();
-      std::vector<DominantColor> colors_j = pages[j].GetColorDistribution();
+      std::vector<WeightedColor> colors_i = pages[i].GetColorDistribution();
+      std::vector<WeightedColor> colors_j = pages[j].GetColorDistribution();
 
       // Calculate weighted Euclidean distance between color distributions
       double page_distance = 0.0;

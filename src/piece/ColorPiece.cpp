@@ -41,7 +41,7 @@ double ColorPiece::Distance(const Piece &other) const {
   return EuclideanDistance(original_color_, other_color_piece->original_color_);
 }
 
-std::vector<DominantColor> ColorPiece::GetDominantColors() const {
+std::vector<WeightedColor> ColorPiece::GetQuantifiedColors() const {
   // ColorPiece has only one color with full weight
   return {{original_color_, 1.0f}};
 }

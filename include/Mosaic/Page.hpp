@@ -14,7 +14,7 @@ class Page {
   std::shared_ptr<Piece> *first_piece_, *last_piece_;
   double distances_;
   double variance_;
-  std::vector<DominantColor> color_distribution_;
+  std::vector<WeightedColor> color_distribution_;
   int icons_missing_;
 
   void Evaluate();
@@ -34,7 +34,7 @@ class Page {
 
   int GetIconsMissing() const { return icons_missing_; }
 
-  std::vector<DominantColor> GetColorDistribution() const { return color_distribution_; }
+  std::vector<WeightedColor> GetColorDistribution() const { return color_distribution_; }
 
   unsigned int Size() const;
 

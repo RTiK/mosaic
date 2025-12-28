@@ -110,7 +110,7 @@ TEST(RGBDominatingColorTest, DominatingColorTest) {
 
   cv::Mat image(2, 2, CV_8UC4, &data);
   BgrIconPiece piece(image);
-  cv::Vec3f dominating_color = piece.DominatingColor();
+  cv::Vec3f dominating_color = piece.GetMainColor();
 
   // With k-means, the dominating color should be one of the cluster centers
   // It should be bluish (BGR format: high in channel 0)
@@ -119,7 +119,7 @@ TEST(RGBDominatingColorTest, DominatingColorTest) {
   EXPECT_LT(dominating_color[2], 0.1f) << "Red channel should be low";
 
   // TODO(artem): Update test to verify weighted mean with calculated constant
-  auto colors = piece.GetDominantColors();
+  auto colors = piece.GetQuantifiedColors();
   ASSERT_EQ(2, colors.size());
   // EXPECT_EQ(colors[0].color, dominating_color) << "Should return the highest weight color";
 }
