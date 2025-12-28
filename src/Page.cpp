@@ -1,8 +1,5 @@
 #include "Mosaic/Page.hpp"
 #include "Mosaic/PageEvaluation.hpp"
-#ifdef _WIN32
-  #include <bitset>
-#endif
 
 
 Page::Page(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece) {

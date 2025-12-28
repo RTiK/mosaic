@@ -1,8 +1,5 @@
 #include "Mosaic/Individual.hpp"
 #include "Mosaic/piece/Piece.hpp"
-#ifdef _WIN32
-  #include <numeric>
-#endif
 
 Individual::Individual() : birth_generation_(0) {}
 

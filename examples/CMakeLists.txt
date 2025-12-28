@@ -7,13 +7,8 @@ add_executable(Example2
 add_executable(Example3
         Example3.cpp)
 
-add_executable(Example3_test
-        Example3_test.cpp)
-
 target_link_libraries(Example1 PRIVATE Mosaic)
 
 target_link_libraries(Example2 PRIVATE Mosaic)
 
 target_link_libraries(Example3 PRIVATE Mosaic)
-
-target_link_libraries(Example3_test PRIVATE Mosaic)

@@ -1,5 +1,5 @@
 #include "Mosaic/PageEvaluation.hpp"
-#include <iostream>
+#include "Mosaic/piece/ColorPiece.hpp"
 #include <map>
 #include <tuple>
 #include <algorithm>

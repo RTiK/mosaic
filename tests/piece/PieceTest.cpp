@@ -1,4 +1,3 @@
-#include <climits>
 #include <gtest/gtest.h>
 #include <Mosaic/piece/Piece.hpp>
 #include <Mosaic/piece/LabPiece.hpp>

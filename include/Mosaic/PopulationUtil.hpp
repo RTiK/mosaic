@@ -1,10 +1,9 @@
 #ifndef MOSAIC_SRC_POPULATIONUTIL_H_
 #define MOSAIC_SRC_POPULATIONUTIL_H_
 
-#include "Individual.hpp"
 #include <set>
 #include <random>
-#include <vector>
+#include "Individual.hpp"
 
 namespace population_util {
 

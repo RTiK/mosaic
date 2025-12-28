@@ -1,10 +1,7 @@
 #ifndef MOSAIC_SRC_PAGEEVALUATION_H_
 #define MOSAIC_SRC_PAGEEVALUATION_H_
 
-
-#include "piece/ColorPiece.hpp"
 #include "Page.hpp"
-#include <bitset>
 
 namespace page_evaluation {
 
