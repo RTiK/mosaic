@@ -1,0 +1,204 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Mosaic Individual Export Schema",
+  "description": "JSON schema for NDJSON export of evolutionary algorithm individuals. Each line in the NDJSON file represents one complete individual with all fitness calculations and piece relationships.",
+  "type": "object",
+  "properties": {
+    "fitness": {
+      "type": "number",
+      "description": "Total fitness score of the individual"
+    },
+    "generation": {
+      "type": "integer",
+      "description": "Generation when this individual was created"
+    },
+    "piece_type": {
+      "type": "string",
+      "description": "Type of pieces used throughout this individual (determines color space)",
+      "examples": ["ColorPiece", "BgrIconPiece", "GrayscalePiece", "LabIconPiece", "LabIconClusteringPiece"]
+    },
+    "config": {
+      "type": "object",
+      "description": "Algorithm configuration parameters used to calculate fitness",
+      "properties": {
+        "diagonal_weight": {
+          "type": "number",
+          "description": "Weight multiplier for diagonal neighbors (typically 0.70711 = sqrt(2)/2)"
+        },
+        "icons_missing_penalty": {
+          "type": "number",
+          "description": "Penalty factor for missing icons on a page (reserved for future use)"
+        },
+        "page_width": {
+          "type": "integer",
+          "description": "Number of columns in page grid (iOS standard: 4)"
+        },
+        "page_height": {
+          "type": "integer",
+          "description": "Number of rows in page grid (iOS standard: 6)"
+        }
+      },
+      "required": ["diagonal_weight", "page_width", "page_height"]
+    },
+    "genome_order": {
+      "type": "array",
+      "description": "Linear ordering of pieces in genome. Each value is an index (0-based) indicating the piece's position in the genome.",
+      "items": {
+        "type": "integer",
+        "description": "Genome index of this piece"
+      }
+    },
+    "pages": {
+      "type": "array",
+      "description": "All pages in the individual. Pages are split from the genome with a maximum of 24 pieces per page.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "page_index": {
+            "type": "integer",
+            "description": "Page number (0-based)"
+          },
+          "total_distances": {
+            "type": "number",
+            "description": "Sum of all piece-to-neighbor weighted distances on this page. Lower is better (pieces are more similar to neighbors)."
+          },
+          "variance": {
+            "type": "number",
+            "description": "Sum of distances from each piece's main color to the page mean color. Lower is better (more cohesive page)."
+          },
+          "icons_missing": {
+            "type": "integer",
+            "description": "Number of empty slots on this page (24 - number of pieces)"
+          },
+          "mean_color": {
+            "type": "array",
+            "description": "Mean color calculated across all pieces on this page, used for variance calculation. Format depends on piece_type (e.g., [R, G, B] for RGB-based pieces).",
+            "items": {"type": "number"},
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "color_distribution": {
+            "type": "array",
+            "description": "Aggregated dominant colors across all pieces on this page, sorted by weight (most dominant first)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "color": {
+                  "type": "array",
+                  "description": "Color values (format depends on piece_type)",
+                  "items": {"type": "number"},
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "weight": {
+                  "type": "number",
+                  "description": "Normalized weight (0-1) indicating how dominant this color is on the page"
+                }
+              },
+              "required": ["color", "weight"]
+            }
+          },
+          "pieces": {
+            "type": "array",
+            "description": "Pieces on this page with their calculated neighbor relationships",
+            "items": {
+              "type": "object",
+              "properties": {
+                "genome_index": {
+                  "type": "integer",
+                  "description": "Index in the Individual's genome array (globally unique within the individual)"
+                },
+                "page_position": {
+                  "type": "integer",
+                  "description": "Position on page grid (0-23). Position 0 is top-left, position 23 is bottom-right."
+                },
+                "row": {
+                  "type": "integer",
+                  "description": "Row on page (0-5 for standard iOS layout)"
+                },
+                "column": {
+                  "type": "integer",
+                  "description": "Column on page (0-3 for standard iOS layout)"
+                },
+                "icon_path": {
+                  "type": "string",
+                  "description": "Path to icon image file (only present for IconPiece subclasses)"
+                },
+                "main_color": {
+                  "type": "array",
+                  "description": "Primary/dominating color of this piece",
+                  "items": {"type": "number"},
+                  "minItems": 3,
+                  "maxItems": 3
+                },
+                "quantified_colors": {
+                  "type": "array",
+                  "description": "All dominant colors for this piece (e.g., from k-means clustering). Different piece types may have different numbers of colors.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "color": {
+                        "type": "array",
+                        "description": "Color values",
+                        "items": {"type": "number"},
+                        "minItems": 3,
+                        "maxItems": 3
+                      },
+                      "weight": {
+                        "type": "number",
+                        "description": "Weight/importance of this color within the piece"
+                      }
+                    },
+                    "required": ["color", "weight"]
+                  }
+                },
+                "neighbors": {
+                  "type": "array",
+                  "description": "All neighbors and their distance calculations. Edge pieces have fewer neighbors.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "direction": {
+                        "type": "string",
+                        "description": "Cardinal or diagonal direction to neighbor",
+                        "enum": ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
+                      },
+                      "neighbor_genome_index": {
+                        "type": "integer",
+                        "description": "Genome index of the neighbor piece"
+                      },
+                      "neighbor_page_position": {
+                        "type": "integer",
+                        "description": "Page position (0-23) of the neighbor"
+                      },
+                      "distance": {
+                        "type": "number",
+                        "description": "Raw Euclidean distance between this piece and neighbor (calculated using piece's Distance method)"
+                      },
+                      "weight": {
+                        "type": "number",
+                        "description": "Weight applied to this neighbor (1.0 for cardinal directions N/S/E/W, 0.70711 for diagonal directions NE/SE/SW/NW)"
+                      },
+                      "weighted_distance": {
+                        "type": "number",
+                        "description": "distance * weight - the actual contribution to fitness calculation"
+                      }
+                    },
+                    "required": ["direction", "neighbor_genome_index", "neighbor_page_position", "distance", "weight", "weighted_distance"]
+                  }
+                },
+                "avg_neighbor_distance": {
+                  "type": "number",
+                  "description": "Average weighted distance to all neighbors. This is the piece's contribution to the page's total_distances metric."
+                }
+              },
+              "required": ["genome_index", "page_position", "row", "column", "main_color", "quantified_colors", "neighbors", "avg_neighbor_distance"]
+            }
+          }
+        },
+        "required": ["page_index", "total_distances", "variance", "icons_missing", "mean_color", "color_distribution", "pieces"]
+      }
+    }
+  },
+  "required": ["fitness", "generation", "piece_type", "config", "genome_order", "pages"]
+}
