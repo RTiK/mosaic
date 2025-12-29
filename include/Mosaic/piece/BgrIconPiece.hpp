@@ -6,7 +6,7 @@
 
 class BgrIconPiece : public IconPiece {
  private:
-  std::vector<WeightedColor> dominant_colors_;
+  std::vector<WeightedColor> quantified_colors_;
   static constexpr int kClusters = 2;  // Number of color clusters
 
   void Analyze(cv::Mat &colors, cv::Mat &mask) override;

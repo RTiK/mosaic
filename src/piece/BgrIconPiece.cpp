@@ -49,18 +49,13 @@ void BgrIconPiece::Analyze(cv::Mat &colors, cv::Mat &mask) {
   }
 
   // Store results
-  dominant_colors_.clear();
+  quantified_colors_.clear();
   for(int i = 0; i < kClusters; i++) {
     WeightedColor dc;
     dc.color = cv::Vec3f(centers.at<float>(i, 0), centers.at<float>(i, 1), centers.at<float>(i, 2));
     dc.weight = static_cast<float>(cluster_counts[i]) / labels.rows;
-    dominant_colors_.push_back(dc);
+    quantified_colors_.push_back(dc);
   }
-
-  // Sort by weight (most dominant first)
-  std::sort(dominant_colors_.begin(), dominant_colors_.end(),[](const WeightedColor& a, const WeightedColor& b) {
-    return a.weight > b.weight;
-  });
 }
 
 double BgrIconPiece::Distance(const Piece &other) const {
@@ -74,12 +69,12 @@ double BgrIconPiece::EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPie
   double distance = 0.0;
 
   // Compare all color pairs between the two pieces
-  for (size_t i = 0; i < p_1->dominant_colors_.size(); i++) {
-    for (size_t j = 0; j < p_2->dominant_colors_.size(); j++) {
-      cv::Vec3f color1 = p_1->dominant_colors_[i].color;
-      cv::Vec3f color2 = p_2->dominant_colors_[j].color;
-      float weight1 = p_1->dominant_colors_[i].weight;
-      float weight2 = p_2->dominant_colors_[j].weight;
+  for (size_t i = 0; i < p_1->quantified_colors_.size(); i++) {
+    for (size_t j = 0; j < p_2->quantified_colors_.size(); j++) {
+      cv::Vec3f color1 = p_1->quantified_colors_[i].color;
+      cv::Vec3f color2 = p_2->quantified_colors_[j].color;
+      float weight1 = p_1->quantified_colors_[i].weight;
+      float weight2 = p_2->quantified_colors_[j].weight;
 
       // Weighted Euclidean distance between this color pair
       cv::Vec3f diff = color1 - color2;
@@ -92,12 +87,12 @@ double BgrIconPiece::EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPie
 
 cv::Vec3f BgrIconPiece::GetMainColor() const {
   cv::Vec3f mean_color(0.0f, 0.0f, 0.0f);
-  for (const auto& dc : dominant_colors_) {
+  for (const auto& dc : quantified_colors_) {
     mean_color += dc.color * dc.weight;
   }
   return mean_color;
 }
 
 std::vector<WeightedColor> BgrIconPiece::GetQuantifiedColors() const {
-  return dominant_colors_;
+  return quantified_colors_;
 }
