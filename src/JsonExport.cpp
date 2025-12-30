@@ -5,6 +5,19 @@
 
 namespace json_export {
 
+std::string PieceTypeToString(PieceType type) {
+  switch (type) {
+    case COLOR_PIECE:
+      return "ColorPiece";
+    case BGR_ICON_PIECE:
+      return "BgrIconPiece";
+    case LAB_ICON_PIECE:
+      return "LabIconPiece";
+    default:
+      return "Unknown";
+  }
+}
+
 json SerializeColor(const cv::Vec3f &color) {
   return json::array({color[0], color[1], color[2]});
 }
@@ -141,8 +154,7 @@ json SerializePage(const Page &page, unsigned int page_index,
   };
 }
 
-json SerializeIndividual(const Individual &individual, const ExportConfig &config,
-                         const std::string &piece_type) {
+json SerializeIndividual(const Individual &individual, const ExportConfig &config) {
   // Build genome order array
   json genome_order = json::array();
   for (size_t i = 0; i < individual.Size(); i++) {
@@ -162,10 +174,11 @@ json SerializeIndividual(const Individual &individual, const ExportConfig &confi
   return json{
     {"fitness", individual.GetFitness()},
     {"generation", individual.GetBirthGeneration()},
-    {"piece_type", piece_type},
+    {"piece_type", PieceTypeToString(config.piece_type)},
     {"config", {
       {"diagonal_weight", config.diagonal_weight},
-      {"icons_missing_penalty", config.icons_missing_penalty},
+      {"icons_missing_weight", config.icons_missing_weight},
+      {"variance_weight", config.variance_weight},
       {"page_width", config.page_width},
       {"page_height", config.page_height}
     }},
@@ -174,9 +187,8 @@ json SerializeIndividual(const Individual &individual, const ExportConfig &confi
   };
 }
 
-void ExportIndividualToNDJSON(const Individual &individual, const std::string &filepath,
-                              const ExportConfig &config, const std::string &piece_type) {
-  json individual_json = SerializeIndividual(individual, config, piece_type);
+void ExportIndividualToNDJSON(const Individual &individual, const std::string &filepath, const ExportConfig &config) {
+  json individual_json = SerializeIndividual(individual, config);
 
   std::ofstream file(filepath, std::ios::app);
   if (!file.is_open()) {

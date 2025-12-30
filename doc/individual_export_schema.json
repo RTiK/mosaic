@@ -25,9 +25,13 @@
           "type": "number",
           "description": "Weight multiplier for diagonal neighbors (typically 0.70711 = sqrt(2)/2)"
         },
-        "icons_missing_penalty": {
+        "icons_missing_weight": {
           "type": "number",
           "description": "Penalty factor for missing icons on a page (reserved for future use)"
+        },
+        "variance_weight": {
+          "type": "number",
+          "description": "Weight factor for page variance in fitness calculation"
         },
         "page_width": {
           "type": "integer",
@@ -36,6 +40,11 @@
         "page_height": {
           "type": "integer",
           "description": "Number of rows in page grid (iOS standard: 6)"
+        },
+        "piece_type": {
+          "type": "string",
+          "description": "Type of pieces used throughout this individual (determines color space)",
+          "examples": ["ColorPiece", "BgrIconPiece", "GrayscalePiece", "LabIconPiece", "LabIconClusteringPiece"]
         }
       },
       "required": ["diagonal_weight", "page_width", "page_height"]

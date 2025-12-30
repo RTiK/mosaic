@@ -18,6 +18,9 @@ int main() {
   export_config.diagonal_weight = 0.70711;
   export_config.page_width = 4;
   export_config.page_height = 6;
+  export_config.variance_weight = 0.4;
+  export_config.icons_missing_weight = 0.1;
+  export_config.piece_type = json_export::BGR_ICON_PIECE;
 
   std::string export_file = "test_export.ndjson";
 
@@ -30,7 +33,7 @@ int main() {
   std::cout << "Generation: " << template_individual.GetBirthGeneration() << std::endl;
   std::cout << "Genome size: " << template_individual.Size() << std::endl;
 
-  json_export::ExportIndividualToNDJSON(template_individual, export_file, export_config, "BgrIconPiece");
+  json_export::ExportIndividualToNDJSON(template_individual, export_file, export_config);
 
   std::cout << "\nExport successful!" << std::endl;
   std::cout << "Output file: " << export_file << std::endl;

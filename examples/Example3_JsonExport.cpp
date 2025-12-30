@@ -26,12 +26,15 @@ int main() {
   export_config.diagonal_weight = 0.70711;
   export_config.page_width = 4;
   export_config.page_height = 6;
+  export_config.variance_weight = 0.4;
+  export_config.icons_missing_weight = 0.1;
+  export_config.piece_type = json_export::BGR_ICON_PIECE;
 
   std::string export_file = "evolution_results.ndjson";
 
   // Export initial best individual
   auto best = *population.begin();
-  json_export::ExportIndividualToNDJSON(best, export_file, export_config, "BgrIconPiece");
+  json_export::ExportIndividualToNDJSON(best, export_file, export_config);
   std::cout << "Exported initial best individual (fitness: " << best.GetFitness() << ")" << std::endl;
 
   for (int i = 0; i < kGenerations; i++) {
@@ -60,7 +63,7 @@ int main() {
     // Export best individual every 10 generations
     if ((i + 1) % 10 == 0) {
       auto current_best = *population.begin();
-      json_export::ExportIndividualToNDJSON(current_best, export_file, export_config, "BgrIconPiece");
+      json_export::ExportIndividualToNDJSON(current_best, export_file, export_config);
       std::cout << "Exported generation " << (i + 1) << " best (fitness: "
                 << current_best.GetFitness() << ")" << std::endl;
     }
@@ -81,7 +84,7 @@ int main() {
 
   // Export final best individual
   auto final_best = hall_of_fame.GetBestIndividual();
-  json_export::ExportIndividualToNDJSON(final_best, export_file, export_config, "BgrIconPiece");
+  json_export::ExportIndividualToNDJSON(final_best, export_file, export_config);
 
   std::cout << "\n=== BEST INDIVIDUAL EVER ===" << std::endl;
   std::cout << final_best << std::endl;

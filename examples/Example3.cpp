@@ -1,3 +1,4 @@
+#include "Mosaic/JsonExport.hpp"
 #include <Mosaic/piece/BgrIconPiece.hpp>
 #include <Mosaic/IndividualGeneration.hpp>
 #include <Mosaic/PopulationUtil.hpp>
@@ -65,6 +66,15 @@ int main() {
 
   std::cout << "\n=== BEST INDIVIDUAL EVER ===" << std::endl;
   std::cout << best << std::endl;
+
+  json_export::ExportConfig export_config;
+  export_config.variance_weight = 0.4;
+  export_config.icons_missing_weight = 0.1;
+  export_config.diagonal_weight = 0.70711;
+  export_config.page_width = 4;
+  export_config.page_height = 6;
+  export_config.piece_type = json_export::BGR_ICON_PIECE;
+  json_export::ExportIndividualToNDJSON(best, "best-individual.ndjson", export_config);
   best.Print();
   best.Show();
 

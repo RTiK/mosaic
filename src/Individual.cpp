@@ -84,7 +84,7 @@ void Individual::Evaluate() {
   double variance_normalized = total_variance / genome_.size();
   double missing_icons_penalty = total_icons_missing * variance_normalized;
   //double page_dissimilarity = CalculatePageDissimilarity(pages_);
-  fitness_ = total_distance + total_variance * 0.4 + missing_icons_penalty * 0.1; // - page_dissimilarity * 0.5;
+  fitness_ = total_distance + total_variance * variance_weight_ + missing_icons_penalty * missing_icons_weight_; // - page_dissimilarity * 0.5;
 }
 
 double Individual::CalculatePageDissimilarity(std::vector<Page> &pages) {

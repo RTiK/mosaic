@@ -12,15 +12,28 @@ namespace json_export {
 
 using json = nlohmann::json;
 
+enum PieceType {
+  COLOR_PIECE,
+  BGR_ICON_PIECE,
+  LAB_ICON_PIECE
+};
+
+/**
+ * Converts PieceType enum to string representation.
+ */
+std::string PieceTypeToString(PieceType type);
+
 /**
  * Configuration parameters for the evolutionary algorithm.
  * These are used in the exported JSON to document how fitness was calculated.
  */
 struct ExportConfig {
   double diagonal_weight = 0.70711;
-  double icons_missing_penalty = 0.0;  // Reserved for future use
+  double variance_weight = 0.4;
+  double icons_missing_weight = 0.1;
   unsigned int page_width = 4;
   unsigned int page_height = 6;
+  PieceType piece_type = COLOR_PIECE;
 };
 
 /**
@@ -85,10 +98,8 @@ json SerializeIndividual(const Individual &individual, const ExportConfig &confi
  * @param individual The individual to export
  * @param filepath Path to the output file (will be created or appended to)
  * @param config Algorithm configuration parameters
- * @param piece_type Type identifier for pieces in this individual
  */
-void ExportIndividualToNDJSON(const Individual &individual, const std::string &filepath,
-                              const ExportConfig &config, const std::string &piece_type);
+void ExportIndividualToNDJSON(const Individual &individual, const std::string &filepath, const ExportConfig &config);
 
 /**
  * Gets the icon path from a piece if it's an IconPiece, otherwise returns empty string.
