@@ -7,3 +7,5 @@ cmake-build-*/
 .cache/
 _deps/
 .DS_Store
+visualization/.ipynb_checkpoints
+.claude/
