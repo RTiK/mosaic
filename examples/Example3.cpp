@@ -20,6 +20,22 @@ int main() {
   population_util::FillShuffle(population, template_individual, kPopulation, g, 0);
 
   HallOfFame hall_of_fame(10);
+
+  // Set up JSON export config for hall of fame callback
+  json_export::ExportConfig export_config;
+  export_config.variance_weight = 0.4;
+  export_config.icons_missing_weight = 0.1;
+  export_config.diagonal_weight = 0.70711;
+  export_config.page_width = 4;
+  export_config.page_height = 6;
+  export_config.piece_type = json_export::BGR_ICON_PIECE;
+
+  // Set callback to export individuals as they enter the hall of fame
+  std::string hof_export_file = "hall_of_fame_progress.ndjson";
+  hall_of_fame.SetOnInsertCallback([&export_config, &hof_export_file](const Individual& ind, size_t rank) {
+    json_export::ExportIndividualToNDJSON(ind, hof_export_file, export_config);
+  });
+
   hall_of_fame.Update(population);
 
   for (int i = 0; i < kGenerations; i++) {
@@ -67,13 +83,7 @@ int main() {
   std::cout << "\n=== BEST INDIVIDUAL EVER ===" << std::endl;
   std::cout << best << std::endl;
 
-  json_export::ExportConfig export_config;
-  export_config.variance_weight = 0.4;
-  export_config.icons_missing_weight = 0.1;
-  export_config.diagonal_weight = 0.70711;
-  export_config.page_width = 4;
-  export_config.page_height = 6;
-  export_config.piece_type = json_export::BGR_ICON_PIECE;
+  // Export final best individual
   json_export::ExportIndividualToNDJSON(best, "best-individual.ndjson", export_config);
   best.Print();
   best.Show();
