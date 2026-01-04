@@ -14,8 +14,31 @@ void HallOfFame::Update(const Individual& individual) {
 }
 
 void HallOfFame::Update(const std::set<Individual>& population) {
+  // If hall is not full, just add best individuals until full
+  if (hall_.size() < max_size_) {
+    auto it = population.begin();
+    size_t to_add = max_size_ - hall_.size();
+    for (size_t i = 0; i < to_add && it != population.end(); ++i, ++it) {
+      hall_.insert(*it);
+    }
+    return;
+  }
+
+  // Hall is full, get the worst fitness threshold
+  double worst_fitness = std::prev(hall_.end())->GetFitness();
+
+  // Only insert individuals better than the worst in hall
   for (const auto& individual : population) {
-    Update(individual);
+    if (individual.GetFitness() < worst_fitness) {  // Lower is better
+      hall_.insert(individual);
+      // Remove the new worst
+      hall_.erase(std::prev(hall_.end()));
+      // Update threshold
+      worst_fitness = std::prev(hall_.end())->GetFitness();
+    } else {
+      // Since population is sorted, all remaining are worse
+      break;
+    }
   }
 }
 
