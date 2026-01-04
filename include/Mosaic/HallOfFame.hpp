@@ -3,6 +3,7 @@
 
 #include <set>
 #include <vector>
+#include <functional>
 #include "Individual.hpp"
 
 /**
@@ -13,6 +14,7 @@ class HallOfFame {
  private:
   std::set<Individual> hall_;
   size_t max_size_;
+  std::function<void(const Individual&, size_t)> on_insert_callback_;
 
  public:
   explicit HallOfFame(size_t max_size = 10);
@@ -30,6 +32,14 @@ class HallOfFame {
   bool Empty() const { return hall_.empty(); }
 
   void Print() const;
+
+  /**
+   * Set a callback function that will be called whenever an individual is added to the hall.
+   * The callback receives the individual and its rank (1-based, where 1 is the best).
+   *
+   * @param callback Function to call on insertion. Set to nullptr to disable.
+   */
+  void SetOnInsertCallback(std::function<void(const Individual&, size_t)> callback);
 
   friend std::ostream& operator<<(std::ostream& out, const HallOfFame& hof);
 };

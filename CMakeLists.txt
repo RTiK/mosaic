@@ -12,11 +12,20 @@ message("OpenCV version found: " ${OpenCV_VERSION})
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 message("OpenCV include directories: " ${OpenCV_INCLUDE_DIRS})
 
+# Fetch nlohmann/json for JSON export functionality
+include(FetchContent)
+FetchContent_Declare(
+    json
+    URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz
+)
+FetchContent_MakeAvailable(json)
+
 set(Headers
         include/Mosaic/FileLogger.hpp
         include/Mosaic/HallOfFame.hpp
         include/Mosaic/Individual.hpp
         include/Mosaic/IndividualGeneration.hpp
+        include/Mosaic/JsonExport.hpp
         include/Mosaic/Page.hpp
         include/Mosaic/PageEvaluation.hpp
         include/Mosaic/PopulationUtil.hpp
@@ -29,11 +38,12 @@ set(Headers
         include/Mosaic/piece/Piece.hpp
 )
 
-set(Sources 
+set(Sources
         src/FileLogger.cpp
         src/HallOfFame.cpp
         src/Individual.cpp
         src/IndividualGeneration.cpp
+        src/JsonExport.cpp
         src/Page.cpp
         src/PageEvaluation.cpp
         src/PopulationUtil.cpp
@@ -55,7 +65,7 @@ target_include_directories(Mosaic PUBLIC
         include/
 )
 
-target_link_libraries(Mosaic PUBLIC ${OpenCV_LIBS})
+target_link_libraries(Mosaic PUBLIC ${OpenCV_LIBS} nlohmann_json::nlohmann_json)
 
 # Enable testing support
 enable_testing()
