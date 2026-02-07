@@ -21,8 +21,8 @@ class Individual {
   std::vector<Page> pages_;
   std::vector<std::shared_ptr<Piece>> genome_;
   int birth_generation_;
-  double variance_weight_ = 0.4;
-  double missing_icons_weight_ = 0.1;
+  double variance_weight_ = 1.8;
+  double missing_icons_weight_ = 0.4;
 
   void Evaluate();
 
