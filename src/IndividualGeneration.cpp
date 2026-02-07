@@ -1,8 +1,6 @@
 #include <filesystem>
-#include "Mosaic/piece/LabIconClusteringPiece.hpp"
 #include "Mosaic/piece/ColorPiece.hpp"
 #include "Mosaic/piece/BgrIconPiece.hpp"
-#include "Mosaic/piece/LabIconPiece.hpp"
 #include "Mosaic/piece/LabPiece.hpp"
 #include "Mosaic/IndividualGeneration.hpp"
 
@@ -80,58 +78,3 @@ Individual individual_generation::ReadRgbIcons(std::string dir_path, unsigned in
   return Individual(genome, current_generation);
 }
 
-Individual individual_generation::ReadLabIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g, int current_generation) {
-  assert(std::filesystem::is_directory(dir_path));  // TODO make exception
-
-  std::vector<std::filesystem::path> files{};
-  for (auto file : std::filesystem::directory_iterator(dir_path)) {
-    if (file.is_regular_file() && file.path().extension().string() == ".png") {
-      files.push_back(file);
-    }
-  }
-
-  int num_of_icons = files.size();
-  std::cout << num_of_icons << std::endl;
-  std::vector<std::shared_ptr<Piece>> genome(num_of_icons + page_breaks);
-
-  for (int i = 0; i < num_of_icons; i++) {
-    auto file = files[i];
-    std::cout << file << std::endl;
-    auto piece = std::make_shared<LabIconPiece>(file);
-    genome[i] = piece;
-  }
-
-  for (int i = num_of_icons; i < num_of_icons + page_breaks; i++) {
-    genome[i] = kPageBreak;
-  }
-
-  return Individual(genome, current_generation);
-}
-
-Individual individual_generation::ReadLabClusteringIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g, int current_generation) {
-  assert(std::filesystem::is_directory(dir_path));  // TODO make exception
-
-  std::vector<std::filesystem::path> files{};
-  for (auto file : std::filesystem::directory_iterator(dir_path)) {
-    if (file.is_regular_file() && file.path().extension().string() == ".png") {
-      files.push_back(file);
-    }
-  }
-
-  int num_of_icons = files.size();
-  std::cout << num_of_icons << std::endl;
-  std::vector<std::shared_ptr<Piece>> genome(num_of_icons + page_breaks);
-
-  for (int i = 0; i < num_of_icons; i++) {
-    auto file = files[i];
-    std::cout << file << std::endl;
-    auto piece = std::make_shared<LabIconClusteringPiece>(file);
-    genome[i] = piece;
-  }
-
-  for (int i = num_of_icons; i < num_of_icons + page_breaks; i++) {
-    genome[i] = kPageBreak;
-  }
-
-  return Individual(genome, current_generation);
-}
