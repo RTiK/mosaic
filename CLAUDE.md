@@ -66,9 +66,7 @@ The project implements a **hierarchical evolutionary algorithm** with three main
 - **Page**: Manages up to 24 pieces in 4x6 grid, tracks fitness metrics (distances, variance, color means, color distribution)
 - **Piece**: Abstract interface for all piece types (pure virtual distance, image generation, color extraction)
   - **ColorPiece**: Simple RGB color implementation
-  - **BgrIconPiece**: Real iOS icons using BGR color space
-  - **LabIconPiece**: Icons using LAB color space for perceptual color distance
-  - **LabIconClusteringPiece**: LAB-based with k-means color clustering
+  - **LabIconPiece**: Real iOS icons with k-means clustering in LAB color space for perceptual color distance
   - **IconPiece**: Base class for icon-based pieces
 - **PageEvaluation**: Namespace with fitness functions considering neighbor relationships
 - **PopulationUtil**: Evolutionary algorithm operations (selection, mutation, population management)
@@ -89,7 +87,7 @@ The project implements a **hierarchical evolutionary algorithm** with three main
 ### File Structure
 
 - `include/Mosaic/` - Public headers
-  - `piece/` - Piece implementations (ColorPiece, BgrIconPiece, LabIconPiece, etc.)
+  - `piece/` - Piece implementations (ColorPiece, LabIconPiece, LabIconPiece, etc.)
 - `src/` - Implementation files
 - `tests/` - Unit tests using GoogleTest
 - `examples/` - Usage examples and demonstrations
@@ -117,7 +115,7 @@ json_export::ExportIndividualToNDJSON(
     individual,
     "results.ndjson",
     config,
-    "BgrIconPiece"
+    "LabIconPiece"
 );
 ```
 
@@ -128,7 +126,7 @@ Export best individuals automatically using callbacks:
 ```cpp
 HallOfFame hof(10);  // Track top 10
 hof.SetOnInsertCallback([&config](const Individual& ind, size_t rank) {
-    json_export::ExportIndividualToNDJSON(ind, "best-individuals.ndjson", config, "BgrIconPiece");
+    json_export::ExportIndividualToNDJSON(ind, "best-individuals.ndjson", config, "LabIconPiece");
 });
 
 // Updates automatically trigger exports

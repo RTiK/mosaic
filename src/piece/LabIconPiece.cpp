@@ -1,28 +1,33 @@
-#include "Mosaic/piece/BgrIconPiece.hpp"
+#include "Mosaic/piece/LabIconPiece.hpp"
 
 
-BgrIconPiece::BgrIconPiece(cv::Mat image) : IconPiece(image)  {
+LabIconPiece::LabIconPiece(cv::Mat image) : IconPiece(image)  {
   cv::Mat bgr, mask;
   SplitColorChannelsAndAlpha(original_image_, bgr, mask);
   Analyze(bgr, mask);
 }
 
-BgrIconPiece::BgrIconPiece(std::string path) : IconPiece(path) {
+LabIconPiece::LabIconPiece(std::string path) : IconPiece(path) {
   cv::Mat bgr, mask;
   SplitColorChannelsAndAlpha(original_image_, bgr, mask);
   Analyze(bgr, mask);
 }
 
-void BgrIconPiece::Analyze(cv::Mat &colors, cv::Mat &mask) {
+void LabIconPiece::Analyze(cv::Mat &colors, cv::Mat &mask) {
   assert(colors.type() == CV_32FC3);
   assert(mask.type() == CV_8UC1);
 
-  // Prepare data for clustering
+  // Convert BGR (0-1 float) to Lab
+  // For CV_32FC3 input in 0-1 range, cvtColor produces L [0..100], a* [-128..127], b* [-128..127]
+  cv::Mat lab;
+  cv::cvtColor(colors, lab, cv::COLOR_BGR2Lab);
+
+  // Prepare data for clustering in Lab space
   std::vector<cv::Point3f> samples;
-  for(int y = 0; y < colors.rows; y++) {
-    for(int x = 0; x < colors.cols; x++) {
+  for(int y = 0; y < lab.rows; y++) {
+    for(int x = 0; x < lab.cols; x++) {
       if(mask.at<uchar>(y, x) > 0) {
-        cv::Vec3f pixel = colors.at<cv::Vec3f>(y, x);
+        cv::Vec3f pixel = lab.at<cv::Vec3f>(y, x);
         samples.push_back(cv::Point3f(pixel[0], pixel[1], pixel[2]));
       }
     }
@@ -36,7 +41,7 @@ void BgrIconPiece::Analyze(cv::Mat &colors, cv::Mat &mask) {
     points.at<float>(i, 2) = samples[i].z;
   }
 
-  // Perform k-means clustering
+  // Perform k-means clustering in Lab space
   cv::Mat labels, centers;
   cv::kmeans(points, kClusters, labels,
               cv::TermCriteria(cv::TermCriteria::EPS + cv::TermCriteria::MAX_ITER, 10, 1.0),
@@ -48,7 +53,7 @@ void BgrIconPiece::Analyze(cv::Mat &colors, cv::Mat &mask) {
     cluster_counts[labels.at<int>(i)]++;
   }
 
-  // Store results
+  // Store Lab cluster centers and weights
   quantified_colors_.clear();
   for(int i = 0; i < kClusters; i++) {
     WeightedColor dc;
@@ -58,17 +63,17 @@ void BgrIconPiece::Analyze(cv::Mat &colors, cv::Mat &mask) {
   }
 }
 
-double BgrIconPiece::Distance(const Piece &other) const {
-  const BgrIconPiece* other_piece = dynamic_cast<const BgrIconPiece*>(&other);
+double LabIconPiece::Distance(const Piece &other) const {
+  const LabIconPiece* other_piece = dynamic_cast<const LabIconPiece*>(&other);
   if (!other_piece) return std::numeric_limits<double>::max();
-  
+
   return EuclideanDistance(this, other_piece);
 }
 
-double BgrIconPiece::EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPiece* p_2) {
+double LabIconPiece::EuclideanDistance(const LabIconPiece* p_1, const LabIconPiece* p_2) {
   double distance = 0.0;
 
-  // Compare all color pairs between the two pieces
+  // Compare all color pairs between the two pieces in Lab space
   for (size_t i = 0; i < p_1->quantified_colors_.size(); i++) {
     for (size_t j = 0; j < p_2->quantified_colors_.size(); j++) {
       cv::Vec3f color1 = p_1->quantified_colors_[i].color;
@@ -85,7 +90,7 @@ double BgrIconPiece::EuclideanDistance(const BgrIconPiece* p_1, const BgrIconPie
   return distance;
 }
 
-cv::Vec3f BgrIconPiece::GetMainColor() const {
+cv::Vec3f LabIconPiece::GetMainColor() const {
   cv::Vec3f mean_color(0.0f, 0.0f, 0.0f);
   for (const auto& dc : quantified_colors_) {
     mean_color += dc.color * dc.weight;
@@ -93,6 +98,6 @@ cv::Vec3f BgrIconPiece::GetMainColor() const {
   return mean_color;
 }
 
-std::vector<WeightedColor> BgrIconPiece::GetQuantifiedColors() const {
+std::vector<WeightedColor> LabIconPiece::GetQuantifiedColors() const {
   return quantified_colors_;
 }

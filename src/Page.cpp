@@ -68,8 +68,8 @@ cv::Mat Page::Image(int side, cv::Vec3f default_color) const {
 
     // Create color segment
     cv::Mat src(1, 1, CV_32FC3, dominant_color.color);
-    cv::Mat dst = src.clone();
-    //cv::cvtColor(src, dst, cv::COLOR_Lab2BGR);  // comment this line and uncomment the previous one when operating in RGB space
+    cv::Mat dst;
+    cv::cvtColor(src, dst, cv::COLOR_Lab2BGR);
     cv::Vec3f bgr = dst.at<cv::Vec3f>(0, 0);
     bgr = bgr.mul(cv::Vec3f(255, 255, 255));
     cv::Mat segment(bar_height, segment_width, type, bgr);

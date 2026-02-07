@@ -16,7 +16,7 @@ set(TestSources
         PopulationUtilFilterByAgeTest.cpp
         piece/PieceTest.cpp
         piece/IconPieceTest.cpp
-        piece/BgrIconPieceTest.cpp
+        piece/LabIconPieceTest.cpp
 )
 
 add_executable(MosaicTests ${TestSources})

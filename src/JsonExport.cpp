@@ -9,8 +9,6 @@ std::string PieceTypeToString(PieceType type) {
   switch (type) {
     case COLOR_PIECE:
       return "ColorPiece";
-    case BGR_ICON_PIECE:
-      return "BgrIconPiece";
     case LAB_ICON_PIECE:
       return "LabIconPiece";
     default:

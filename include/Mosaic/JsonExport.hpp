@@ -14,7 +14,6 @@ using json = nlohmann::json;
 
 enum PieceType {
   COLOR_PIECE,
-  BGR_ICON_PIECE,
   LAB_ICON_PIECE
 };
 
@@ -85,7 +84,7 @@ json SerializePage(const Page &page, unsigned int page_index,
  *
  * @param individual The individual to serialize
  * @param config Algorithm configuration parameters
- * @param piece_type Type identifier for pieces in this individual (e.g., "BgrIconPiece")
+ * @param piece_type Type identifier for pieces in this individual (e.g., "LabIconPiece")
  * @return JSON object representing the entire individual
  */
 json SerializeIndividual(const Individual &individual, const ExportConfig &config,

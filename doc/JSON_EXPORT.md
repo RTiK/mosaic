@@ -44,7 +44,7 @@ json_export::ExportIndividualToNDJSON(
     individual,           // The Individual to export
     "results.ndjson",    // Output file (will be created or appended)
     config,              // Configuration
-    "BgrIconPiece"       // Piece type identifier
+    "LabIconPiece"       // Piece type identifier
 );
 ```
 
@@ -155,7 +155,7 @@ Individual
    ```cpp
    if ((generation + 1) % 10 == 0) {
        auto best = *population.begin();
-       json_export::ExportIndividualToNDJSON(best, "evolution.ndjson", config, "BgrIconPiece");
+       json_export::ExportIndividualToNDJSON(best, "evolution.ndjson", config, "LabIconPiece");
    }
    ```
 
@@ -203,7 +203,6 @@ See the `examples/` directory:
 ### Color Representation
 
 Colors are exported as arrays `[c1, c2, c3]` where the meaning depends on `piece_type`:
-- `BgrIconPiece`: BGR color space (OpenCV convention), values 0-1
 - `LabIconPiece`: LAB color space, L in [0, 100], a/b typically [-128, 127]
 - Other piece types: See piece implementation
 

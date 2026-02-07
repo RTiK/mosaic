@@ -1,6 +1,6 @@
 #include <filesystem>
 #include "Mosaic/piece/ColorPiece.hpp"
-#include "Mosaic/piece/BgrIconPiece.hpp"
+#include "Mosaic/piece/LabIconPiece.hpp"
 #include "Mosaic/piece/LabPiece.hpp"
 #include "Mosaic/IndividualGeneration.hpp"
 
@@ -67,7 +67,7 @@ Individual individual_generation::ReadRgbIcons(std::string dir_path, unsigned in
   for (int i = 0; i < num_of_icons; i++) {
     auto file = files[i];
     std::cout << file << std::endl;
-    auto piece = std::make_shared<BgrIconPiece>(file);
+    auto piece = std::make_shared<LabIconPiece>(file);
     genome[i] = piece;
   }
 
