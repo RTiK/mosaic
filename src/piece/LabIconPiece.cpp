@@ -1,74 +1,103 @@
 #include "Mosaic/piece/LabIconPiece.hpp"
 
 
-LabIconPiece::LabIconPiece(cv::Mat image) : IconPiece(image) {
-  cv::Mat color, mask;
-  SplitColorChannelsAndAlpha(original_image_, color, mask);
-  Analyze(color, mask);
+LabIconPiece::LabIconPiece(cv::Mat image) : IconPiece(image)  {
+  cv::Mat bgr, mask;
+  SplitColorChannelsAndAlpha(original_image_, bgr, mask);
+  Analyze(bgr, mask);
 }
 
 LabIconPiece::LabIconPiece(std::string path) : IconPiece(path) {
-  cv::Mat color, mask;
-  SplitColorChannelsAndAlpha(original_image_, color, mask);
-  Analyze(color, mask);
+  cv::Mat bgr, mask;
+  SplitColorChannelsAndAlpha(original_image_, bgr, mask);
+  Analyze(bgr, mask);
 }
 
-void LabIconPiece::Analyze(cv::Mat &color, cv::Mat &mask) {
-  assert(color.type() == CV_32FC3);
+void LabIconPiece::Analyze(cv::Mat &colors, cv::Mat &mask) {
+  assert(colors.type() == CV_32FC3);
   assert(mask.type() == CV_8UC1);
 
+  // Convert BGR (0-1 float) to Lab
+  // For CV_32FC3 input in 0-1 range, cvtColor produces L [0..100], a* [-128..127], b* [-128..127]
   cv::Mat lab;
-  cv::cvtColor(color, lab, cv::COLOR_BGR2Lab);
+  cv::cvtColor(colors, lab, cv::COLOR_BGR2Lab);
 
-  lab_ = lab;
-  mask_ = mask;
+  // Prepare data for clustering in Lab space
+  std::vector<cv::Point3f> samples;
+  for(int y = 0; y < lab.rows; y++) {
+    for(int x = 0; x < lab.cols; x++) {
+      if(mask.at<uchar>(y, x) > 0) {
+        cv::Vec3f pixel = lab.at<cv::Vec3f>(y, x);
+        samples.push_back(cv::Point3f(pixel[0], pixel[1], pixel[2]));
+      }
+    }
+  }
 
-  L_histogram_ = GetHistogram(lab, 0, mask, L_bins_, L_range_);
-  a_histogram_ = GetHistogram(lab, 1, mask, a_bins_, a_range_);
-  b_histogram_ = GetHistogram(lab, 2, mask, b_bins_, b_range_);
+  // Convert samples to Mat for k-means
+  cv::Mat points(samples.size(), 3, CV_32F);
+  for(size_t i = 0; i < samples.size(); i++) {
+    points.at<float>(i, 0) = samples[i].x;
+    points.at<float>(i, 1) = samples[i].y;
+    points.at<float>(i, 2) = samples[i].z;
+  }
+
+  // Perform k-means clustering in Lab space
+  cv::Mat labels, centers;
+  cv::kmeans(points, kClusters, labels,
+              cv::TermCriteria(cv::TermCriteria::EPS + cv::TermCriteria::MAX_ITER, 10, 1.0),
+              3, cv::KMEANS_PP_CENTERS, centers);
+
+  // Count pixels per cluster to determine weights
+  std::vector<int> cluster_counts(kClusters, 0);
+  for(int i = 0; i < labels.rows; i++) {
+    cluster_counts[labels.at<int>(i)]++;
+  }
+
+  // Store Lab cluster centers and weights
+  quantified_colors_.clear();
+  for(int i = 0; i < kClusters; i++) {
+    WeightedColor dc;
+    dc.color = cv::Vec3f(centers.at<float>(i, 0), centers.at<float>(i, 1), centers.at<float>(i, 2));
+    dc.weight = static_cast<float>(cluster_counts[i]) / labels.rows;
+    quantified_colors_.push_back(dc);
+  }
 }
 
 double LabIconPiece::Distance(const Piece &other) const {
-  return EuclideanDistance(this, (LabIconPiece*) &other);
+  const LabIconPiece* other_piece = dynamic_cast<const LabIconPiece*>(&other);
+  if (!other_piece) return std::numeric_limits<double>::max();
+
+  return EuclideanDistance(this, other_piece);
 }
 
-double LabIconPiece::EuclideanDistance(const LabIconPiece *p_1, const LabIconPiece *p_2) {
-  cv::Mat L_diff, a_diff, b_diff, L_diff_sq, a_diff_sq, b_diff_sq;
-  cv::subtract(p_1->L_histogram_, p_2->L_histogram_, L_diff);
-  cv::subtract(p_1->a_histogram_, p_2->a_histogram_, a_diff);
-  cv::subtract(p_1->b_histogram_, p_2->b_histogram_, b_diff);
-  cv::pow(L_diff, 2, L_diff_sq);
-  cv::pow(a_diff, 2, a_diff_sq);
-  cv::pow(b_diff, 2, b_diff_sq);
+double LabIconPiece::EuclideanDistance(const LabIconPiece* p_1, const LabIconPiece* p_2) {
+  double distance = 0.0;
 
-  cv::Scalar_<double> total_distances = cv::sum(L_diff_sq) + cv::sum(a_diff_sq) + cv::sum(b_diff_sq);
-  return sqrt(total_distances[0]);
+  // Compare all color pairs between the two pieces in Lab space
+  for (size_t i = 0; i < p_1->quantified_colors_.size(); i++) {
+    for (size_t j = 0; j < p_2->quantified_colors_.size(); j++) {
+      cv::Vec3f color1 = p_1->quantified_colors_[i].color;
+      cv::Vec3f color2 = p_2->quantified_colors_[j].color;
+      float weight1 = p_1->quantified_colors_[i].weight;
+      float weight2 = p_2->quantified_colors_[j].weight;
+
+      // Weighted Euclidean distance between this color pair
+      cv::Vec3f diff = color1 - color2;
+      distance += cv::norm(diff) * weight1 * weight2;
+    }
+  }
+
+  return distance;
 }
 
-// TODO move this method into Analysis so it will be ran only once
 cv::Vec3f LabIconPiece::GetMainColor() const {
-
-  double min_val, max_val;
-  int min_idx, max_idx;
-
-  float L_step = (L_range_[1] - L_range_[0]) / L_bins_;
-  float a_step = (a_range_[1] - a_range_[0]) / a_bins_;
-  float b_step = (b_range_[1] - b_range_[0]) / b_bins_;
-
-  // lowest value in the range + index of the max bin * bin size (step) + half a bin to hit the middle of it
-  cv::minMaxIdx(L_histogram_, &min_val, &max_val, &min_idx, &max_idx);
-  float L_bin = max_idx * L_step + L_step * 0.5;
-
-  cv::minMaxIdx(a_histogram_, &min_val, &max_val, &min_idx, &max_idx);
-  float a_bin = a_range_[0] + max_idx * a_step + a_step * 0.5;
-
-  cv::minMaxIdx(b_histogram_, &min_val, &max_val, &min_idx, &max_idx);
-  float b_bin = b_range_[0] + max_idx * b_step + b_step * 0.5;
-
-  return cv::Vec3f(L_bin, a_bin, b_bin);
+  cv::Vec3f mean_color(0.0f, 0.0f, 0.0f);
+  for (const auto& dc : quantified_colors_) {
+    mean_color += dc.color * dc.weight;
+  }
+  return mean_color;
 }
 
 std::vector<WeightedColor> LabIconPiece::GetQuantifiedColors() const {
-  // LabIconPiece uses histograms, so it has one dominant color
-  return {{GetMainColor(), 1.0f}};
+  return quantified_colors_;
 }

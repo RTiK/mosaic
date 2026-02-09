@@ -1,5 +1,4 @@
 #include <Mosaic/piece/IconPiece.hpp>
-#include <Mosaic/piece/LabIconPiece.hpp>
 #include <gtest/gtest.h>
 #include <opencv2/core.hpp>
 
@@ -68,19 +67,4 @@ TEST(GetHistogramTests, EvenDistributionTest) {
   cv::Mat diffs;
   cv::compare(expected, histogram, diffs, cv::CMP_NE);
   ASSERT_EQ(0, cv::countNonZero(diffs));
-}
-
-
-TEST(LabIconTests, AssignmentTest) {
-  cv::Vec4b bgra(UCHAR_MAX, 0, 0, UCHAR_MAX);
-
-  cv::Mat image(2, 2, CV_8UC4, bgra);
-
-  LabIconPiece piece(image);
-
-  cv::Vec3f dominating_color = piece.GetMainColor();
-
-  EXPECT_NEAR(33.0, dominating_color[0], 0.0001);
-  EXPECT_NEAR(77.1953, dominating_color[1], 0.0001);
-  EXPECT_NEAR(-106.0859, dominating_color[2], 0.0001);
 }

@@ -29,11 +29,9 @@ set(Headers
         include/Mosaic/Page.hpp
         include/Mosaic/PageEvaluation.hpp
         include/Mosaic/PopulationUtil.hpp
-        include/Mosaic/piece/BgrIconPiece.hpp
+        include/Mosaic/piece/LabIconPiece.hpp
         include/Mosaic/piece/ColorPiece.hpp
         include/Mosaic/piece/IconPiece.hpp
-        include/Mosaic/piece/LabIconClusteringPiece.hpp
-        include/Mosaic/piece/LabIconPiece.hpp
         include/Mosaic/piece/LabPiece.hpp
         include/Mosaic/piece/Piece.hpp
 )
@@ -47,11 +45,9 @@ set(Sources
         src/Page.cpp
         src/PageEvaluation.cpp
         src/PopulationUtil.cpp
-        src/piece/BgrIconPiece.cpp
+        src/piece/LabIconPiece.cpp
         src/piece/ColorPiece.cpp
         src/piece/IconPiece.cpp
-        src/piece/LabIconClusteringPiece.cpp
-        src/piece/LabIconPiece.cpp
         src/piece/LabPiece.cpp
 )
 

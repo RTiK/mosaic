@@ -1,11 +1,11 @@
 #include "Mosaic/JsonExport.hpp"
-#include <Mosaic/piece/BgrIconPiece.hpp>
+#include <Mosaic/piece/LabIconPiece.hpp>
 #include <Mosaic/IndividualGeneration.hpp>
 #include <Mosaic/PopulationUtil.hpp>
 #include <Mosaic/HallOfFame.hpp>
 
 const int kPopulation = 200;
-const int kGenerations = 1000;
+const int kGenerations = 3000;
 const int kMaxAge = 50;
 
 
@@ -28,7 +28,7 @@ int main() {
   export_config.diagonal_weight = 0.70711;
   export_config.page_width = 4;
   export_config.page_height = 6;
-  export_config.piece_type = json_export::BGR_ICON_PIECE;
+  export_config.piece_type = json_export::LAB_ICON_PIECE;
 
   // Set callback to export individuals as they enter the hall of fame
   std::string hof_export_file = "hall_of_fame_progress.ndjson";

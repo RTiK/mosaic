@@ -1,5 +1,5 @@
 #include <iostream>
-#include <Mosaic/piece/BgrIconPiece.hpp>
+#include <Mosaic/piece/LabIconPiece.hpp>
 #include <Mosaic/Individual.hpp>
 #include <Mosaic/IndividualGeneration.hpp>
 #include <Mosaic/PopulationUtil.hpp>

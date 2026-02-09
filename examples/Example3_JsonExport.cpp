@@ -1,4 +1,4 @@
-#include <Mosaic/piece/BgrIconPiece.hpp>
+#include <Mosaic/piece/LabIconPiece.hpp>
 #include <Mosaic/IndividualGeneration.hpp>
 #include <Mosaic/PopulationUtil.hpp>
 #include <Mosaic/HallOfFame.hpp>
@@ -28,7 +28,7 @@ int main() {
   export_config.page_height = 6;
   export_config.variance_weight = 0.4;
   export_config.icons_missing_weight = 0.1;
-  export_config.piece_type = json_export::BGR_ICON_PIECE;
+  export_config.piece_type = json_export::LAB_ICON_PIECE;
 
   std::string export_file = "evolution_results.ndjson";
 
