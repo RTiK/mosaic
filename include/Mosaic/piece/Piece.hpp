@@ -30,16 +30,35 @@ enum Neighbours : unsigned char {
  */
 class Piece {
  public:
+
+  /**
+   * Returns the distance to all neighbor pieces.
+   */
   virtual double Distance(const Piece &other) const = 0;
 
+  /**
+   * Returns visual representation of the piece that can be used for rendering.
+   */
   virtual cv::Mat Image(int width, int height) const = 0;
 
+  /**
+   * Returns the mean color of the piece.
+   */
   virtual cv::Vec3f GetMainColor() const = 0;
 
+  /**
+   * Returns a vector of weighted colors in the piece.
+   */
   virtual std::vector<WeightedColor> GetQuantifiedColors() const = 0;
 
+  /**
+   * Returns a string representation of the piece.
+   */
   virtual std::string Print() const = 0;
 
+  /**
+   * Overloads the << operator to print the piece.
+   */
   friend std::ostream &operator<<(std::ostream &out, const Piece &piece) { return out << piece.Print(); }
 };
 

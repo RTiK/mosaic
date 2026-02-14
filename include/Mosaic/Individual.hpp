@@ -21,8 +21,6 @@ class Individual {
   std::vector<Page> pages_;
   std::vector<std::shared_ptr<Piece>> genome_;
   int birth_generation_;
-  double variance_weight_ = 1.8;
-  double missing_icons_weight_ = 0.5;
 
   void Evaluate();
 
@@ -35,16 +33,34 @@ class Individual {
 
   Individual(const Individual &ind, std::mt19937 &g, int birth_generation);
 
+  /**
+   * Returns the fitness of the individual.
+   */
   double GetFitness() const { return fitness_; };
 
+  /**
+   * Returns the generation when the individual was created.
+   */
   int GetBirthGeneration() const { return birth_generation_; }
 
+  /**
+   * Returns the pages in the individual.
+   */
   std::vector<Page> GetPages() { return pages_; }
 
+  /**
+   * Creates pages from the genome.
+   */
   static std::vector<Page> SplitGenomeIntoPages(std::vector<std::shared_ptr<Piece>> &genome);
 
+  /**
+   * Swaps two pieces in the genome effectively creating a new individual, hence, current generation is required.
+   */
   void Swap(unsigned int index_1, unsigned int index_2, int generation);
 
+  /**
+   * Compares two individuals by their fitness. This is required for keeping the population sorted.
+   */
   bool operator<(const Individual &ind_1) const;
 
   /**
@@ -53,8 +69,14 @@ class Individual {
    */
   friend std::ostream &operator<<(std::ostream &out, Individual &ind);
 
+  /**
+   * Returns the genome of the individual.
+   */
   std::vector<std::shared_ptr<Piece>> GetGenome() { return genome_; };
 
+  /**
+   * Returns the size of the genome.
+   */
   int Size() const { return genome_.size(); };
 
   /**
@@ -63,9 +85,11 @@ class Individual {
    */
   void Print();
 
+  /**
+   * Displays all pages of the individual in a window.
+   */
   void Show();
-
-  static double CalculatePageDissimilarity(std::vector<Page> &pages);
+  
 };
 
 #endif //MOSAIC_INDIVIDUAL_H

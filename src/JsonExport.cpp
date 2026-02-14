@@ -1,7 +1,9 @@
 #include "Mosaic/JsonExport.hpp"
+#include "Mosaic/Individual.hpp"
 #include "Mosaic/PageEvaluation.hpp"
 #include "Mosaic/piece/IconPiece.hpp"
 #include <typeinfo>
+#include <fstream>
 
 namespace json_export {
 
@@ -9,6 +11,8 @@ std::string PieceTypeToString(PieceType type) {
   switch (type) {
     case COLOR_PIECE:
       return "ColorPiece";
+    case LAB_PIECE:
+      return "LabPiece";
     case LAB_ICON_PIECE:
       return "LabIconPiece";
     default:
@@ -152,7 +156,7 @@ json SerializePage(const Page &page, unsigned int page_index,
   };
 }
 
-json SerializeIndividual(const Individual &individual, const ExportConfig &config) {
+json SerializeIndividual(const Individual &individual, PieceType piece_type) {
   // Build genome order array
   json genome_order = json::array();
   for (size_t i = 0; i < individual.Size(); i++) {
@@ -172,21 +176,21 @@ json SerializeIndividual(const Individual &individual, const ExportConfig &confi
   return json{
     {"fitness", individual.GetFitness()},
     {"generation", individual.GetBirthGeneration()},
-    {"piece_type", PieceTypeToString(config.piece_type)},
+    {"piece_type", PieceTypeToString(piece_type)},
     {"config", {
-      {"diagonal_weight", config.diagonal_weight},
-      {"icons_missing_weight", config.icons_missing_weight},
-      {"variance_weight", config.variance_weight},
-      {"page_width", config.page_width},
-      {"page_height", config.page_height}
+      {"diagonal_weight", page_evaluation::kDiagonalWeight},
+      {"icons_missing_weight", page_evaluation::kMissingIconsWeight},
+      {"variance_weight", page_evaluation::kVarianceWeight},
+      {"page_width", page_evaluation::kWidth},
+      {"page_height", page_evaluation::kHeight}
     }},
     {"genome_order", genome_order},
     {"pages", pages}
   };
 }
 
-void ExportIndividualToNDJSON(const Individual &individual, const std::string &filepath, const ExportConfig &config) {
-  json individual_json = SerializeIndividual(individual, config);
+void ExportIndividualToNDJSON(const Individual &individual, const std::string &filepath, PieceType piece_type) {
+  json individual_json = SerializeIndividual(individual, piece_type);
 
   std::ofstream file(filepath, std::ios::app);
   if (!file.is_open()) {

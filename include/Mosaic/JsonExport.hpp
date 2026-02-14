@@ -5,7 +5,6 @@
 #include "Page.hpp"
 #include "piece/Piece.hpp"
 #include <nlohmann/json.hpp>
-#include <fstream>
 #include <string>
 
 namespace json_export {
@@ -14,6 +13,7 @@ using json = nlohmann::json;
 
 enum PieceType {
   COLOR_PIECE,
+  LAB_PIECE,
   LAB_ICON_PIECE
 };
 
@@ -21,19 +21,6 @@ enum PieceType {
  * Converts PieceType enum to string representation.
  */
 std::string PieceTypeToString(PieceType type);
-
-/**
- * Configuration parameters for the evolutionary algorithm.
- * These are used in the exported JSON to document how fitness was calculated.
- */
-struct ExportConfig {
-  double diagonal_weight = 0.70711;
-  double variance_weight = 0.4;
-  double icons_missing_weight = 0.1;
-  unsigned int page_width = 4;
-  unsigned int page_height = 6;
-  PieceType piece_type = COLOR_PIECE;
-};
 
 /**
  * Serializes a color (cv::Vec3f) to a JSON array [r, g, b].
@@ -81,14 +68,14 @@ json SerializePage(const Page &page, unsigned int page_index,
 
 /**
  * Serializes a complete Individual to JSON format.
+ * Algorithm parameters (weights, grid dimensions, diagonal weight) are read directly
+ * from the Individual and PageEvaluation constants.
  *
  * @param individual The individual to serialize
- * @param config Algorithm configuration parameters
- * @param piece_type Type identifier for pieces in this individual (e.g., "LabIconPiece")
+ * @param piece_type Type of pieces in this individual
  * @return JSON object representing the entire individual
  */
-json SerializeIndividual(const Individual &individual, const ExportConfig &config,
-                         const std::string &piece_type);
+json SerializeIndividual(const Individual &individual, PieceType piece_type);
 
 /**
  * Exports an Individual as a single line of NDJSON (newline-delimited JSON).
@@ -96,9 +83,9 @@ json SerializeIndividual(const Individual &individual, const ExportConfig &confi
  *
  * @param individual The individual to export
  * @param filepath Path to the output file (will be created or appended to)
- * @param config Algorithm configuration parameters
+ * @param piece_type Type of pieces in this individual
  */
-void ExportIndividualToNDJSON(const Individual &individual, const std::string &filepath, const ExportConfig &config);
+void ExportIndividualToNDJSON(const Individual &individual, const std::string &filepath, PieceType piece_type);
 
 /**
  * Gets the icon path from a piece if it's an IconPiece, otherwise returns empty string.

@@ -1,4 +1,5 @@
 #include "Mosaic/Individual.hpp"
+#include "Mosaic/PageEvaluation.hpp"
 #include "Mosaic/piece/Piece.hpp"
 
 Individual::Individual() : birth_generation_(0) {}
@@ -54,7 +55,8 @@ std::vector<Page> Individual::SplitGenomeIntoPages(std::vector<std::shared_ptr<P
         current_page_edge = &page_edges.back();
       } else {
         current_page_edge->back() = p;
-        if (current_page_edge->back() - current_page_edge->front() == Page::max_pieces_ - 1) {
+        const unsigned int max_pieces = page_evaluation::kWidth * page_evaluation::kHeight;
+        if (current_page_edge->back() - current_page_edge->front() == max_pieces - 1) {
           current_page_edge = nullptr;
         }
       }
@@ -82,44 +84,10 @@ void Individual::Evaluate() {
   }
 
   double variance_normalized = total_variance / genome_.size();
-  double missing_icons_penalty = total_icons_missing * variance_normalized * missing_icons_weight_;
-  //double page_dissimilarity = CalculatePageDissimilarity(pages_);
+  double missing_icons_penalty = total_icons_missing * variance_normalized * page_evaluation::kMissingIconsWeight;
   fitness_ = total_distance 
-           + total_variance * variance_weight_ 
-           + missing_icons_penalty; // - page_dissimilarity * 0.5;
-}
-
-double Individual::CalculatePageDissimilarity(std::vector<Page> &pages) {
-  if (pages.size() <= 1) {
-    return 0.0; // No dissimilarity with only one page
-  }
-
-  double total_dissimilarity = 0.0;
-  int comparisons = 0;
-
-  // Compare all pairs of pages using their color distributions
-  for (size_t i = 0; i < pages.size(); ++i) {
-    for (size_t j = i + 1; j < pages.size(); ++j) {
-      std::vector<WeightedColor> colors_i = pages[i].GetColorDistribution();
-      std::vector<WeightedColor> colors_j = pages[j].GetColorDistribution();
-
-      // Calculate weighted Euclidean distance between color distributions
-      double page_distance = 0.0;
-      for (const auto& dc_i : colors_i) {
-        for (const auto& dc_j : colors_j) {
-          cv::Vec3f diff = dc_i.color - dc_j.color;
-          double color_dist = cv::norm(diff);
-          // Weight by the product of the two weights (colors that are more dominant contribute more)
-          page_distance += color_dist * dc_i.weight * dc_j.weight;
-        }
-      }
-
-      total_dissimilarity += page_distance;
-      comparisons++;
-    }
-  }
-
-  return comparisons > 0 ? total_dissimilarity / comparisons : 0.0;
+           + total_variance * page_evaluation::kVarianceWeight 
+           + missing_icons_penalty;
 }
 
 bool Individual::operator<(const Individual &other) const {
