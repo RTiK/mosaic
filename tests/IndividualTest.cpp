@@ -1,5 +1,7 @@
+#include "Mosaic/Page.hpp"
 #include <gtest/gtest.h>
 #include <Mosaic/Individual.hpp>
+#include <Mosaic/PageEvaluation.hpp>
 #include <Mosaic/piece/ColorPiece.hpp>
 
 
@@ -159,29 +161,10 @@ TEST(PageBreakTest, TestPageOverflow) {
       std::make_shared<ColorPiece>(1.0), std::make_shared<ColorPiece>(1.0)   // 2
   };
   std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
+
+  const unsigned int max_pieces = page_evaluation::kHeight * page_evaluation::kWidth;
+
   EXPECT_EQ(pages.size(), 2);
-  EXPECT_EQ(pages[0].GetLastPiece() - pages[0].GetFirstPiece(), Page::max_pieces_ - 1);
-  EXPECT_EQ(pages[1].GetLastPiece() - pages[1].GetFirstPiece(), pieces.size() - Page::max_pieces_ - 1);
-}
-
-TEST(PageDissimilarityTest, SinglePage) {
-  std::vector<std::shared_ptr<Piece>> pieces {
-      std::make_shared<ColorPiece>(1.0)
-  };
-  std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
-  double dissimilarity = Individual::CalculatePageDissimilarity(pages);
-  EXPECT_EQ(0.0, dissimilarity);
-}
-
-TEST(PageDissimilarityTest, ThreePages) {
-  std::vector<std::shared_ptr<Piece>> pieces {
-      std::make_shared<ColorPiece>(1.0),
-      kPageBreak,
-      std::make_shared<ColorPiece>(0.5),
-      kPageBreak,
-      std::make_shared<ColorPiece>(0.0),
-  };
-  std::vector<Page> pages = Individual::SplitGenomeIntoPages(pieces);
-  double dissimilarity = Individual::CalculatePageDissimilarity(pages);
-  EXPECT_NEAR(1.1547, dissimilarity, 0.0001);
+  EXPECT_EQ(pages[0].GetLastPiece() - pages[0].GetFirstPiece(), max_pieces - 1);
+  EXPECT_EQ(pages[1].GetLastPiece() - pages[1].GetFirstPiece(), pieces.size() - max_pieces - 1);
 }

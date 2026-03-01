@@ -20,7 +20,6 @@ class Page {
   void Evaluate();
 
  public:
-  const static unsigned int max_pieces_ = 24;
 
   Page(const Page &page) : first_piece_{page.first_piece_}, last_piece_{page.last_piece_},
       distances_{page.distances_}, variance_{page.variance_}, color_distribution_{page.color_distribution_},
@@ -28,24 +27,54 @@ class Page {
 
   Page(std::shared_ptr<Piece> *first_piece, std::shared_ptr<Piece> *last_piece);
 
+  /**
+   * Returns total distance between pieces on the page.
+   */
   double GetDistances() const { return distances_; }
 
+  /**
+   * Returns page variance.
+   */
   double GetVariance() const { return variance_; }
 
+  /**
+   * Returns the number of missing icons on the page.
+   */
   int GetIconsMissing() const { return icons_missing_; }
 
+  /**
+   * Returns all colors on the page sorted by weight.
+   */
   std::vector<WeightedColor> GetColorDistribution() const { return color_distribution_; }
 
+  /**
+   * Returns the number of pieces on the page.
+   */
   unsigned int Size() const;
 
+  /**
+   * Returns a pointer to the first piece on the page.
+   */
   std::shared_ptr<Piece> *GetFirstPiece() const { return first_piece_; };
 
+  /**
+   * Returns a pointer to the last piece on the page.
+   */
   std::shared_ptr<Piece> *GetLastPiece() const { return last_piece_; };
 
+  /**
+   * Overloads the << operator to print page information.
+   */
   friend std::ostream& operator<<(std::ostream& os, Page &page);
 
+  /**
+   * Creates a visual representation of the page for displaying using OpenCV.
+   */
   cv::Mat Image(int side=50, cv::Vec3f default_color=cv::Vec3f(0.0, 0.0, 0.0)) const;
 
+  /**
+   * Displays the page image in a window.
+   */
   void Show(std::string &window_title, int side=50, cv::Vec3f default_color=cv::Vec3f(0.0, 0.0, 0.0)) const;
 };
 

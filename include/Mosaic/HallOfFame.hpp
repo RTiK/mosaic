@@ -19,18 +19,39 @@ class HallOfFame {
  public:
   explicit HallOfFame(size_t max_size = 10);
 
+  /**
+   * Add the individual to the hall of fame if it is among the best. If the hall exceeds max_size, the worst individual is removed.
+   */
   void Update(const Individual& individual);
 
+  /**
+   * Update the hall of fame with a new population. Only individuals better than the worst in the hall will be considered for insertion.
+   */
   void Update(const std::set<Individual>& population);
 
+  /**
+   * Returns all individuals in the hall of fame, sorted by fitness.
+   */
   std::vector<Individual> GetBest() const;
 
+  /** 
+   * Returns the best individual in the hall of fame.
+   */
   Individual GetBestIndividual() const;
 
+  /**
+   * Returns the number of individuals in the hall of fame.
+   */
   size_t Size() const { return hall_.size(); }
 
+  /**
+   * Checks if the hall of fame is empty.
+   */
   bool Empty() const { return hall_.empty(); }
 
+  /**
+   * Prints all individuals in the hall of fame to standard output.
+   */
   void Print() const;
 
   /**
@@ -41,6 +62,9 @@ class HallOfFame {
    */
   void SetOnInsertCallback(std::function<void(const Individual&, size_t)> callback);
 
+  /**
+   * Overloads the << operator to print the hall of fame.
+   */
   friend std::ostream& operator<<(std::ostream& out, const HallOfFame& hof);
 };
 
