@@ -9,3 +9,4 @@ _deps/
 .DS_Store
 visualization/.ipynb_checkpoints
 .claude/
+icons/

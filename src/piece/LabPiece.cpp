@@ -1,6 +1,5 @@
 #include "Mosaic/piece/LabPiece.hpp"
 
-// TODO(artem): what is happening here?
 LabPiece::LabPiece(float b, float g, float r) : ColorPiece(b, g, r) {
   lab_color_ = LabToRgb(original_color_);  // L [0..100], a* [-128..127], b* [-128..127]
 }
