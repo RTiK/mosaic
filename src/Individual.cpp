@@ -29,7 +29,7 @@ void Individual::Swap(unsigned int index_1, unsigned int index_2, int generation
   Evaluate();
 }
 
-std::ostream &operator<<(std::ostream &out, Individual &ind) {
+std::ostream &operator<<(std::ostream &out, const Individual &ind) {
   auto pages = ind.GetPages();
   out << "Fitness: " << std::to_string(ind.fitness_) << " Pages: " << std::to_string(pages.size()) << " Born: " << ind.GetBirthGeneration() << std::endl;
   for (auto page : pages) {

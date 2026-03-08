@@ -65,7 +65,7 @@ class Page {
   /**
    * Overloads the << operator to print page information.
    */
-  friend std::ostream& operator<<(std::ostream& os, Page &page);
+  friend std::ostream& operator<<(std::ostream& os, const Page &page);
 
   /**
    * Creates a visual representation of the page for displaying using OpenCV.
@@ -75,7 +75,7 @@ class Page {
   /**
    * Displays the page image in a window.
    */
-  void Show(std::string &window_title, int side=50, cv::Vec3f default_color=cv::Vec3f(0.0, 0.0, 0.0)) const;
+  void Show(const std::string &window_title, int side=50, cv::Vec3f default_color=cv::Vec3f(0.0, 0.0, 0.0)) const;
 };
 
 #endif //MOSAIC_SRC_PAGE_H_

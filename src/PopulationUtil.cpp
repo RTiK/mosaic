@@ -29,7 +29,7 @@ void population_util::PassThroughElites(std::set<Individual> &population, const 
   }
 }
 
-void population_util::PrintBest(std::set<Individual> &population, int n) {
+void population_util::PrintBest(const std::set<Individual> &population, int n) {
   auto current = population.begin();
   while (current != population.end() && n >= 0) {
     std::cout << std::format("{}, {}", current->GetFitness(), current->GetBirthGeneration()) << " | ";

@@ -61,7 +61,7 @@ class Individual {
   /**
    * Returns the pages in the individual.
    */
-  std::vector<Page> GetPages() { return pages_; }
+  const std::vector<Page>& GetPages() const { return pages_; }
 
   /**
    * Creates pages from the genome.
@@ -82,12 +82,12 @@ class Individual {
    * Prints the fitness parameters of pages in the individual.
    * See Print method for per-piece output.
    */
-  friend std::ostream &operator<<(std::ostream &out, Individual &ind);
+  friend std::ostream &operator<<(std::ostream &out, const Individual &ind);
 
   /**
    * Returns the genome of the individual.
    */
-  std::vector<std::shared_ptr<Piece>> GetGenome() { return genome_; };
+  std::vector<std::shared_ptr<Piece>> GetGenome() const { return genome_; };
 
   /**
    * Returns the size of the genome.

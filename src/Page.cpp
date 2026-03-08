@@ -15,7 +15,7 @@ unsigned int Page::Size() const {
   return last_piece_ - first_piece_ + 1;
 }
 
-std::ostream &operator<<(std::ostream &os, Page &page) {
+std::ostream &operator<<(std::ostream &os, const Page &page) {
   os << "total distance: " << page.distances_ << " colors: " << page.color_distribution_.size() << " variance: " << page.variance_ << " icons missing: " << page.icons_missing_ << std::endl;
   os << page.Size() << " icons:";
   for (std::shared_ptr<Piece>* current = page.first_piece_; current <= page.last_piece_; current++) {
@@ -54,7 +54,7 @@ cv::Mat Page::Image(int side, cv::Vec3f default_color) const {
   return image;
 }
 
-void Page::Show(std::string &window_title, int side, cv::Vec3f default_color) const {
+void Page::Show(const std::string &window_title, int side, cv::Vec3f default_color) const {
   cv::imshow(window_title, Image(side, default_color));
   cv::waitKey();
 }
