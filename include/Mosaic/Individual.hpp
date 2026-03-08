@@ -7,6 +7,15 @@
 #include "piece/Piece.hpp"
 #include <opencv2/opencv.hpp>
 
+/**
+ * Weights used when computing Individual fitness.
+ * Pass a customized instance to Individual or IndividualGeneration functions
+ * to tune how variance and missing icons are penalized.
+ */
+struct FitnessWeights {
+    double variance_weight = 1.9;
+    double missing_icons_weight = 0.4;
+};
 
 /**
  * This class represents a regular individual from the sense of genetic programming. However, along with the genome and
@@ -21,6 +30,7 @@ class Individual {
   std::vector<Page> pages_;
   std::vector<std::shared_ptr<Piece>> genome_;
   int birth_generation_;
+  FitnessWeights weights_;
 
   void Evaluate();
 
@@ -29,7 +39,7 @@ class Individual {
 
   Individual(const Individual &ind);
 
-  Individual(std::vector<std::shared_ptr<Piece>> &genome, int birth_generation);
+  Individual(std::vector<std::shared_ptr<Piece>> &genome, int birth_generation, FitnessWeights weights = {});
 
   Individual(const Individual &ind, std::mt19937 &g, int birth_generation);
 
@@ -37,6 +47,11 @@ class Individual {
    * Returns the fitness of the individual.
    */
   double GetFitness() const { return fitness_; };
+
+  /**
+   * Returns the fitness weights used by this individual.
+   */
+  FitnessWeights GetWeights() const { return weights_; };
 
   /**
    * Returns the generation when the individual was created.

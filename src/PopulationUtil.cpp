@@ -8,7 +8,6 @@ void population_util::FillShuffle(std::set<Individual> &population, const Indivi
 
 void population_util::MutateBest(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g, int current_generation) {
   assert(!population.empty());
-  // TODO this should be initialized globally
   std::uniform_int_distribution<> random_ind_length(0, population.begin()->Size() - 1);
 
   auto old_pop_iter = old_pop.begin();

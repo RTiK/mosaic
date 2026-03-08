@@ -9,7 +9,7 @@ Individual::Individual(const Individual &ind) : birth_generation_(ind.birth_gene
   Evaluate();
 }
 
-Individual::Individual(std::vector<std::shared_ptr<Piece>> &genome, int birth_generation) : birth_generation_(birth_generation) {
+Individual::Individual(std::vector<std::shared_ptr<Piece>> &genome, int birth_generation, FitnessWeights weights) : birth_generation_(birth_generation), weights_(weights) {
   genome_ = std::vector(genome);
   Evaluate();
 }
@@ -84,9 +84,9 @@ void Individual::Evaluate() {
   }
 
   double variance_normalized = total_variance / genome_.size();
-  double missing_icons_penalty = total_icons_missing * variance_normalized * page_evaluation::kMissingIconsWeight;
-  fitness_ = total_distance 
-           + total_variance * page_evaluation::kVarianceWeight 
+  double missing_icons_penalty = total_icons_missing * variance_normalized * weights_.missing_icons_weight;
+  fitness_ = total_distance
+           + total_variance * weights_.variance_weight
            + missing_icons_penalty;
 }
 
