@@ -6,24 +6,24 @@ void population_util::FillShuffle(std::set<Individual> &population, const Indivi
   }
 }
 
-void population_util::MutateBest(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g, int current_generation) {
-  assert(!population.empty());
-  std::uniform_int_distribution<> random_ind_length(0, population.begin()->Size() - 1);
+void population_util::MutateAndPassBest(std::set<Individual> &new_population, const std::set<Individual> &old_population, int n, std::mt19937 &g, int current_generation) {
+  assert(!old_population.empty());
+  std::uniform_int_distribution<> random_ind_length(0, old_population.begin()->Size() - 1);
 
-  auto old_pop_iter = old_pop.begin();
-  while (old_pop_iter != old_pop.end() && n > 0) {
+  auto old_pop_iter = old_population.begin();
+  while (old_pop_iter != old_population.end() && n > 0) {
     Individual ind = *old_pop_iter;
     ind.Swap(random_ind_length(g), random_ind_length(g), current_generation);
-    population.insert(ind);
+    new_population.insert(ind);
     old_pop_iter++;
     n--;
   }
 }
 
-void population_util::PassThroughElites(std::set<Individual> &population, const std::set<Individual> &old_pop, int n) {
-  auto old_pop_iter = old_pop.begin();
-  while (old_pop_iter != old_pop.end() && n > 0) {
-    population.insert(*old_pop_iter);
+void population_util::PassThroughElites(std::set<Individual> &new_population, const std::set<Individual> &old_population, int n) {
+  auto old_pop_iter = old_population.begin();
+  while (old_pop_iter != old_population.end() && n > 0) {
+    new_population.insert(*old_pop_iter);
     old_pop_iter++;
     n--;
   }

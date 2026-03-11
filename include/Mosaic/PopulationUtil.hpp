@@ -15,12 +15,12 @@ namespace population_util {
   /**
    * Performs pairwise piece swaps on the best n individuals assuming the population is sorted by fitness.
    */
-  void MutateBest(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g, int current_generation);
+  void MutateAndPassBest(std::set<Individual> &new_population, const std::set<Individual> &old_population, int n, std::mt19937 &g, int current_generation);
 
   /**
    * Passes through the best n individuals assuming the population is sorted by fitness.
    */
-  void PassThroughElites(std::set<Individual> &population, const std::set<Individual> &old_pop, int n);
+  void PassThroughElites(std::set<Individual> &new_population, const std::set<Individual> &old_population, int n);
 
   /**
    * Prints n best individuals to std::cout assuming the population is sorted by fitness.

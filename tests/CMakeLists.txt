@@ -14,6 +14,7 @@ set(TestSources
         PageEvaluationTest.cpp
         IndividualTest.cpp
         PopulationUtilFilterByAgeTest.cpp
+        PopulationUtilTest.cpp
         piece/PieceTest.cpp
         piece/IconPieceTest.cpp
         piece/LabIconPieceTest.cpp

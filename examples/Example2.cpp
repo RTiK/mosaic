@@ -61,7 +61,8 @@ int main() {
     population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100);
     
     // mutate (another 60%) from temp population
-    population_util::MutateBest(population, temp_population, 60 * kPopulation / 100, g, i);
+    population_util::MutateAndPassBest(population, temp_population,
+                                       60 * kPopulation / 100, g, i);
     
     // fill remaining (~30%)
     population_util::FillShuffle(population, template_individual, kPopulation - population.size(), g, i);
