@@ -2,20 +2,26 @@
 #include <gmock/gmock.h>
 #include <set>
 #include <random>
+#include "Mosaic/Individual.hpp"
 #include "Mosaic/PopulationUtil.hpp"
 #include "Mosaic/IndividualGeneration.hpp"
 
 class PopulationUtilFilterByAgeTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        g.seed(42); // Fixed seed for reproducible tests
+        g_.seed(42); // Fixed seed for reproducible tests
     }
 
-    std::mt19937 g;
+    std::mt19937 g_;
+
+    FitnessWeights fitnessWeights_ = {
+        .variance_weight = 1.9,
+        .missing_icons_weight = 0.4
+    };
     
     // Helper function to create individuals with specific birth generations
     Individual CreateIndividualWithBirthGeneration(int birth_generation) {
-        return individual_generation::GenerateIndividualGrayRandom(10, 1, g, birth_generation);
+        return individual_generation::GenerateIndividualGrayRandom(10, 1, g_, birth_generation, fitnessWeights_); // Using simple fitness weights for testing
     }
 };
 

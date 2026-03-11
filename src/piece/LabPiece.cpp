@@ -18,7 +18,7 @@ cv::Mat LabPiece::Image(int width, int height) const {
 }
 
 double LabPiece::Distance(const Piece &other) const {
-  auto o = (LabPiece*) &other;
+  const auto* o = static_cast<const LabPiece*>(&other);
   return EuclideanDistance(lab_color_, o->lab_color_);
 }
 

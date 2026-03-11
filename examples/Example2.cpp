@@ -18,6 +18,11 @@ const int kPopulation = 200;
 const int kGenerations = 1000;
 const int kMaxAge = 50;
 
+const FitnessWeights kFitnessWeights = {
+  .variance_weight = 1.9,
+  .missing_icons_weight = 0.4
+};
+
 std::random_device rd;
 std::mt19937 g(rd());
 
@@ -26,7 +31,7 @@ int main() {
   // setting the seed to a fixed value will make the algorithm produce the same results on every run
   // g.seed(0);
   
-  Individual template_individual = individual_generation::GenerateIndividualLabRandom(kNumOfPieces, kNumOfPageBreaks, g, 0);
+  Individual template_individual = individual_generation::GenerateIndividualLabRandom(kNumOfPieces, kNumOfPageBreaks, g, 0, kFitnessWeights);
   
   template_individual.Print();
 

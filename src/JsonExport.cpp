@@ -179,8 +179,8 @@ json SerializeIndividual(const Individual &individual, PieceType piece_type) {
     {"piece_type", PieceTypeToString(piece_type)},
     {"config", {
       {"diagonal_weight", page_evaluation::kDiagonalWeight},
-      {"icons_missing_weight", page_evaluation::kMissingIconsWeight},
-      {"variance_weight", page_evaluation::kVarianceWeight},
+      {"icons_missing_weight", individual.GetWeights().missing_icons_weight},
+      {"variance_weight", individual.GetWeights().variance_weight},
       {"page_width", page_evaluation::kWidth},
       {"page_height", page_evaluation::kHeight}
     }},

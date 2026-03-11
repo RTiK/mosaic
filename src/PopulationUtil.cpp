@@ -8,7 +8,6 @@ void population_util::FillShuffle(std::set<Individual> &population, const Indivi
 
 void population_util::MutateBest(std::set<Individual> &population, const std::set<Individual> &old_pop, int n, std::mt19937 &g, int current_generation) {
   assert(!population.empty());
-  // TODO this should be initialized globally
   std::uniform_int_distribution<> random_ind_length(0, population.begin()->Size() - 1);
 
   auto old_pop_iter = old_pop.begin();
@@ -30,7 +29,7 @@ void population_util::PassThroughElites(std::set<Individual> &population, const 
   }
 }
 
-void population_util::PrintBest(std::set<Individual> &population, int n) {
+void population_util::PrintBest(const std::set<Individual> &population, int n) {
   auto current = population.begin();
   while (current != population.end() && n >= 0) {
     std::cout << std::format("{}, {}", current->GetFitness(), current->GetBirthGeneration()) << " | ";

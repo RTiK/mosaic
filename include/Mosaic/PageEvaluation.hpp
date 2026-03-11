@@ -17,9 +17,6 @@ namespace page_evaluation {
   // Weight to apply to diagonal neighbors
   const float kDiagonalWeight = 0.70711;
 
-  const double kVarianceWeight = 1.8;
-  const double kMissingIconsWeight = 0.5;
-
   /**
    * Calculates which neighbors a piece around it.
    * @return A bitmask of neighbors composed of Neighbors enum values.

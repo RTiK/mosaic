@@ -4,7 +4,7 @@
 #include "Mosaic/piece/LabPiece.hpp"
 #include "Mosaic/IndividualGeneration.hpp"
 
-Individual individual_generation::GenerateIndividualGrayRandom(unsigned int length, unsigned int page_breaks, std::mt19937 g, int current_generation) {
+Individual individual_generation::GenerateIndividualGrayRandom(unsigned int length, unsigned int page_breaks, std::mt19937 g, int current_generation, FitnessWeights weights) {
   std::uniform_int_distribution<> random_color_value(0, 256);
 
   std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
@@ -15,10 +15,10 @@ Individual individual_generation::GenerateIndividualGrayRandom(unsigned int leng
   for (int i = length; i < length + page_breaks; i++) {
     genome[i] = kPageBreak;
   }
-  return Individual(genome, current_generation);
+  return Individual(genome, current_generation, weights);
 }
 
-Individual individual_generation::GenerateIndividualRgbRandom(unsigned int length, unsigned int page_breaks, std::mt19937 g, int current_generation) {
+Individual individual_generation::GenerateIndividualRgbRandom(unsigned int length, unsigned int page_breaks, std::mt19937 g, int current_generation, FitnessWeights weights) {
   std::uniform_int_distribution<> random_color_value(0, 256);
 
   std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
@@ -31,10 +31,10 @@ Individual individual_generation::GenerateIndividualRgbRandom(unsigned int lengt
   for (int i = length; i < length + page_breaks; i++) {
     genome[i] = kPageBreak;
   }
-  return Individual(genome, current_generation);
+  return Individual(genome, current_generation, weights);
 }
 
-Individual individual_generation::GenerateIndividualLabRandom(unsigned int length, unsigned int page_breaks, std::mt19937 g, int current_generation) {
+Individual individual_generation::GenerateIndividualLabRandom(unsigned int length, unsigned int page_breaks, std::mt19937 g, int current_generation, FitnessWeights weights) {
   std::uniform_int_distribution<> random_color_value(0, 256);
 
   std::vector<std::shared_ptr<Piece>> genome(length + page_breaks);
@@ -47,10 +47,10 @@ Individual individual_generation::GenerateIndividualLabRandom(unsigned int lengt
   for (int i = length; i < length + page_breaks; i++) {
     genome[i] = kPageBreak;
   }
-  return Individual(genome, current_generation);
+  return Individual(genome, current_generation, weights);
 }
 
-Individual individual_generation::ReadRgbIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g, int current_generation) {
+Individual individual_generation::ReadRgbIcons(std::string dir_path, unsigned int page_breaks, std::mt19937 g, int current_generation, FitnessWeights weights) {
   assert(std::filesystem::is_directory(dir_path));  // TODO make exception
 
   std::vector<std::filesystem::path> files{};
@@ -75,6 +75,6 @@ Individual individual_generation::ReadRgbIcons(std::string dir_path, unsigned in
     genome[i] = kPageBreak;
   }
 
-  return Individual(genome, current_generation);
+  return Individual(genome, current_generation, weights);
 }
 
