@@ -76,7 +76,7 @@ int main() {
   std::cout << "\n=== FINAL HALL OF FAME ===" << std::endl;
   hall_of_fame.Print();
 
-  auto best = hall_of_fame.GetBestIndividual();
+  auto best = hall_of_fame.GetBest();
 
   std::cout << "\n=== BEST INDIVIDUAL EVER ===" << std::endl;
   std::cout << best << std::endl;

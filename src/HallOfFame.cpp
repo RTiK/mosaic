@@ -59,11 +59,11 @@ void HallOfFame::Update(const std::set<Individual>& population) {
   }
 }
 
-std::vector<Individual> HallOfFame::GetBest() const {
+std::vector<Individual> HallOfFame::GetAll() const {
   return std::vector<Individual>(hall_.begin(), hall_.end());
 }
 
-Individual HallOfFame::GetBestIndividual() const {
+Individual HallOfFame::GetBest() const {
   if (hall_.empty()) {
     throw std::runtime_error("Hall of Fame is empty");
   }
