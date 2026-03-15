@@ -25,11 +25,9 @@ make
 ```bash
 # From build directory
 cd examples
-./Example1              # Basic usage
-./Example2              # Intermediate example
-./Example3              # Advanced evolution example
-./Example3_JsonExport   # Evolution with JSON export
-./TestJsonExport        # JSON export demonstration
+./Example1              # Basic usage (grayscale ColorPieces)
+./Example2              # Lab color arrangement with JSON export
+./Example3              # Real icon arrangement from filesystem
 ```
 
 ### Visualization and Analysis
@@ -46,7 +44,8 @@ jupyter notebook mosaic_analysis.ipynb
 
 ### Dependencies
 - **OpenCV**: Install in `3rdparty/opencv` or system-wide
-- **GoogleTest**: Place sources in `3rdparty/googletest` (preferred) or install system-wide
+- **GoogleTest**: Auto-fetched via CMake FetchContent (no manual install needed)
+- **nlohmann/json**: Auto-fetched via CMake FetchContent (v3.11.3)
 - **CMake**: Minimum version 3.31
 - **C++23** standard required
 - **Python 3** (optional): For visualization tools in `visualization/`
@@ -62,16 +61,18 @@ The project implements a **hierarchical evolutionary algorithm** with three main
 
 ### Key Classes
 
-- **Individual**: Represents complete solution with genome (vector of Pieces) and derived pages
-- **Page**: Manages up to 24 pieces in 4x6 grid, tracks fitness metrics (distances, variance, color means, color distribution)
+- **Individual**: Represents complete solution with genome (vector of Pieces), derived pages, fitness, and birth_generation
+- **Page**: Manages up to 24 pieces in 4x6 grid, tracks fitness metrics (distances, variance, color distribution, icons_missing)
 - **Piece**: Abstract interface for all piece types (pure virtual distance, image generation, color extraction)
-  - **ColorPiece**: Simple RGB color implementation
+  - **ColorPiece**: Simple BGR color implementation
+  - **LabPiece**: Extends ColorPiece with LAB color space support
+  - **IconPiece**: Base class for icon-based pieces (BGRA image loading)
   - **LabIconPiece**: Real iOS icons with k-means clustering in LAB color space for perceptual color distance
-  - **IconPiece**: Base class for icon-based pieces
+- **IndividualGeneration**: Namespace with factory functions (`GenerateIndividualLabRandom`, `GenerateIndividualGrayRandom`, `ReadRgbIcons`)
 - **PageEvaluation**: Namespace with fitness functions considering neighbor relationships
-- **PopulationUtil**: Evolutionary algorithm operations (selection, mutation, population management)
+- **PopulationUtil**: Evolutionary algorithm operations (selection, mutation, `FilterByAge`)
 - **HallOfFame**: Maintains top N individuals across all generations with callback hooks
-- **JsonExport**: Exports individuals to NDJSON format for analysis and visualization
+- **JsonExport**: Exports individuals to NDJSON format; uses `PieceType` enum (`COLOR_PIECE`, `LAB_PIECE`, `LAB_ICON_PIECE`)
 
 ### Important Design Decisions
 
@@ -87,7 +88,7 @@ The project implements a **hierarchical evolutionary algorithm** with three main
 ### File Structure
 
 - `include/Mosaic/` - Public headers
-  - `piece/` - Piece implementations (ColorPiece, LabIconPiece, LabIconPiece, etc.)
+  - `piece/` - Piece implementations (ColorPiece, LabPiece, IconPiece, LabIconPiece)
 - `src/` - Implementation files
 - `tests/` - Unit tests using GoogleTest
 - `examples/` - Usage examples and demonstrations
@@ -104,18 +105,11 @@ Use the `JsonExport` module to export individuals during or after evolution:
 ```cpp
 #include <Mosaic/JsonExport.hpp>
 
-// Configure export parameters
-json_export::ExportConfig config;
-config.diagonal_weight = 0.70711;
-config.page_width = 4;
-config.page_height = 6;
-
 // Export an individual to NDJSON file
 json_export::ExportIndividualToNDJSON(
     individual,
     "results.ndjson",
-    config,
-    "LabIconPiece"
+    json_export::PieceType::LAB_ICON_PIECE
 );
 ```
 
@@ -125,8 +119,9 @@ Export best individuals automatically using callbacks:
 
 ```cpp
 HallOfFame hof(10);  // Track top 10
-hof.SetOnInsertCallback([&config](const Individual& ind, size_t rank) {
-    json_export::ExportIndividualToNDJSON(ind, "best-individuals.ndjson", config, "LabIconPiece");
+hof.SetOnInsertCallback([](const Individual& ind, size_t rank) {
+    // rank is 1-based
+    json_export::ExportIndividualToNDJSON(ind, "best-individuals.ndjson", json_export::PieceType::LAB_ICON_PIECE);
 });
 
 // Updates automatically trigger exports
