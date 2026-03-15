@@ -32,12 +32,12 @@ class HallOfFame {
   /**
    * Returns all individuals in the hall of fame, sorted by fitness.
    */
-  std::vector<Individual> GetBest() const;
+  std::vector<Individual> GetAll() const;
 
   /** 
    * Returns the best individual in the hall of fame.
    */
-  Individual GetBestIndividual() const;
+  Individual GetBest() const;
 
   /**
    * Returns the number of individuals in the hall of fame.

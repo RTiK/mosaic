@@ -61,7 +61,7 @@ int main() {
     population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100);
     
     // mutate (another 60%) from temp population
-    population_util::MutateBest(population, temp_population, 60 * kPopulation / 100, g, i);
+    population_util::MutateAndPassBest(population, temp_population, 60 * kPopulation / 100, g, i);
     
     // fill remaining (~30%)
     population_util::FillShuffle(population, template_individual, kPopulation - population.size(), g, i);
@@ -76,7 +76,7 @@ int main() {
   std::cout << "\n=== FINAL HALL OF FAME ===" << std::endl;
   hall_of_fame.Print();
 
-  auto best = hall_of_fame.GetBestIndividual();
+  auto best = hall_of_fame.GetBest();
 
   std::cout << "\n=== BEST INDIVIDUAL EVER ===" << std::endl;
   std::cout << best << std::endl;

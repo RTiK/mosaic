@@ -13,7 +13,9 @@ enable_testing()
 set(TestSources
         PageEvaluationTest.cpp
         IndividualTest.cpp
+        HallOfFameTest.cpp
         PopulationUtilFilterByAgeTest.cpp
+        PopulationUtilTest.cpp
         piece/PieceTest.cpp
         piece/IconPieceTest.cpp
         piece/LabIconPieceTest.cpp
