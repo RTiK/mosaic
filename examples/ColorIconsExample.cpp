@@ -12,7 +12,7 @@
  * be analyzed in a Jupyter notebook found in the directory `visualization`.
  */
 
-const int kNumOfPageBreaks = 3;
+const int kPageBreaks = 3;
 const int kNumOfPieces = 60;
 const int kPopulation = 200;
 const int kGenerations = 1000;
@@ -31,7 +31,7 @@ int main() {
   // setting the seed to a fixed value will make the algorithm produce the same results on every run
   // g.seed(0);
   
-  Individual template_individual = individual_generation::GenerateIndividualLabRandom(kNumOfPieces, kNumOfPageBreaks, g, 0, kFitnessWeights);
+  Individual template_individual = individual_generation::GenerateIndividualLabRandom(kNumOfPieces, kPageBreaks, g, 0, kFitnessWeights);
   
   template_individual.Print();
 
