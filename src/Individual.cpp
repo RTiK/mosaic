@@ -4,7 +4,7 @@
 
 Individual::Individual() : birth_generation_(0) {}
 
-Individual::Individual(const Individual &ind) : birth_generation_(ind.birth_generation_) {
+Individual::Individual(const Individual &ind) : birth_generation_(ind.birth_generation_), weights_(ind.weights_) {
   genome_ = std::vector(ind.genome_);
   Evaluate();
 }
@@ -14,7 +14,7 @@ Individual::Individual(std::vector<std::shared_ptr<Piece>> &genome, int birth_ge
   Evaluate();
 }
 
-Individual::Individual(const Individual &ind, std::mt19937 &g, int birth_generation) : birth_generation_(birth_generation) {
+Individual::Individual(const Individual &ind, std::mt19937 &g, int birth_generation) : birth_generation_(birth_generation), weights_(ind.weights_) {
   genome_ = std::vector(ind.genome_);
   std::shuffle(genome_.begin(), genome_.end(), g);
 
@@ -84,10 +84,10 @@ void Individual::Evaluate() {
   }
 
   double variance_normalized = total_variance / genome_.size();
-  double missing_icons_penalty = total_icons_missing * variance_normalized * weights_.missing_icons_weight;
+  double missing_icons_penalty = total_icons_missing * variance_normalized;
   fitness_ = total_distance
            + total_variance * weights_.variance_weight
-           + missing_icons_penalty;
+           + missing_icons_penalty * weights_.missing_icons_weight;
 }
 
 bool Individual::operator<(const Individual &other) const {
