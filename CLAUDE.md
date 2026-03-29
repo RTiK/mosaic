@@ -25,9 +25,9 @@ make
 ```bash
 # From build directory
 cd examples
-./Example1              # Basic usage (grayscale ColorPieces)
-./Example2              # Lab color arrangement with JSON export
-./Example3              # Real icon arrangement from filesystem
+./GrayscaleIconsExample   # Basic usage (grayscale ColorPieces)
+./SolidColorIconsExample  # Lab color arrangement with JSON export
+./RealIconExample         # Real icon arrangement from filesystem
 ```
 
 ### Visualization and Analysis

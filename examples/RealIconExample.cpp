@@ -1,24 +1,30 @@
-#include <random>
-#include <Mosaic/piece/LabPiece.hpp>
-#include <Mosaic/Individual.hpp>
-#include <Mosaic/HallOfFame.hpp>
+#include "Mosaic/Individual.hpp"
+#include "Mosaic/JsonExport.hpp"
+#include <Mosaic/piece/LabIconPiece.hpp>
 #include <Mosaic/IndividualGeneration.hpp>
 #include <Mosaic/PopulationUtil.hpp>
+#include <Mosaic/HallOfFame.hpp>
+#include <string>
 
 /**
- * This example creates a population of grayscale pieces and arranges them into pages.
+ * Instead of generating random pieces, this example reads icon files from a directory `kIconDirPath` and creates a 
+ * population based on them.
+ * Changes to the hall of fame are logged into a NDJSON file with `JsonExport`. This file can be analyzed in a Jupyter 
+ * notebook found in the directory `visualization`.
  */
 
-const int kNumOfPageBreaks = 2;
-const int kNumOfPieces = 40;
 const int kPopulation = 200;
-const int kGenerations = 1000;
+const int kGenerations = 2000;
+const int kPageBreaks = 2;
 const int kMaxAge = 50;
 
 const FitnessWeights kFitnessWeights = {
-  .variance_weight = 1.9,
-  .missing_icons_weight = 0.4
+  .variance_weight = 1.5,
+  .missing_icons_weight = 0.5
 };
+
+// the icon folder is assumed to be located in the project root
+const std::string kIconDirPath = "../../icons";
 
 std::random_device rd;
 std::mt19937 g(rd());
@@ -26,16 +32,21 @@ std::mt19937 g(rd());
 
 int main() {
   // setting the seed to a fixed value will make the algorithm produce the same results on every run
-  // g.seed(0);
+  g.seed(0);
 
-  Individual template_individual = individual_generation::GenerateIndividualGrayRandom(kNumOfPieces, kNumOfPageBreaks, g, 0, kFitnessWeights);
-
-  template_individual.Print();
-
+  Individual template_individual = individual_generation::ReadRgbIcons(kIconDirPath, kPageBreaks, g, 0, kFitnessWeights);
+  
   std::set<Individual> population{};
   population_util::FillShuffle(population, template_individual, kPopulation, g, 0);
 
   HallOfFame hall_of_fame(10);
+
+  // Set callback to export individuals as they enter the hall of fame
+  std::string hof_export_file = "hall_of_fame_progress.ndjson";
+  hall_of_fame.SetOnInsertCallback([&hof_export_file](const Individual& ind, size_t rank) {
+    json_export::ExportIndividualToNDJSON(ind, hof_export_file, json_export::LAB_ICON_PIECE);
+  });
+
   hall_of_fame.Update(population);
 
   for (int i = 0; i < kGenerations; i++) {
@@ -51,7 +62,8 @@ int main() {
     population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100);
 
     // mutate (another 60%) from temp population
-    population_util::MutateAndPassBest(population, temp_population, 60 * kPopulation / 100, g, i);
+    population_util::MutateAndPassBest(population, temp_population,
+                                       60 * kPopulation / 100, g, i);
 
     // fill remaining (~30%)
     population_util::FillShuffle(population, template_individual, kPopulation - population.size(), g, i);
@@ -61,6 +73,8 @@ int main() {
 
     population_util::PrintBest(population, 10);
   }
+
+  population_util::PrintBest(population, 10);
 
   // Final hall of fame results
   std::cout << "\n=== FINAL HALL OF FAME ===" << std::endl;
@@ -75,4 +89,5 @@ int main() {
   best.Show();
 
   return 0;
+
 }
