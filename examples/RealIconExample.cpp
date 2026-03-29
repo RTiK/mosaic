@@ -32,7 +32,7 @@ std::mt19937 g(rd());
 
 int main() {
   // setting the seed to a fixed value will make the algorithm produce the same results on every run
-  g.seed(0);
+  //g.seed(0);
 
   Individual template_individual = individual_generation::ReadRgbIcons(kIconDirPath, kPageBreaks, g, 0, kFitnessWeights);
   

@@ -16,7 +16,19 @@ Use the tool **iOS Icon Extractor**: https://github.com/RTiK/iOS-icon-extractor.
 
 Take screenshots of all your home screen pages on your iPhone and transfer them to your computer first. The output is a flat directory of `.png` files — that directory path is what Mosaic needs.
 
-### Step 2 — Build Mosaic
+Before extracting, choose an output directory (e.g. `icons/`). If that directory already exists and contains files, ask the user whether to delete the existing files or use a different directory — leftover files from a previous run will be picked up by Mosaic alongside the new ones.
+
+### Step 2 — Review and Curate Icons
+
+Before arranging, give the user a chance to review what was extracted and remove any icons they don't want included.
+
+**Dock icons**: The dock is not part of the arrangement — icons the user keeps in the dock should be removed from the icons directory so Mosaic doesn't try to place them on a page. Ask the user which icons they want in their dock and delete those files.
+
+**Unwanted icons**: The user may also want to remove any other icons they don't want arranged (e.g. apps they plan to delete).
+
+Once the user is happy with the contents of the icons directory, proceed to the next step.
+
+### Step 3 — Build Mosaic
 
 ```bash
 git clone <this-repo>
@@ -28,7 +40,7 @@ make -j8
 
 Dependencies are handled automatically by CMake (GoogleTest, nlohmann/json). Only **OpenCV** must be installed separately (system-wide or placed in `3rdparty/opencv`).
 
-### Step 3 — Configure the Run
+### Step 4 — Configure the Run
 
 The main entry point for real icons is `examples/RealIconExample.cpp`. Edit the constants at the top of that file before running:
 
@@ -39,8 +51,8 @@ const int kPageBreaks = 3;       // max extra page-break genes in the genome
 const int kMaxAge = 50;          // how long an individual survives before dying
 
 const FitnessWeights kFitnessWeights = {
-  .variance_weight = 1.9,        // penalty for color spread within a page
-  .missing_icons_weight = 0.4    // penalty for underfilled pages
+  .variance_weight = 1.5,        // penalty for color spread within a page
+  .missing_icons_weight = 0.5    // penalty for underfilled pages
 };
 
 const std::string kIconDirPath = "../../icons";  // path to extracted icons
@@ -48,16 +60,16 @@ const std::string kIconDirPath = "../../icons";  // path to extracted icons
 
 Point `kIconDirPath` at the directory produced by iOS Icon Extractor (absolute or relative to `build/examples/`).
 
-### Step 4 — Run the Example
+### Step 5 — Run the Example
 
 ```bash
 cd build/examples
-./Example3
+./RealIconExample
 ```
 
 The algorithm prints fitness scores each generation. Progress is also saved to `hall_of_fame_progress.ndjson` in the working directory. Use Ctrl+C to stop early — the file is crash-safe and already contains the best individuals found so far.
 
-### Step 5 — Visualize Results (Optional)
+### Step 6 — Visualize Results (Optional)
 
 ```bash
 cd visualization
@@ -119,7 +131,7 @@ The two weights push against each other. If your results show:
 - Icons on a page still look visually mixed → increase `variance_weight`
 - The algorithm converges to trivial solutions (1–2 icons per page) → `missing_icons_weight` is too low relative to `variance_weight`
 
-**Default starting values**: `variance_weight = 1.9`, `missing_icons_weight = 0.4`
+**Default starting values**: `variance_weight = 1.5`, `missing_icons_weight = 0.5`
 
 ---
 
@@ -136,7 +148,7 @@ See `doc/JSON_EXPORT.md` for the full schema and `jq` query examples.
 ```
 include/Mosaic/         Public headers — start here to understand the API
 src/                    Implementations
-examples/Example3.cpp   Main entry point for real-icon runs — the file to edit
+examples/RealIconExample.cpp   Main entry point for real-icon runs — the file to edit
 tests/                  GoogleTest unit tests
 visualization/          Jupyter notebook for result analysis
 doc/JSON_EXPORT.md      NDJSON schema and analysis guide
