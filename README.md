@@ -2,7 +2,7 @@
 
 Mosaic is an application that arranges icons on the home screen of your iOS device by color using evolutionary algorithms.
 
-> If you'd like a coding agent to help you, point it to AGENTS.md (if it fails to discover it on its own). The description in this file will help the agent build the project, run the example scripts and even take the icons from your screenshots and arrange them.
+> If you'd like a coding agent to help you, point it to AGENTS.md (if it fails to discover it on its own). The description in this file will help the agent build the project, run the example scripts and guide you through the process of extracting the icons from the screenshots and arranging them.
 
 ## Constrains
 
@@ -32,8 +32,37 @@ Setting `seed=0` in `RealIconExample` will yield the following pages
 
 ![icons](doc/icons.png)
 
-## 
+## How does it all work?
 
-## Parameters
+INTRO HERE
 
-So how does it work exactly? Well, let's assume you've got 32 icons on your home screen (excluding the dock) and you want to arrange them by color. Trying out every permutation would yield 32! possible options. That's 2.6*10^35. Good luck brute forcing that one. 
+This is essentially a Traveling Salesman Problem disguised by a multi-objective scoring function:
+
+- Each icon must fit well with its neighbors
+- Each page must present a color theme
+
+Optimizing for the first two objectives, the algorithm tends to group a small number of similar icons and distribute these groups over a large number of pages. To counter this, we need a third objective:
+
+- Each page must be filled to a viable maximum
+
+While there are many approaches to solve such problems, I have decided that it would be fun to do it with a genetic algorithm.
+
+### Genetic algorithm
+
+The initial input is a set of icons. The arrangement of these icons is a _Genome_ of an _Individual_.
+
+In the beginning, a _Population_ of a fixed number of _Individuals_ is created. The _Individuals_ in the first generation all have a random arrangement of icons.
+
+#### Strategy
+
+With each generation increment a number of modifications is applied to the population. Some _Individuals_ die because they have reached the maximal age, some are passed into the new population without change, some are mutated and others die because they exhibit low overall fitness. Finally, the population is filled with new _Individuals_ with a randomized _Genome_.
+
+#### Mutation
+
+The only mutation implemented right now is swapping two icons in the _Genome_. This a simple operation that does not require to repair the _Genome_ afterward.
+
+### Fitness function
+
+
+
+We distinguish between two types of parameters: Fitness parameters and population parameters.
