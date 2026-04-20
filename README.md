@@ -4,15 +4,15 @@ Mosaic is an application that arranges icons on the home screen of your iOS devi
 
 > If you'd like a coding agent to help you, point it to AGENTS.md (if it fails to discover it on its own). The description in this file will help the agent build the project, run the example scripts and guide you through the process of extracting the icons from the screenshots and arranging them.
 
-## Constrains
+## Constraints
 
-This library is only made for arranging icons on the classic screen layouts. The screens are filled with icons from left to right and from top to bottom. Just as Steve Jobs intended. There is currently no support for widgets or arbitrary icon placement that was introduced in iOS 18.
+Mosaic supports only the classic grid layout, where icons fill screens from left to right and top to bottom — just as Steve Jobs intended. Widgets and the arbitrary icon placement introduced in iOS 18 are not supported.
 
 ## Installation
 
-Everything is built with CMake. Image processing is done by OpenCV, and for testing we are using Google Test. Many IDEs like CLion and Visual Studio will have a plugin for working with CMake projects.
+The project is built with CMake, uses OpenCV for image processing, and Google Test for testing. IDEs like CLion and Visual Studio have built-in CMake support.
 
-If you wish to compile from the command line, you can issue the following commands from the project directory:
+To build from the command line:
 
 ```bash
 mkdir build && cd build
@@ -22,13 +22,13 @@ make
 
 ## Examples
 
-In the directory `examples` you will find three scripts.
+The `examples` directory contains three executables.
 
 - `GrayscaleIconsExample` creates icons with random grayscale colors and arranges them.
 - `ColorIconsExample` creates icons with random colors and arranges them.
 - `RealIconExample` reads images of real icons from a directory and arranges them.
 
-Setting `seed=0` in `RealIconExample` will yield the following pages
+Setting `seed=0` in `RealIconExample` produces the following pages.
 
 ![icons](doc/icons.png)
 
@@ -45,7 +45,7 @@ Optimizing for the first two objectives, the algorithm tends to group a small nu
 
 - Each page must be filled to a viable maximum
 
-While there are many approaches to solve such problems, I have decided that it would be fun to do it with a genetic algorithm.
+A genetic algorithm is a natural fit for this kind of combinatorial problem.
 
 ### Formulation
 
@@ -57,39 +57,39 @@ In the beginning, a _population_ of a fixed number of _individuals_ is created. 
 
 #### Strategy
 
-With each generation increment, a number of modifications are applied to the population. Some _individuals_ die because they have reached the maximal age, some are passed into the new population without change (elites), some are mutated, and others die because they exhibit low overall fitness. Finally, the population is filled with new _individuals_ with a randomized _chromosome_.
+Each generation applies a set of modifications to the population: _individuals_ that have reached the maximum age are removed, low-fitness _individuals_ are culled, a subset of top performers are carried over unchanged (elites), and some are mutated. The population is then topped up with freshly randomized _individuals_.
 
 #### Mutation
 
-The only mutation implemented right now is swapping two _alleles_ in the _chromosome_ i.e., swapping the position of two icons. This is a simple operation that does not require to repair the _chromosome_ afterward.
+The only mutation currently implemented is swapping two _alleles_ in the _chromosome_ — i.e., exchanging the positions of two icons. Because every icon appears exactly once, no repair step is needed afterward.
 
 #### Parameters
 
-There are some parameters defined at the top of each example-class:
+Each example defines the following parameters at the top of the file:
 
 - `kPopulation`: Number of Individuals in a Population.
 - `kGenerations`: Number of Generations for the algorithm to run.
 - `kPageBreaks`: Number of Page-Break-Elements to be inserted into the _chromosome_.
 - `kNumOfPieces`: Number of Icon-Pieces to generate (for solid-colored generated pieces).
 - `kMaxAge`: Maximal age an Individual can reach before dying.
-- `kPercentageElites`: Percentage of Individuals in a Population can pass to new Population without change (they are NOT removed form the old Population).
-- `kPercentageMutants`: Percentage of Individuals in a Population will be mutated before passing to new Population.
+- `kPercentageElites`: Percentage of Individuals that are carried into the new Population unchanged (they are NOT removed from the old Population).
+- `kPercentageMutants`: Percentage of Individuals that are mutated before passing to the new Population.
 
 ### Fitness function
 
-The fitness function of an individual consists of three metrics that are essentially playing against each other. Balancing their weights is tricky.
+The fitness function combines three competing metrics. Balancing their weights is the main tuning challenge.
 
 #### Distance
 
-Distance score measures how similar an icon is to its neighbors. Direct neighbors of an icon are located to the north, east, south and west of an icon. We also account for diagonal neighbors to the north-east, south-east, south-west and north-west of an icon but their weight is only _sqrt(2)_.
+The distance score measures how similar an icon is to its neighbors. Direct neighbors of an icon are located to the north, east, south and west of an icon. We also account for diagonal neighbors to the north-east, south-east, south-west and north-west of an icon, but their weight is only _sqrt(2)/2_.
 
 #### Variance
 
-First we calculate the mean color of all icons on the page. Then, in a second pass through, we compute the distance of the mean color to every icon on the page. Minimizing this score makes sure that each page has a color theme.
+First, the mean color of all icons on the page is computed. In a second pass, the distance from each icon to that mean is accumulated. Minimizing this score keeps each page visually cohesive.
 
 #### Missing icons
 
-Finally, we need to penalize underfilled pages. Instead of defining a constant penalty value for every missing icon, we take the normalized variance score as base. Thus, for every empty slot on the page we add the same score as a mean-fitting icon would add.
+Underfilled pages must be penalized. Rather than using a fixed constant, the penalty per empty slot is derived from the normalized variance score — so each gap costs the same as a perfectly average-fitting icon would.
 
 #### Weights
 
@@ -97,8 +97,20 @@ The `FitnessWeights` struct passed to each _individual_ defines the weights for 
 
 ### Color analysis
 
-First, the icons are converted into Lab color space. Unlike RGB, Lab is uniformly distributed and yields the best results when comparing two colors. Our distance metric is simply the Euclidean distance.
+Icons are converted to Lab color space, which is perceptually uniform — equal distances correspond to equal perceived differences, making it a better choice than RGB for color comparison. The distance metric is Euclidean distance.
 
-Simply taking the mean icon color most likely produces a color that is not even present in the icon. Best results are achieved when we quantify the colors. In fact, as most icons consist of company logos on a solid (or gradient) background, it's enough to apply k-means clustering with two clusters. The fact that k-means uses euclidean distance, further supports the choice of the Lab color space.
+Taking the mean color of an icon often produces a color that does not actually appear in the icon. Better results come from quantizing the colors instead. Since most icons consist of a logo on a solid or gradient background, k-means with two clusters is sufficient. The fact that k-means uses Euclidean distance makes it a natural fit for the Lab color space.
 
 In the end, each icon is represented internally as the two most dominant clusters weighted by their support.
+
+### Hall of Fame
+
+The `HallOfFame` class maintains the top N individuals seen across all generations. You can attach a callback to it that fires whenever a new best individual is discovered — useful for logging progress or triggering an export automatically.
+
+### Exporting results
+
+Individuals can be exported to NDJSON format using the `JsonExport` module. The NDJSON format is append-friendly and crash-safe, making it practical for long-running evolutionary runs. Each line in the output file is a self-contained JSON object describing one individual.
+
+### Visualization
+
+The `visualization/` directory contains a Python environment and a Jupyter notebook (`mosaic_analysis.ipynb`) for inspecting and plotting exported individuals. See the notebook for examples of how to load and visualize the results.
