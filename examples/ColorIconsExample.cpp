@@ -17,6 +17,8 @@ const int kNumOfPieces = 60;
 const int kPopulation = 200;
 const int kGenerations = 1000;
 const int kMaxAge = 50;
+const int kPercentageElites = 10;
+const int kPercentageMutants = 60;
 
 const FitnessWeights kFitnessWeights = {
   .variance_weight = 1.9,
@@ -54,16 +56,12 @@ int main() {
     std::set<Individual> temp_population{};
     temp_population.swap(population);
 
-    // remove elites that have been around for too long
     population_util::FilterByAge(temp_population, i, kMaxAge);
 
-    // pass through elites (first 10%) with age filtering
-    population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100);
+    population_util::PassThroughElites(population, temp_population, kPercentageElites * kPopulation / 100);
     
-    // mutate (another 60%) from temp population
-    population_util::MutateAndPassBest(population, temp_population, 60 * kPopulation / 100, g, i);
+    population_util::MutateAndPassBest(population, temp_population, kPercentageMutants * kPopulation / 100, g, i);
     
-    // fill remaining (~30%)
     population_util::FillShuffle(population, template_individual, kPopulation - population.size(), g, i);
     
     // update hall of fame with current population
