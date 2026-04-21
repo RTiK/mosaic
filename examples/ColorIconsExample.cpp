@@ -12,7 +12,7 @@
  * be analyzed in a Jupyter notebook found in the directory `visualization`.
  */
 
-const int kPageBreaks = 3;
+const int kPageBreaks = 2;
 const int kNumOfPieces = 60;
 const int kPopulation = 200;
 const int kGenerations = 1000;
@@ -22,7 +22,7 @@ const int kPercentageMutants = 60;
 
 const FitnessWeights kFitnessWeights = {
   .variance_weight = 1.9,
-  .missing_icons_weight = 0.4
+  .missing_icons_weight = 0.6
 };
 
 std::random_device rd;
@@ -31,7 +31,7 @@ std::mt19937 g(rd());
 
 int main() {
   // setting the seed to a fixed value will make the algorithm produce the same results on every run
-  // g.seed(0);
+  g.seed(0);
   
   Individual template_individual = individual_generation::GenerateIndividualLabRandom(kNumOfPieces, kPageBreaks, g, 0, kFitnessWeights);
   

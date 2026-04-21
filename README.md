@@ -2,7 +2,7 @@
 
 Mosaic is an application that arranges icons on the home screen of your iOS device by color using evolutionary algorithms.
 
-> If you'd like a coding agent to help you, point it to AGENTS.md (if it fails to discover it on its own). The description in this file will help the agent build the project, run the example scripts and guide you through the process of extracting the icons from the screenshots and arranging them.
+> If you'd like a coding agent to help you, point it to [AGENTS.md](AGENTS.md) (if it fails to discover it on its own). The description in this file will help the agent build the project, run the example scripts and guide you through the process of extracting the icons from the screenshots and arranging them.
 
 ## Constraints
 
@@ -28,18 +28,20 @@ The `examples` directory contains three executables.
 - `ColorIconsExample` creates icons with random colors and arranges them.
 - `RealIconExample` reads images of real icons from a directory and arranges them.
 
-Setting `seed=0` in `RealIconExample` produces the following pages.
+Setting `seed=0` in `ColorIconsExample` produces the following pages:
 
-![icons](doc/icons.png)
+![color_icons](doc/color_icons.png)
+
+Running `RealIconExample` with your own icons would produce something like this:
+
+![real_icons](doc/real_icons.png)
 
 ## How does it all work?
-
-INTRO HERE
 
 This is essentially a Traveling Salesman Problem disguised by a multi-objective scoring function:
 
 - Each icon must fit well with its neighbors
-- Each page must present a color theme
+- Each page must have a color theme
 
 Optimizing for the first two objectives, the algorithm tends to group a small number of similar icons and distribute these groups over a large number of pages. To counter this, we need a third objective:
 
@@ -49,31 +51,31 @@ A genetic algorithm is a natural fit for this kind of combinatorial problem.
 
 ### Formulation
 
-The initial input is a set of icons. The arrangement of these icons is a _chromosome_ of an _individual_.
+The initial input is a set of icons. The arrangement of these icons is a chromosome of an individual.
 
 > Page breaks are made automatically when a page is filled. To allow for underfilled pages, we add Page-Break-Elements into the genome. They are treated in the same way as the icons.
 
-In the beginning, a _population_ of a fixed number of _individuals_ is created. The _individuals_ in the first generation all have a random _chromosome_ i.e., a random arrangement of icons.
+In the beginning, a population of a fixed number of individuals is created. The individuals in the first generation all have a random chromosome i.e., a random arrangement of icons.
 
 #### Strategy
 
-Each generation applies a set of modifications to the population: _individuals_ that have reached the maximum age are removed, low-fitness _individuals_ are culled, a subset of top performers are carried over unchanged (elites), and some are mutated. The population is then topped up with freshly randomized _individuals_.
+Each generation applies a set of modifications to the population: individuals that have reached the maximum age are removed, low-fitness individuals are culled, a subset of top performers are carried over unchanged (elites), and some are mutated. The population is then topped up with freshly randomized individuals.
 
 #### Mutation
 
-The only mutation currently implemented is swapping two _alleles_ in the _chromosome_ — i.e., exchanging the positions of two icons. Because every icon appears exactly once, no repair step is needed afterward.
+The only mutation currently implemented is swapping two alleles in the chromosome — i.e., exchanging the positions of two icons. Because every icon appears exactly once, no repair step is needed afterward.
 
 #### Parameters
 
 Each example defines the following parameters at the top of the file:
 
-- `kPopulation`: Number of Individuals in a Population.
-- `kGenerations`: Number of Generations for the algorithm to run.
-- `kPageBreaks`: Number of Page-Break-Elements to be inserted into the _chromosome_.
+- `kPopulation`: Number of individuals in a population.
+- `kGenerations`: Number of generations for the algorithm to run.
+- `kPageBreaks`: Number of Page-Break-Elements to be inserted into the chromosome.
 - `kNumOfPieces`: Number of Icon-Pieces to generate (for solid-colored generated pieces).
-- `kMaxAge`: Maximal age an Individual can reach before dying.
-- `kPercentageElites`: Percentage of Individuals that are carried into the new Population unchanged (they are NOT removed from the old Population).
-- `kPercentageMutants`: Percentage of Individuals that are mutated before passing to the new Population.
+- `kMaxAge`: Maximal age an individual can reach before dying.
+- `kPercentageElites`: Percentage of individuals that are carried into the new population unchanged (they are NOT removed from the old population).
+- `kPercentageMutants`: Percentage of individuals that are mutated before passing to the new population.
 
 ### Fitness function
 
@@ -93,7 +95,7 @@ Underfilled pages must be penalized. Rather than using a fixed constant, the pen
 
 #### Weights
 
-The `FitnessWeights` struct passed to each _individual_ defines the weights for variance and the missing icon penalty. Changing these weights allows to find the balance between the three metrics.
+The `FitnessWeights` struct passed to each individual defines the weights for variance and the missing icon penalty. Changing these weights allows to find the balance between the three metrics.
 
 ### Color analysis
 

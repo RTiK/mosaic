@@ -15,13 +15,13 @@
 
 const int kPopulation = 200;
 const int kGenerations = 2000;
-const int kPageBreaks = 2;
+const int kPageBreaks = 5;
 const int kMaxAge = 50;
 const int kPercentageElites = 10;
 const int kPercentageMutants = 60;
 
 const FitnessWeights kFitnessWeights = {
-  .variance_weight = 1.5,
+  .variance_weight = 1.3,
   .missing_icons_weight = 0.5
 };
 
