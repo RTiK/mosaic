@@ -1,10 +1,108 @@
 # AGENTS.md — Mosaic
 
-This file is a guide for coding agents (Claude Code, OpenAI Codex, Gemini CLI, Cursor, etc.) helping a user run Mosaic end-to-end.
+This file is a guide for coding agents (Claude Code, OpenAI Codex, Gemini CLI, Cursor, etc.) and developers working with Mosaic. It covers architecture, build, configuration, running, and visualization.
 
 ## What Mosaic Does
 
 Mosaic is a C++ evolutionary algorithm that takes a collection of iOS app icons and arranges them across home screen pages so that visually similar icons end up on the same page. It minimizes color distances between neighboring icons using perceptual (CIE Lab) color space.
+
+---
+
+## Architecture
+
+### Core Design Pattern
+
+The project implements a **hierarchical evolutionary algorithm** with three main levels:
+
+1. **Individual** - Complete solution containing genome and fitness
+2. **Page** - iOS-style 4x6 grid (24 pieces max) with eager fitness evaluation
+3. **Piece** - Abstract base class for colored elements (Strategy pattern)
+
+### Key Classes
+
+- **Individual**: Represents complete solution with genome (vector of Pieces), derived pages, fitness, and birth_generation
+- **Page**: Manages up to 24 pieces in 4x6 grid, tracks fitness metrics (distances, variance, color distribution, icons_missing)
+- **Piece**: Abstract interface for all piece types (pure virtual distance, image generation, color extraction)
+  - **ColorPiece**: Simple BGR color implementation
+  - **LabPiece**: Extends ColorPiece with LAB color space support
+  - **IconPiece**: Base class for icon-based pieces (BGRA image loading)
+  - **LabIconPiece**: Real iOS icons with k-means clustering in LAB color space for perceptual color distance
+- **IndividualGeneration**: Namespace with factory functions (`GenerateIndividualLabRandom`, `GenerateIndividualGrayRandom`, `ReadRgbIcons`)
+- **PageEvaluation**: Namespace with fitness functions considering neighbor relationships
+- **PopulationUtil**: Evolutionary algorithm operations (selection, mutation, `FilterByAge`)
+- **HallOfFame**: Maintains top N individuals across all generations with callback hooks
+- **JsonExport**: Exports individuals to NDJSON format; uses `PieceType` enum (`COLOR_PIECE`, `LAB_PIECE`, `LAB_ICON_PIECE`)
+
+### Important Design Decisions
+
+- **Eager Evaluation**: Fitness computed immediately after genome changes to ensure const-correctness
+- **Neighbor Weighting**: Diagonal neighbors weighted at 0.70711 (√2/2) for spatial accuracy
+- **iOS Layout**: 4x6 grid directly models iOS home screen pages
+- **OpenCV Integration**: Used for color processing and image generation
+- **Weighted Color Distribution**: Pieces return quantified color distributions (k-means clusters with weights) rather than single colors
+- **Color Space Options**: Support for both RGB/BGR (device) and LAB (perceptual) color spaces
+- **Hall of Fame Callbacks**: Hooks allow automatic export/logging when best individuals are discovered
+- **NDJSON Export Format**: Crash-safe, appendable format for tracking evolution progress
+
+### File Structure
+
+- `include/Mosaic/` - Public headers
+  - `piece/` - Piece implementations (ColorPiece, LabPiece, IconPiece, LabIconPiece)
+- `src/` - Implementations
+- `examples/RealIconExample.cpp` - Main entry point for real-icon runs — the file to edit
+- `tests/` - GoogleTest unit tests
+- `visualization/` - Jupyter notebook for result analysis
+- `doc/JSON_EXPORT.md` - NDJSON schema and analysis guide
+- `3rdparty/` - External dependencies (OpenCV, GoogleTest)
+
+Key namespaces: `individual_generation`, `population_util`, `page_evaluation`, `json_export`
+Key classes: `Individual`, `Page`, `HallOfFame`, `LabIconPiece`
+
+---
+
+## Build System and Commands
+
+### Dependencies
+- **OpenCV**: Install in `3rdparty/opencv` or system-wide
+- **GoogleTest**: Auto-fetched via CMake FetchContent (no manual install needed)
+- **nlohmann/json**: Auto-fetched via CMake FetchContent (v3.11.3)
+- **CMake**: Minimum version 3.31
+- **C++23** standard required
+- **Python 3** (optional): For visualization tools in `visualization/`
+
+### Building the Project
+```bash
+mkdir build && cd build
+cmake ..
+make -j8
+```
+
+### Running Tests
+```bash
+# From build directory
+./MosaicTests
+```
+
+### Running Examples
+```bash
+# From build directory
+cd examples
+./GrayscaleIconsExample   # Basic usage (grayscale ColorPieces)
+./SolidColorIconsExample  # Lab color arrangement with JSON export
+./RealIconExample         # Real icon arrangement from filesystem
+```
+
+### Visualization and Analysis
+```bash
+# Set up Python environment for visualization
+cd visualization
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Run Jupyter notebook for analyzing exported individuals
+jupyter notebook mosaic_analysis.ipynb
+```
 
 ---
 
@@ -14,7 +112,7 @@ Mosaic is a C++ evolutionary algorithm that takes a collection of iOS app icons 
 
 Use the tool **iOS Icon Extractor**: https://github.com/RTiK/iOS-icon-extractor.
 
-Take screenshots of all your home screen pages on your iPhone and transfer them to your computer first. The output is a flat directory of `.png` files — that directory path is what Mosaic needs.
+Clone and set up that repository first, then follow its `AGENTS.md` for the full extraction process.
 
 Before extracting, choose an output directory (e.g. `icons/`). If that directory already exists and contains files, ask the user whether to delete the existing files or use a different directory — leftover files from a previous run will be picked up by Mosaic alongside the new ones.
 
@@ -135,24 +233,54 @@ The two weights push against each other. If your results show:
 
 ---
 
-## Output Format
+## Export and Analysis Workflow
 
-Mosaic exports results to NDJSON (newline-delimited JSON). Each line is one individual snapshot. The file is written incrementally whenever the Hall of Fame improves, so it is safe to interrupt the run.
+### Exporting Individuals
 
-See `doc/JSON_EXPORT.md` for the full schema and `jq` query examples.
+Use the `JsonExport` module to export individuals during or after evolution:
+
+```cpp
+#include <Mosaic/JsonExport.hpp>
+
+// Export an individual to NDJSON file
+json_export::ExportIndividualToNDJSON(
+    individual,
+    "results.ndjson",
+    json_export::PieceType::LAB_ICON_PIECE
+);
+```
+
+### Hall of Fame Integration
+
+Export best individuals automatically using callbacks:
+
+```cpp
+HallOfFame hof(10);  // Track top 10
+hof.SetOnInsertCallback([](const Individual& ind, size_t rank) {
+    // rank is 1-based
+    json_export::ExportIndividualToNDJSON(ind, "best-individuals.ndjson", json_export::PieceType::LAB_ICON_PIECE);
+});
+
+// Updates automatically trigger exports
+hof.Update(population);
+```
+
+### Analyzing Results
+
+See `doc/JSON_EXPORT.md` for complete documentation on:
+- Using `jq` for command-line analysis
+- Python scripts for visualization
+- Understanding the JSON schema
+- Debugging problematic placements
 
 ---
 
-## Project Layout (for Agents)
+## Development Notes
 
-```
-include/Mosaic/         Public headers — start here to understand the API
-src/                    Implementations
-examples/RealIconExample.cpp   Main entry point for real-icon runs — the file to edit
-tests/                  GoogleTest unit tests
-visualization/          Jupyter notebook for result analysis
-doc/JSON_EXPORT.md      NDJSON schema and analysis guide
-```
-
-Key namespaces: `individual_generation`, `population_util`, `page_evaluation`, `json_export`
-Key classes: `Individual`, `Page`, `HallOfFame`, `LabIconPiece`
+- The project uses C++23 features
+- All fitness evaluation is performed eagerly to maintain const-correctness
+- Color distances use Euclidean distance in RGB/BGR or LAB color space (depending on Piece type)
+- LAB color space provides perceptually uniform distances compared to RGB
+- Page layout constants are defined in PageEvaluation namespace
+- Individual comparison operators enable sorting in std::set containers
+- Pieces can return weighted color distributions via k-means clustering for richer color representation

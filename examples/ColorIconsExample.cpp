@@ -12,15 +12,17 @@
  * be analyzed in a Jupyter notebook found in the directory `visualization`.
  */
 
-const int kPageBreaks = 3;
+const int kPageBreaks = 2;
 const int kNumOfPieces = 60;
 const int kPopulation = 200;
 const int kGenerations = 1000;
 const int kMaxAge = 50;
+const int kPercentageElites = 10;
+const int kPercentageMutants = 60;
 
 const FitnessWeights kFitnessWeights = {
   .variance_weight = 1.9,
-  .missing_icons_weight = 0.4
+  .missing_icons_weight = 0.6
 };
 
 std::random_device rd;
@@ -29,7 +31,7 @@ std::mt19937 g(rd());
 
 int main() {
   // setting the seed to a fixed value will make the algorithm produce the same results on every run
-  // g.seed(0);
+  g.seed(0);
   
   Individual template_individual = individual_generation::GenerateIndividualLabRandom(kNumOfPieces, kPageBreaks, g, 0, kFitnessWeights);
   
@@ -54,16 +56,12 @@ int main() {
     std::set<Individual> temp_population{};
     temp_population.swap(population);
 
-    // remove elites that have been around for too long
     population_util::FilterByAge(temp_population, i, kMaxAge);
 
-    // pass through elites (first 10%) with age filtering
-    population_util::PassThroughElites(population, temp_population, 10 * kPopulation / 100);
+    population_util::PassThroughElites(population, temp_population, kPercentageElites * kPopulation / 100);
     
-    // mutate (another 60%) from temp population
-    population_util::MutateAndPassBest(population, temp_population, 60 * kPopulation / 100, g, i);
+    population_util::MutateAndPassBest(population, temp_population, kPercentageMutants * kPopulation / 100, g, i);
     
-    // fill remaining (~30%)
     population_util::FillShuffle(population, template_individual, kPopulation - population.size(), g, i);
     
     // update hall of fame with current population
