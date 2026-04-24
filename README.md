@@ -4,6 +4,8 @@ Mosaic is an application that arranges icons on the home screen of your iOS devi
 
 > If you'd like a coding agent to help you, point it to [AGENTS.md](AGENTS.md) (if it fails to discover it on its own). The description in this file will help the agent build the project, run the example scripts and guide you through the process of extracting the icons from the screenshots and arranging them.
 
+![real_icons_no_header](doc/real_icons_no_header.png)
+
 ## Constraints
 
 Mosaic supports only the classic grid layout, where icons fill screens from left to right and top to bottom — just as Steve Jobs intended. Widgets and the arbitrary icon placement introduced in iOS 18 are not supported.
